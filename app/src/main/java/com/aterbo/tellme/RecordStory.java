@@ -1,5 +1,6 @@
 package com.aterbo.tellme;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
@@ -34,6 +35,10 @@ public class RecordStory extends AppCompatActivity {
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         playbackControlButton.setEnabled(false);
+
+        Intent intent = getIntent();
+        String chosenTopic = intent.getStringExtra("ChosenTopic");
+        ((TextView)findViewById(R.id.prompt_text)).setText(chosenTopic);
 
     }
 
