@@ -7,4 +7,55 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.aterbo.tellme.PickTopicToRecord">
 
+    <ImageView
+        android:id="@+id/requestor_profile_pic"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/alberticon"/>
+    <TextView
+        android:id="@+id/sender_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/requestor_profile_pic"
+        android:text="Albert wants to hear one of the following"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/topic_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/requestor_profile_pic"
+        android:enabled="false"
+        android:text="Tell me a story that ends in a joke."
+        android:layout_weight="1" />
+    <Button
+        android:id="@+id/topic_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Tell me a sad story"
+        android:layout_below="@id/topic_1"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/topic_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/topic_2"
+        android:enabled="false"
+        android:text="What is the time you've laughed the hardest?"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/return_to_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Record Later"
+        android:layout_below="@id/topic_3"
+        android:layout_weight="1" />
+
 </RelativeLayout>
