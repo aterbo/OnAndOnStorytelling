@@ -28,6 +28,7 @@
         android:layout_marginTop="30dp"
         android:layout_below="@id/requestor_profile_pic"
         android:text="Tell me a story that ends in a joke."
+        android:onClick="topic1"
         android:layout_weight="1" />
     <Button
         android:id="@+id/topic_2"
@@ -36,6 +37,7 @@
         android:layout_marginTop="10dp"
         android:text="Tell me a sad story"
         android:layout_below="@id/topic_1"
+        android:onClick="topic2"
         android:layout_weight="1" />
 
     <Button
@@ -45,6 +47,7 @@
         android:layout_marginTop="10dp"
         android:layout_below="@id/topic_2"
         android:text="What is the time you've laughed the hardest?"
+        android:onClick="topic3"
         android:layout_weight="1" />
 
     <Button
