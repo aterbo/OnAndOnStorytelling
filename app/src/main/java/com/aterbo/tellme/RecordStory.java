@@ -18,6 +18,7 @@ public class RecordStory extends AppCompatActivity {
     private MediaPlayer myPlayer;
     private String outputFile = null;
     private Button playbackControlButton;
+    private Button recordingStatusButton;
     private TextView recordingStatus;
 
     @Override
@@ -31,25 +32,21 @@ public class RecordStory extends AppCompatActivity {
                 getAbsolutePath() + "/javacodegeeksRecording.3gpp";
 
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
+        recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         playbackControlButton.setEnabled(false);
 
     }
 
     public void recordingControlClick(View view){
-        Button recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         String recordingStatus = recordingStatusButton.getText().toString();
 
         if (recordingStatus.equals("Start Recording")){
             startRecording();
-            recordingStatusButton.setText("Stop Recording");
-
         } else if (recordingStatus.equals("Stop Recording")){
             stopRecording();
-            recordingStatusButton.setText("Reset");
 
         } else if (recordingStatus.equals("Reset")){
             resetRecording();
-            recordingStatusButton.setText("Start Recording");
         }
     }
 
@@ -72,6 +69,7 @@ public class RecordStory extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        recordingStatusButton.setText("Stop Recording");
         recordingStatus.setText("Recording Point: Recording");
         playbackControlButton.setEnabled(false);
     }
@@ -81,10 +79,6 @@ public class RecordStory extends AppCompatActivity {
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
-
-            playbackControlButton.setEnabled(true);
-            recordingStatus.setText("Recording Point: Stop recording");
-
         } catch (IllegalStateException e) {
             //  it is called before start()
             e.printStackTrace();
@@ -92,9 +86,15 @@ public class RecordStory extends AppCompatActivity {
             // no valid audio/video data has been received
             e.printStackTrace();
         }
+
+        recordingStatusButton.setText("Reset");
+        recordingStatus.setText("Recording Point: Stop recording");
+        playbackControlButton.setEnabled(true);
     }
 
     private void resetRecording(){
+        recordingStatusButton.setText("Start Recording");
+        recordingStatus.setText("Recording Point: -");
         playbackControlButton.setEnabled(false);
     }
 
@@ -137,7 +137,7 @@ public class RecordStory extends AppCompatActivity {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
-                recordingStatus.setText("Recording Point: Stopping");
+                recordingStatus.setText("Recording Point: -");
             }
         } catch (Exception e) {
             e.printStackTrace();
