@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_below="@id/requestor_profile_pic"
-        android:enabled="false"
         android:text="Tell me a story that ends in a joke."
         android:layout_weight="1" />
     <Button
@@ -45,7 +44,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_below="@id/topic_2"
-        android:enabled="false"
         android:text="What is the time you've laughed the hardest?"
         android:layout_weight="1" />
 
