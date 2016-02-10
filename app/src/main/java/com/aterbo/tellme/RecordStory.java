@@ -17,71 +17,50 @@ public class RecordStory extends AppCompatActivity {
     private MediaRecorder myRecorder;
     private MediaPlayer myPlayer;
     private String outputFile = null;
-    private Button startBtn;
-    private Button stopBtn;
-    private Button playBtn;
-    private Button stopPlayBtn;
-    private TextView text;
+    private Button playbackControlButton;
+    private TextView recordingStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_story);
 
-        text = (TextView) findViewById(R.id.text1);
+        recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
         // store it to sd card
         outputFile = Environment.getExternalStorageDirectory().
                 getAbsolutePath() + "/javacodegeeksRecording.3gpp";
 
-        myRecorder = new MediaRecorder();
-        myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myRecorder.setOutputFile(outputFile);
+        playbackControlButton = (Button)findViewById(R.id.playback_control_button);
+        playbackControlButton.setEnabled(false);
 
-        startBtn = (Button)findViewById(R.id.start);
-        startBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                start(v);
-            }
-        });
-
-        stopBtn = (Button)findViewById(R.id.stop);
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                stop(v);
-            }
-        });
-
-        playBtn = (Button)findViewById(R.id.play);
-        playBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                play(v);
-            }
-        });
-
-        stopPlayBtn = (Button)findViewById(R.id.stopPlay);
-        stopPlayBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                stopPlay(v);
-            }
-        });
     }
 
-    public void start(View view){
+    public void recordingControlClick(View view){
+        Button recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
+        String recordingStatus = recordingStatusButton.getText().toString();
+
+        if (recordingStatus.equals("Start Recording")){
+            startRecording();
+            recordingStatusButton.setText("Stop Recording");
+
+        } else if (recordingStatus.equals("Stop Recording")){
+            stopRecording();
+            recordingStatusButton.setText("Reset");
+
+        } else if (recordingStatus.equals("Reset")){
+            resetRecording();
+            recordingStatusButton.setText("Start Recording");
+        }
+    }
+
+    private void startRecording(){
         try {
+            myRecorder = new MediaRecorder();
+            myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+            myRecorder.setOutputFile(outputFile);
+
             myRecorder.prepare();
             myRecorder.start();
         } catch (IllegalStateException e) {
@@ -93,26 +72,19 @@ public class RecordStory extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        text.setText("Recording Point: Recording");
-        startBtn.setEnabled(false);
-        stopBtn.setEnabled(true);
-
-        Toast.makeText(getApplicationContext(), "Start recording...",
-                Toast.LENGTH_SHORT).show();
+        recordingStatus.setText("Recording Point: Recording");
+        playbackControlButton.setEnabled(false);
     }
 
-    public void stop(View view){
+    private void stopRecording(){
         try {
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
 
-            stopBtn.setEnabled(false);
-            playBtn.setEnabled(true);
-            text.setText("Recording Point: Stop recording");
+            playbackControlButton.setEnabled(true);
+            recordingStatus.setText("Recording Point: Stop recording");
 
-            Toast.makeText(getApplicationContext(), "Stop recording...",
-                    Toast.LENGTH_SHORT).show();
         } catch (IllegalStateException e) {
             //  it is called before start()
             e.printStackTrace();
@@ -122,42 +94,56 @@ public class RecordStory extends AppCompatActivity {
         }
     }
 
-    public void play(View view) {
+    private void resetRecording(){
+        playbackControlButton.setEnabled(false);
+    }
+
+    public void playbackControlClick(View view){
+        Button playbackControlButton = (Button)findViewById(R.id.playback_control_button);
+        String playbackStatus = playbackControlButton.getText().toString();
+
+        if (playbackStatus.equals("Play Recording")){
+            startPlayback();
+        } else if (playbackStatus.equals("Stop Playback")){
+            stopPlayback();
+        }
+    }
+
+    private void startPlayback() {
         try{
             myPlayer = new MediaPlayer();
             myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
             myPlayer.start();
+            myPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    stopPlayback();
+                }
+            });
 
-            playBtn.setEnabled(false);
-            stopPlayBtn.setEnabled(true);
-            text.setText("Recording Point: Playing");
+            recordingStatus.setText("Recording Point: Playing");
 
-            Toast.makeText(getApplicationContext(), "Start play the recording...",
-                    Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        playbackControlButton.setText("Stop Playback");
     }
 
-    public void stopPlay(View view) {
+    private void stopPlayback() {
         try {
             if (myPlayer != null) {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
-                playBtn.setEnabled(true);
-                stopPlayBtn.setEnabled(false);
-                text.setText("Recording Point: Stop playing");
-
-                Toast.makeText(getApplicationContext(), "Stop playing the recording...",
-                        Toast.LENGTH_SHORT).show();
+                recordingStatus.setText("Recording Point: Stopping");
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        playbackControlButton.setText("Play Recording");
     }
 
 }
