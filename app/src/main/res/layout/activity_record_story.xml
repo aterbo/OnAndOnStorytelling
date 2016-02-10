@@ -8,13 +8,25 @@
     tools:context="com.aterbo.tellme.RecordStory">
 
     <ImageView
+        android:id="@+id/requestor_profile_pic"
         android:layout_width="150dp"
-        android:layout_height="150dp" />
+        android:layout_height="150dp"
+        android:src="@drawable/alberticon"/>
+    <TextView
+        android:id="@+id/sender_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/requestor_profile_pic"
+        android:text="Albert says"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
     <TextView
         android:id="@+id/prompt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/requestor_profile_pic"
+        android:layout_below="@id/sender_text"
         android:text="Tell me a story that ends in a joke."
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
