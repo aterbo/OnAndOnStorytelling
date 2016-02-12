@@ -1,9 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:padding="5dp"
+    android:layout_height="80dp">
 
+    <com.aterbo.tellme.classes.SquareImageView
+        android:id="@+id/conversation_profile_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/alberticon"
+        />
 
+    <TextView
+        android:id="@+id/conversation_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/conversation_profile_image"
+        android:layout_alignParentTop="true"
+        android:text="Title"
+        />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/conversation_story_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Story Duration"
+        />
+
+    <TextView
+        android:id="@+id/conversation_participants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/conversation_profile_image"
+        android:layout_alignParentBottom="true"
+        android:text="Participants"
+        />
+
+    <TextView
+        android:id="@+id/conversation_time_since_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:text="Time Since"
+        />
+</RelativeLayout>
