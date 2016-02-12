@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
-        <activity android:name=".RecordStory" >
+        <activity android:name=".activities.RecordStoryActivity" >
         </activity>
-        <activity android:name=".PickTopicToRecord" >
+        <activity android:name=".activities.PickTopicToRecordActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
