@@ -30,4 +30,24 @@
         android:text="Do you have a life plan?"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <ImageView
+        android:id="@+id/playImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/requestor_profile_pic"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:src="@android:drawable/ic_media_play" />
+
+    <Button
+        android:id="@+id/playback_control_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/playImage"
+        android:enabled="false"
+        android:text="Play Recording"
+        android:onClick="playbackControlClick"
+        android:layout_weight="1" />
+
 </RelativeLayout>
