@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.activities.MainActivity;
 
 /**
  * Created by ATerbo on 2/12/16.
@@ -28,21 +30,20 @@ public class PingStorytellerDialog extends DialogFragment {
                 .setCancelable(true)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.ping,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dismiss();
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dismiss();
+                            }
                         }
-                    }
                 )
 
                 .setNegativeButton(R.string.cancel,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                       }
-                    }
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        }
                 )
                 .create();
     }
-
 }
