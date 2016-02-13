@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         toWaitForList = testListData.getTestConvoToWaitFor();
 
         toHearSeparatorPosition = toTellList.size()+1;
-        toWaitForSeparatorPosition = toWaitForList.size() + toHearSeparatorPosition +1;
+        toWaitForSeparatorPosition = toHearList.size() + toHearSeparatorPosition +1;
 
         addSeparator("Stories to tell");
 
