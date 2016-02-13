@@ -20,17 +20,17 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     public void topic1(View view){
-        chosenTopic = ((Button)findViewById(R.id.topic_1)).getText().toString();
+        chosenTopic = ((Button)findViewById(R.id.send_topic_option_1)).getText().toString();
         startNextActivity();
     }
 
     public void topic2(View view){
-        chosenTopic = ((Button)findViewById(R.id.topic_2)).getText().toString();
+        chosenTopic = ((Button)findViewById(R.id.send_topic_option_2)).getText().toString();
         startNextActivity();
     }
 
     public void topic3(View view){
-        chosenTopic = ((Button)findViewById(R.id.topic_3)).getText().toString();
+        chosenTopic = ((Button)findViewById(R.id.record_topic_option_3)).getText().toString();
         startNextActivity();
     }
 

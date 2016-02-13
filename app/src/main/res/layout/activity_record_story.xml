@@ -49,26 +49,26 @@
         android:src="@android:drawable/presence_audio_online" />
 
 
-        <Button
-            android:id="@+id/recording_control_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Start Recording"
-            android:layout_below="@id/playImage"
-            android:onClick="recordingControlClick"
-            android:layout_weight="1" />
+    <Button
+        android:id="@+id/recording_control_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Start Recording"
+        android:layout_below="@id/playImage"
+        android:onClick="recordingControlClick"
+        android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/playback_control_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_below="@id/recording_control_button"
-            android:enabled="false"
-            android:text="Play Recording"
-            android:onClick="playbackControlClick"
-            android:layout_weight="1" />
+    <Button
+        android:id="@+id/playback_control_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/recording_control_button"
+        android:enabled="false"
+        android:text="Play Recording"
+        android:onClick="playbackControlClick"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/finish_and_send_button"
