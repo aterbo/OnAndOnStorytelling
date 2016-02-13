@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Environment;
@@ -41,13 +42,13 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void startPlayback() {
         try{
-            mPlayer = MediaPlayer.create(ListenToStoryActivity.this, R.raw.home);
+            mPlayer = MediaPlayer.create(ListenToStoryActivity.this, R.raw.testrecording);
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.start();
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopPlayback();
+                    storyComplete();
                 }
             });
 
@@ -73,4 +74,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
         playbackControlButton.setText("Play Recording");
     }
 
+    private void storyComplete(){
+        stopPlayback();
+        Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
+        startActivity(intent);
+    }
 }
