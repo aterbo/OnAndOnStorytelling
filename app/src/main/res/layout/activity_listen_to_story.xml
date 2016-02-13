@@ -1,52 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.aterbo.tellme.activities.ListenToStoryActivity">
 
     <ImageView
-        android:id="@+id/requestor_profile_pic"
+        android:id="@+id/sender_profile_pic"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/alberticon"/>
+        android:src="@drawable/alberticon" />
+
     <TextView
         android:id="@+id/sender_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/requestor_profile_pic"
+        android:layout_toRightOf="@+id/sender_profile_pic"
         android:text="Albert answered"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <TextView
         android:id="@+id/prompt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/requestor_profile_pic"
         android:layout_below="@id/sender_text"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/sender_profile_pic"
         android:text="Do you have a life plan?"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageView
-        android:id="@+id/playImage"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/requestor_profile_pic"
-        android:layout_centerHorizontal="true"
+    <TextView
+        android:id="@+id/songDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sender_profile_pic"
+        android:layout_gravity="center"
         android:layout_marginTop="150dp"
-        android:src="@android:drawable/ic_media_play" />
+        android:text="songDuration" />
 
-    <Button
-        android:id="@+id/playback_control_button"
+    <SeekBar
+        android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/playImage"
-        android:text="Play Recording"
-        android:onClick="playbackControlClick"
-        android:layout_weight="1" />
+        android:layout_below="@id/songDuration"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/seekBar"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/media_long_rew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:onClick="longRewind"
+            android:src="@android:drawable/ic_media_previous" />
+
+        <ImageButton
+            android:id="@+id/media_short_rew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:onClick="shortRewind"
+            android:src="@android:drawable/ic_media_rew" />
+
+        <ImageButton
+            android:id="@+id/media_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:onClick="pause"
+            android:src="@android:drawable/ic_media_pause" />
+
+        <ImageButton
+            android:id="@+id/media_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:onClick="play"
+            android:src="@android:drawable/ic_media_play" />
+
+        <ImageButton
+            android:id="@+id/media_short_ff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:onClick="shortForward"
+            android:src="@android:drawable/ic_media_ff" />
+
+        <ImageButton
+            android:id="@+id/media_long_ff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:onClick="longForward"
+            android:src="@android:drawable/ic_media_next" />
+
+    </LinearLayout>
 
 </RelativeLayout>

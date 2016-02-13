@@ -8,7 +8,7 @@
     tools:context="com.aterbo.tellme.activities.PickTopicToRecordActivity">
 
     <ImageView
-        android:id="@+id/requestor_profile_pic"
+        android:id="@+id/sender_profile_pic"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:src="@drawable/alberticon"/>
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/requestor_profile_pic"
+        android:layout_toRightOf="@+id/sender_profile_pic"
         android:text="Albert wants to hear one of the following"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_below="@id/requestor_profile_pic"
+        android:layout_below="@id/sender_profile_pic"
         android:text="Tell me a story that ends in a joke."
         android:onClick="topic1"
         android:layout_weight="1" />

@@ -3,47 +3,52 @@ package com.aterbo.tellme.activities;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.aterbo.tellme.R;
+
+import java.util.concurrent.TimeUnit;
+
+//http://examples.javacodegeeks.com/android/android-mediaplayer-example/
 
 public class ListenToStoryActivity extends AppCompatActivity {
 
     private MediaPlayer mPlayer;
-    private String soundFile = null;
-    private Button playbackControlButton;
+    public TextView duration;
+    private double timeElapsed = 0;
+    private double finalTime = 0;
+    private int shortSkipTime = 5000;
+    private int longSkipTime = 30000;
+    private Handler durationHandler = new Handler();
+    private SeekBar seekbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
-        soundFile = Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/javacodegeeksRecording.3gpp";
 
-        playbackControlButton = (Button)findViewById(R.id.playback_control_button);
+        initializeViews();
 
     }
 
-    public void playbackControlClick(View view){
-        Button playbackControlButton = (Button)findViewById(R.id.playback_control_button);
-        String playbackStatus = playbackControlButton.getText().toString();
-
-        if (playbackStatus.equals("Play Recording")){
-            startPlayback();
-        } else if (playbackStatus.equals("Stop Playback")){
-            stopPlayback();
-        }
+    public void initializeViews(){
+        mPlayer = MediaPlayer.create(this, R.raw.home);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        finalTime = mPlayer.getDuration();
+        duration = (TextView) findViewById(R.id.songDuration);
+        seekbar = (SeekBar) findViewById(R.id.seekBar);
+        seekbar.setMax((int) finalTime);
+        seekbar.setClickable(false);
     }
 
-    private void startPlayback() {
+    public void play(View view) {
         try{
-            mPlayer = MediaPlayer.create(ListenToStoryActivity.this, R.raw.testrecording);
-            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.start();
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -51,13 +56,69 @@ public class ListenToStoryActivity extends AppCompatActivity {
                     storyComplete();
                 }
             });
-
-
+            timeElapsed = mPlayer.getCurrentPosition();
+            seekbar.setProgress((int) timeElapsed);
+            durationHandler.postDelayed(updateSeekBarTime, 100);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        playbackControlButton.setText("Stop Playback");
+    //handler to change seekBarTime
+    private Runnable updateSeekBarTime = new Runnable() {
+        public void run() {
+            if (mPlayer!=null){
+                timeElapsed = mPlayer.getCurrentPosition();
+                //set seekbar progress
+                seekbar.setProgress((int) timeElapsed);
+                //set time remaing
+                double timeRemaining = finalTime - timeElapsed;
+                duration.setText(String.format("%d min, %d sec",
+                        TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining),
+                        TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) -
+                                TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining))));
+
+                //repeat yourself that again in 100 miliseconds
+                durationHandler.postDelayed(this, 100);
+            }
+        }
+    };
+
+    public void pause(View view) {
+        mPlayer.pause();
+    }
+
+    public void shortForward(View view){
+        forward(shortSkipTime);
+    }
+
+    public void longForward(View view){
+        forward(longSkipTime);
+    }
+
+    public void shortRewind(View view){
+        rewind(shortSkipTime);
+    }
+
+    public void longRewind(View view){
+        rewind(longSkipTime);
+    }
+
+    private void forward(int forwardSkipTime) {
+        if ((timeElapsed + forwardSkipTime) <= finalTime) {
+            timeElapsed = timeElapsed + forwardSkipTime;
+
+            mPlayer.seekTo((int) timeElapsed);
+        }
+    }
+
+    private void rewind(int backwardSkipTime) {
+        if ((timeElapsed - backwardSkipTime) >= 0) {
+            timeElapsed = timeElapsed - backwardSkipTime;
+
+            mPlayer.seekTo((int) timeElapsed);
+        }
     }
 
     private void stopPlayback() {
@@ -70,8 +131,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        playbackControlButton.setText("Play Recording");
     }
 
     private void storyComplete(){
