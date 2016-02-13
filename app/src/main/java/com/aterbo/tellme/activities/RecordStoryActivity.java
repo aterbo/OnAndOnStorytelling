@@ -21,6 +21,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private String outputFile = null;
     private Button playbackControlButton;
     private Button recordingStatusButton;
+    private Button finishAndSendButton;
     private TextView recordingStatus;
 
     @Override
@@ -35,6 +36,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
+        finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackControlButton.setEnabled(false);
 
         Intent intent = getIntent();
@@ -96,6 +98,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingStatusButton.setText("Reset");
         recordingStatus.setText("Recording Point: Stop recording");
         playbackControlButton.setEnabled(true);
+        finishAndSendButton.setEnabled(true);
     }
 
     private void resetRecording(){
@@ -150,6 +153,11 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
 
         playbackControlButton.setText("Play Recording");
+    }
+
+    public void sendRecordingClick(View view){
+        //TODO: Figure out how the hell to send this to someone.
+        
     }
 
 }

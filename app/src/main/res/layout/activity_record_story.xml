@@ -70,4 +70,15 @@
             android:onClick="playbackControlClick"
             android:layout_weight="1" />
 
+    <Button
+        android:id="@+id/finish_and_send_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/playback_control_button"
+        android:enabled="false"
+        android:text="Send Recording"
+        android:onClick="sendRecordingClick"
+        android:layout_weight="1" />
+
 </RelativeLayout>
