@@ -9,29 +9,29 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.SupplyTestListData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
-import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConvoToHear;
 import com.aterbo.tellme.classes.ConvoToTell;
 import com.aterbo.tellme.classes.ConvoToWaitFor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<ConvoToTell> toTellList;
     ArrayList<ConvoToHear> toHearList;
     ArrayList<ConvoToWaitFor> toWaitForList;
+    int toHearSeparatorPosition;
+    int toWaitForSeparatorPosition;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
     ArrayList<Object> objectList;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +49,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        objectList = new ArrayList<>();
-
         constructConversationList();
+        setListAdaptor();
 
+    }
+
+    private void setListAdaptor() {
         conversationListAdaptor = new ConversationListAdaptor(objectList, this);
         conversationListView = (ListView)findViewById(R.id.conversation_list);
         conversationListView.setAdapter(conversationListAdaptor);
-
+        conversationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                respondToListClick(position);
+            }
+        });
     }
 
     @Override
@@ -81,46 +88,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ArrayList<ConvoToTell> getTestConvoToTell(){
-        ArrayList<ConvoToTell> testList = new ArrayList<>();
+    private void respondToListClick(int position){
+        if (position<(toHearSeparatorPosition)){
+            startTellActivity();
+        } else if (position<(toWaitForSeparatorPosition)){
 
-        testList.add(new ConvoToTell(true));
-        testList.add(new ConvoToTell(true));
-        testList.add(new ConvoToTell(true));
+        } else {
 
-        return testList;
-    }
-
-    private ArrayList<ConvoToHear> getTestConvoToHear(){
-        ArrayList<ConvoToHear> testList = new ArrayList<>();
-
-        testList.add(new ConvoToHear(true));
-        testList.add(new ConvoToHear(true));
-        testList.add(new ConvoToHear(true));
-        testList.add(new ConvoToHear(true));
-
-        return testList;
-    }
-
-    private ArrayList<ConvoToWaitFor> getTestConvoToWaitFor(){
-        ArrayList<ConvoToWaitFor> testList = new ArrayList<>();
-
-
-        testList.add(new ConvoToWaitFor(true));
-        testList.add(new ConvoToWaitFor(true));
-        testList.add(new ConvoToWaitFor(true));
-        testList.add(new ConvoToWaitFor(true));
-        testList.add(new ConvoToWaitFor(true));
-        testList.add(new ConvoToWaitFor(true));
-
-        return testList;
+        }
     }
 
     private void constructConversationList(){
+        objectList = new ArrayList<>();
 
-        toTellList = getTestConvoToTell();
-        toHearList = getTestConvoToHear();
-        toWaitForList = getTestConvoToWaitFor();
+        SupplyTestListData testListData = new SupplyTestListData();
+        toTellList = testListData.getTestConvoToTell();
+        toHearList = testListData.getTestConvoToHear();
+        toWaitForList = testListData.getTestConvoToWaitFor();
+
+        toHearSeparatorPosition = toTellList.size()+1;
+        toWaitForSeparatorPosition = toWaitForList.size() + toHearSeparatorPosition +1;
 
         addSeparator("Stories to tell");
 
@@ -145,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         objectList.add(new String(separatorText));
     }
 
-    public void startNextActivity(View view){
+    public void startTellActivity(){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         startActivity(intent);
     }

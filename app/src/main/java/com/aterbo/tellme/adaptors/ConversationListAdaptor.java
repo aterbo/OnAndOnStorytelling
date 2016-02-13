@@ -105,36 +105,6 @@ public class ConversationListAdaptor extends BaseAdapter {
 
         }
 
-        switch (type){
-            case TYPE_SEPARATOR:
-                convertView.setOnClickListener(null);
-                break;
-            case TYPE_CONVO_TO_TELL:
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "TO TELL", Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case TYPE_CONVO_TO_HEAR:
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "TO HEAR", Toast.LENGTH_LONG).show();
-                    }
-                });
-                break;
-            case TYPE_CONVO_TO_WAIT_FOR:
-                convertView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(context, "TO WAIT FOR", Toast.LENGTH_LONG).show();
-                    }
-                    });
-                break;
-            }
-
         return convertView;
 
     }
