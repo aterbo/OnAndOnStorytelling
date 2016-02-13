@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aterbo.tellme.R;
 
@@ -157,7 +158,12 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     public void sendRecordingClick(View view){
         //TODO: Figure out how the hell to send this to someone.
-        
+        showToastFromStringResource(R.string.recording_sent_notice);
+        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
+        startActivity(intent);
     }
 
+    private void showToastFromStringResource(int stringResourceId) {
+        Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_LONG).show();
+    }
 }
