@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.SupplyTestListData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
+import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.ConvoToHear;
 import com.aterbo.tellme.classes.ConvoToTell;
 import com.aterbo.tellme.classes.ConvoToWaitFor;
@@ -96,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (position<(toWaitForSeparatorPosition)){
             startListenActivity();
         } else {
-            //TODO: respond to click in To_Wait_Forlist
+            DialogFragment newFragment = PingStorytellerDialog.newInstance();
+            newFragment.show(getFragmentManager(), "ping");
         }
     }
 
