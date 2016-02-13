@@ -16,15 +16,17 @@ import com.aterbo.tellme.classes.SquareImageView;
 
 import java.util.ArrayList;
 
+//http://cyrilmottier.com/2011/07/05/listview-tips-tricks-2-section-your-listview/
+
 /**
  * Created by ATerbo on 2/12/16.
  */
 public class ConversationListAdaptor extends BaseAdapter {
 
-    private static final int TYPE_SEPARATOR = 1;
-    private static final int TYPE_CONVO_TO_TELL = 2;
-    private static final int TYPE_CONVO_TO_HEAR = 3;
-    private static final int TYPE_CONVO_TO_WAIT_FOR = 4;
+    private static final int TYPE_SEPARATOR = 0;
+    private static final int TYPE_CONVO_TO_TELL = 1;
+    private static final int TYPE_CONVO_TO_HEAR = 2;
+    private static final int TYPE_CONVO_TO_WAIT_FOR = 3;
 
     private static final int ITEM_VIEW_TYPE_COUNT = 4;
 
@@ -68,34 +70,36 @@ public class ConversationListAdaptor extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(
                     type == TYPE_SEPARATOR ? R.layout.layout_conversation_list_separator :
                             R.layout.layout_conversation_list_item, viewGroup, false);
-        }
+        } else{
 
-        // We can now fill the list item view with the appropriate data.
-        switch (type){
-            case TYPE_SEPARATOR:
-                ((TextView) convertView).setText((String) getItem(position));
-                break;
-            case TYPE_CONVO_TO_TELL:
-                final Conversation convoToTell = (Conversation) getItem(position);
-                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getTitle());
-                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getParticipant());
-                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToTell.getTimeSinceLastAction());
-                (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
-                break;
-            case TYPE_CONVO_TO_HEAR:
-                final Conversation convoToHear = (Conversation) getItem(position);
-                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getTitle());
-                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getParticipant());
-                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToHear.getTimeSinceLastAction());
-                ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(convoToHear.getStoryDuration());
-                break;
-            case TYPE_CONVO_TO_WAIT_FOR:
-                final Conversation convoToWaitFor = (Conversation) getItem(position);
-                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getTitle());
-                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getParticipant());
-                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToWaitFor.getTimeSinceLastAction());
-                (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
-                break;
+            // We can now fill the list item view with the appropriate data.
+            switch (type){
+                case TYPE_SEPARATOR:
+                    ((TextView) convertView).setText((String) getItem(position));
+                    break;
+                case TYPE_CONVO_TO_TELL:
+                    final Conversation convoToTell = (Conversation) getItem(position);
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToTell.getTimeSinceLastAction());
+                    (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
+                    break;
+                case TYPE_CONVO_TO_HEAR:
+                    final Conversation convoToHear = (Conversation) getItem(position);
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToHear.getTimeSinceLastAction());
+                    ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(convoToHear.getStoryDuration());
+                    break;
+                case TYPE_CONVO_TO_WAIT_FOR:
+                    final Conversation convoToWaitFor = (Conversation) getItem(position);
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToWaitFor.getTimeSinceLastAction());
+                    (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
+                    break;
+            }
+
         }
 
         return convertView;

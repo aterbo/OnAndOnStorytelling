@@ -14,15 +14,18 @@ import android.widget.ListView;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConvoToHear;
+import com.aterbo.tellme.classes.ConvoToTell;
+import com.aterbo.tellme.classes.ConvoToWaitFor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Conversation> toTellList;
-    List<Conversation> toHearList;
-    List<Conversation> toWaitForList;
+    ArrayList<ConvoToTell> toTellList;
+    ArrayList<ConvoToHear> toHearList;
+    ArrayList<ConvoToWaitFor> toWaitForList;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
@@ -78,43 +81,68 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<Conversation> getJunkConversationList(){
-        List<Conversation> testList = new ArrayList<>();
+    private ArrayList<ConvoToTell> getTestConvoToTell(){
+        ArrayList<ConvoToTell> testList = new ArrayList<>();
 
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
-        testList.add(new Conversation(true));
+        testList.add(new ConvoToTell(true));
+        testList.add(new ConvoToTell(true));
+        testList.add(new ConvoToTell(true));
+
+        return testList;
+    }
+
+    private ArrayList<ConvoToHear> getTestConvoToHear(){
+        ArrayList<ConvoToHear> testList = new ArrayList<>();
+
+        testList.add(new ConvoToHear(true));
+        testList.add(new ConvoToHear(true));
+        testList.add(new ConvoToHear(true));
+        testList.add(new ConvoToHear(true));
+
+        return testList;
+    }
+
+    private ArrayList<ConvoToWaitFor> getTestConvoToWaitFor(){
+        ArrayList<ConvoToWaitFor> testList = new ArrayList<>();
+
+
+        testList.add(new ConvoToWaitFor(true));
+        testList.add(new ConvoToWaitFor(true));
+        testList.add(new ConvoToWaitFor(true));
+        testList.add(new ConvoToWaitFor(true));
+        testList.add(new ConvoToWaitFor(true));
+        testList.add(new ConvoToWaitFor(true));
 
         return testList;
     }
 
     private void constructConversationList(){
 
-        toTellList = getJunkConversationList();
-        toHearList = getJunkConversationList();
-        toWaitForList = getJunkConversationList();
+        toTellList = getTestConvoToTell();
+        toHearList = getTestConvoToHear();
+        toWaitForList = getTestConvoToWaitFor();
 
         addSeparator("Stories to tell");
-        addContent(toTellList);
+
+        for (ConvoToTell conversation : toTellList){
+            objectList.add(conversation);
+        }
         addSeparator("Stories to hear");
-        addContent(toHearList);
+
+        for (ConvoToHear conversation : toHearList){
+            objectList.add(conversation);
+        }
+
         addSeparator("Stories to wait for");
-        addContent(toTellList);
+
+        for (ConvoToWaitFor conversation : toWaitForList){
+            objectList.add(conversation);
+        }
+
     }
 
     private void addSeparator(String separatorText){
         objectList.add(new String(separatorText));
-    }
-
-    private void addContent(List<Conversation> listToAdd){
-        for (Conversation conversation : listToAdd){
-            objectList.add(conversation);
-        }
     }
 
     public void startNextActivity(View view){

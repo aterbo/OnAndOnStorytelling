@@ -5,5 +5,8 @@ package com.aterbo.tellme.classes;
  */
 public class ConvoToTell extends Conversation {
 
+    public ConvoToTell(Boolean isTest){
+        super(isTest);
+    }
 
 }
