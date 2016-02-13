@@ -12,6 +12,14 @@ public class Conversation {
 
 
     public Conversation() {    }
+    public Conversation(Boolean isTest){
+        if (isTest){
+            title = "Test Title";
+            participant = "Test Participant";
+            timeSinceLastAction = "Test Time Since";
+            storyDuration = "Test Duration";
+        }
+    }
 
     public String getTitle() {
         return title;

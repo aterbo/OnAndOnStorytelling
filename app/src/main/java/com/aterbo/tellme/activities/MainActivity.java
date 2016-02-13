@@ -10,8 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.classes.Conversation;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    List<Conversation> toTellList;
+    List<Conversation> toHearList;
+    List<Conversation> toWaitForList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        toTellList = getJunkConversationList();
+        toHearList = getJunkConversationList();
+        toWaitForList = getJunkConversationList();
+        setAdaptorToListView()
     }
 
     @Override
@@ -50,5 +62,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<Conversation> getJunkConversationList(){
+
     }
 }
