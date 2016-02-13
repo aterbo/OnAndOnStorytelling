@@ -20,6 +20,7 @@
         android:layout_toRightOf="@+id/sender_profile_pic"
         android:text="Albert is next to tell a story"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <TextView
         android:id="@+id/prompt_text"
         android:layout_width="wrap_content"
@@ -30,23 +31,37 @@
         android:text="Choose topics to send."
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/record_topic_option_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:layout_below="@id/sender_profile_pic"
-        android:text="What is something that annoys you?"
-        android:onClick="sendTopic1"
-        android:layout_weight="1" />
-    <Button
-        android:id="@+id/record_topic_option_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="What is something that makes you laugh?"
-        android:layout_below="@id/record_topic_option_1"
-        android:onClick="sendTopic2"
-        android:layout_weight="1" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/sender_profile_pic">
+
+        <Button
+            android:id="@+id/record_topic_option_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="What is something that annoys you?"
+            android:onClick="sendTopic1"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/record_topic_option_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="What is something that makes you laugh?"
+            android:onClick="sendTopic2"
+            android:layout_weight="1" />
+    </LinearLayout>
 </RelativeLayout>

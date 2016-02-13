@@ -21,42 +21,63 @@
         android:text="Albert wants to hear one of the following"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/record_topic_option_1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_below="@id/sender_profile_pic"
-        android:text="Tell me a story that ends in a joke."
-        android:onClick="topic1"
-        android:layout_weight="1" />
-    <Button
-        android:id="@+id/record_topic_option_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Tell me a sad story"
-        android:layout_below="@id/record_topic_option_1"
-        android:onClick="topic2"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/sender_profile_pic">
 
-    <Button
-        android:id="@+id/record_topic_option_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/record_topic_option_2"
-        android:text="What is the time you've laughed the hardest?"
-        android:onClick="topic3"
-        android:layout_weight="1" />
+        <Button
+            android:id="@+id/record_topic_option_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/sender_profile_pic"
+            android:text="Tell me a story that ends in a joke."
+            android:onClick="topic1"
+            android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/return_to_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Record Later"
-        android:layout_below="@id/record_topic_option_3"
-        android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <Button
+            android:id="@+id/record_topic_option_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Tell me a sad story"
+            android:onClick="topic2"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/record_topic_option_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="What is the time you've laughed the hardest?"
+            android:onClick="topic3"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/return_to_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Record Later"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 </RelativeLayout>
