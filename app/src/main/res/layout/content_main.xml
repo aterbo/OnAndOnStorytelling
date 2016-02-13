@@ -17,7 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="Stories to tell" />
+        android:text="Stories to tell"
+        android:onClick="startNextActivity" />
 
     <ListView
         android:id="@+id/stories_to_tell_list"

@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,10 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.adaptors.ToHearListAdaptor;
 import com.aterbo.tellme.classes.Conversation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
     List<Conversation> toTellList;
     List<Conversation> toHearList;
     List<Conversation> toWaitForList;
+    ListView toTellListView;
+    ListView toHearListView;
+    ListView toWaitForListView;
+    ToHearListAdaptor toTellListAdaptor;
+    ToHearListAdaptor toHearListAdaptor;
+    ToHearListAdaptor toWaitForListAdaptor;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +52,12 @@ public class MainActivity extends AppCompatActivity {
         toTellList = getJunkConversationList();
         toHearList = getJunkConversationList();
         toWaitForList = getJunkConversationList();
-        setAdaptorToListView()
+        toTellListView = (ListView) findViewById(R.id.stories_to_tell_list);
+        toHearListView = (ListView) findViewById(R.id.stories_to_hear_list);
+        toWaitForListView = (ListView) findViewById(R.id.stories_to_wait_for_list);
+        setAdaptorToListView(toTellList, toTellListAdaptor, toTellListView);
+        setAdaptorToListView(toHearList, toHearListAdaptor, toHearListView);
+        setAdaptorToListView(toWaitForList, toWaitForListAdaptor, toWaitForListView);
     }
 
     @Override
@@ -65,6 +83,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<Conversation> getJunkConversationList(){
+        List<Conversation> testList = new ArrayList<>();
 
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+
+        return testList;
+    }
+
+    private void setAdaptorToListView(List<Conversation> conversationList, ToHearListAdaptor listAdaptor, ListView listView){
+
+        listAdaptor = new ToHearListAdaptor(conversationList, this);
+        listView.setAdapter(listAdaptor);
+
+        /* getting ready for Click adaptor
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> clickListener, View view, int position, long id) {
+                int mealId = (int) mealListAdapter.getMeal(position).getMealIdNumber();
+                Intent intent = new Intent(getApplicationContext(), MealDetailsActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, mealId);
+                startActivity(intent);
+            }
+        });
+        */
+    }
+
+    public void startNextActivity(View view){
+        Intent intent = new Intent(this, PickTopicToRecordActivity.class);
+        startActivity(intent);
     }
 }
