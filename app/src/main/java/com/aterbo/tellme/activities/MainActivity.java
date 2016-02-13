@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
-    Object[] OBJECTS;
+    ArrayList<Object> objectList;
 
 
 
@@ -46,14 +46,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        objectList = new ArrayList<>();
+
         constructConversationList();
 
-        toTellList = getJunkConversationList();
-        toHearList = getJunkConversationList();
-        toWaitForList = getJunkConversationList();
-        OBJECTS = getTestObjects();
-
-        conversationListAdaptor = new ConversationListAdaptor(OBJECTS, this);
+        conversationListAdaptor = new ConversationListAdaptor(objectList, this);
         conversationListView = (ListView)findViewById(R.id.conversation_list);
         conversationListView.setAdapter(conversationListAdaptor);
 
@@ -86,44 +83,38 @@ public class MainActivity extends AppCompatActivity {
 
         testList.add(new Conversation(true));
         testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
+        testList.add(new Conversation(true));
 
         return testList;
     }
 
     private void constructConversationList(){
+
+        toTellList = getJunkConversationList();
+        toHearList = getJunkConversationList();
+        toWaitForList = getJunkConversationList();
+
         addSeparator("Stories to tell");
         addContent(toTellList);
         addSeparator("Stories to hear");
         addContent(toHearList);
         addSeparator("Stories to wait for");
         addContent(toTellList);
-
     }
 
     private void addSeparator(String separatorText){
-
+        objectList.add(new String(separatorText));
     }
 
     private void addContent(List<Conversation> listToAdd){
-
-    }
-
-    private Object[] getTestObjects(){
-        Object[] objects = {
-                "Stories to tell",
-                new Conversation(true),
-                new Conversation(true),
-                "Stories to hear",
-                new Conversation(true),
-                new Conversation(true),
-                new Conversation(true),
-                "Stories to wait for",
-                new Conversation(true),
-                new Conversation(true),
-                new Conversation(true)
-        };
-
-        return objects;
+        for (Conversation conversation : listToAdd){
+            objectList.add(conversation);
+        }
     }
 
     public void startNextActivity(View view){
