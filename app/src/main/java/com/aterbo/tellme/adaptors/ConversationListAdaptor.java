@@ -12,7 +12,6 @@ import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.SquareImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ATerbo on 2/12/16.
@@ -26,27 +25,27 @@ public class ConversationListAdaptor extends BaseAdapter {
 
 
     private ArrayList<Conversation> conversationList = new ArrayList<>();
-    private Object[] OBJECTS;
+    private ArrayList<Object> objectList = new ArrayList<>();
     private Context context;
 
     private LayoutInflater mInflater;
 
-    public ConversationListAdaptor(Object[] OBJECTS, Context context) {
+    public ConversationListAdaptor(ArrayList<Object> objectList, Context context) {
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.OBJECTS = OBJECTS;
+        this.objectList = objectList;
         this.context = context;
     }
 
 
     @Override
     public int getCount() {
-        return OBJECTS.length;
+        return objectList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return OBJECTS[position];
+        return objectList.get(position);
     }
 
     @Override
@@ -89,7 +88,7 @@ public class ConversationListAdaptor extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (OBJECTS[position] instanceof String) ? TYPE_SEPARATOR : TYPE_ITEM;
+        return (getItem(position) instanceof String) ? TYPE_SEPARATOR : TYPE_ITEM;
     }
 
     @Override
