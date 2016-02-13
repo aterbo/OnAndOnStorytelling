@@ -5,10 +5,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.activities.MainActivity;
 
 /**
  * Created by ATerbo on 2/12/16.

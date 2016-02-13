@@ -23,7 +23,7 @@ import com.aterbo.tellme.classes.ConvoToWaitFor;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class ConversationListActivity extends AppCompatActivity {
 
     ArrayList<ConvoToTell> toTellList;
     ArrayList<ConvoToHear> toHearList;
