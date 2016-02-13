@@ -28,11 +28,19 @@ public class PingStorytellerDialog extends DialogFragment {
                 .setCancelable(true)
                 .setMessage(dialogText)
                 .setPositiveButton(R.string.ping,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dismiss();
-                            }
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dismiss();
                         }
+                    }
+                )
+
+                .setNegativeButton(R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                       }
+                    }
                 )
                 .create();
     }
