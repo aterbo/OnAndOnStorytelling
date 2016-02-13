@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.adaptors.ToHearListAdaptor;
 import com.aterbo.tellme.classes.Conversation;
 
@@ -24,12 +25,10 @@ public class MainActivity extends AppCompatActivity {
     List<Conversation> toTellList;
     List<Conversation> toHearList;
     List<Conversation> toWaitForList;
-    ListView toTellListView;
-    ListView toHearListView;
-    ListView toWaitForListView;
-    ToHearListAdaptor toTellListAdaptor;
-    ToHearListAdaptor toHearListAdaptor;
-    ToHearListAdaptor toWaitForListAdaptor;
+
+    ListView conversationListView;
+    ConversationListAdaptor conversationListAdaptor;
+    Object[] OBJECTS;
 
 
 
@@ -52,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
         toTellList = getJunkConversationList();
         toHearList = getJunkConversationList();
         toWaitForList = getJunkConversationList();
-        toTellListView = (ListView) findViewById(R.id.stories_to_tell_list);
-        toHearListView = (ListView) findViewById(R.id.stories_to_hear_list);
-        toWaitForListView = (ListView) findViewById(R.id.stories_to_wait_for_list);
-        setAdaptorToListView(toTellList, toTellListAdaptor, toTellListView);
-        setAdaptorToListView(toHearList, toHearListAdaptor, toHearListView);
-        setAdaptorToListView(toWaitForList, toWaitForListAdaptor, toWaitForListView);
+        OBJECTS = getObjects();
+
+        conversationListAdaptor = new ConversationListAdaptor(OBJECTS, this);
+        conversationListView = (ListView)findViewById(R.id.conversation_list);
+        conversationListView.setAdapter(conversationListAdaptor);
+
     }
 
     @Override
@@ -89,6 +88,24 @@ public class MainActivity extends AppCompatActivity {
         testList.add(new Conversation(true));
 
         return testList;
+    }
+
+    private Object[] getObjects(){
+        Object[] objects = {
+                "Stories to tell",
+                new Conversation(true),
+                new Conversation(true),
+                "Stories to hear",
+                new Conversation(true),
+                new Conversation(true),
+                new Conversation(true),
+                "Stories to wait for",
+                new Conversation(true),
+                new Conversation(true),
+                new Conversation(true)
+        };
+
+        return objects;
     }
 
     private void setAdaptorToListView(List<Conversation> conversationList, ToHearListAdaptor listAdaptor, ListView listView){
