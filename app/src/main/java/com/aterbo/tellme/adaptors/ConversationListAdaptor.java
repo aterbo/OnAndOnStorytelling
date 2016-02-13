@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConvoToHear;
+import com.aterbo.tellme.classes.ConvoToTell;
+import com.aterbo.tellme.classes.ConvoToWaitFor;
 import com.aterbo.tellme.classes.SquareImageView;
 
 import java.util.ArrayList;
@@ -18,13 +21,14 @@ import java.util.ArrayList;
  */
 public class ConversationListAdaptor extends BaseAdapter {
 
-
-    private static final int TYPE_ITEM = 0;
     private static final int TYPE_SEPARATOR = 1;
-    private static final int ITEM_VIEW_TYPE_COUNT = 2;
+    private static final int TYPE_CONVO_TO_TELL = 2;
+    private static final int TYPE_CONVO_TO_HEAR = 3;
+    private static final int TYPE_CONVO_TO_WAIT_FOR = 4;
+
+    private static final int ITEM_VIEW_TYPE_COUNT = 4;
 
 
-    private ArrayList<Conversation> conversationList = new ArrayList<>();
     private ArrayList<Object> objectList = new ArrayList<>();
     private Context context;
 
@@ -67,14 +71,31 @@ public class ConversationListAdaptor extends BaseAdapter {
         }
 
         // We can now fill the list item view with the appropriate data.
-        if (type == TYPE_SEPARATOR) {
-            ((TextView) convertView).setText((String) getItem(position));
-        } else {
-            final Conversation conversation = (Conversation) getItem(position);
-            ((TextView) convertView.findViewById(R.id.conversation_title)).setText(conversation.getTitle());
-            ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(conversation.getParticipant());
-            ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(conversation.getTimeSinceLastAction());
-            ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(conversation.getStoryDuration());
+        switch (type){
+            case TYPE_SEPARATOR:
+                ((TextView) convertView).setText((String) getItem(position));
+                break;
+            case TYPE_CONVO_TO_TELL:
+                final Conversation convoToTell = (Conversation) getItem(position);
+                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getTitle());
+                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getParticipant());
+                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToTell.getTimeSinceLastAction());
+                (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
+                break;
+            case TYPE_CONVO_TO_HEAR:
+                final Conversation convoToHear = (Conversation) getItem(position);
+                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getTitle());
+                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getParticipant());
+                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToHear.getTimeSinceLastAction());
+                ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(convoToHear.getStoryDuration());
+                break;
+            case TYPE_CONVO_TO_WAIT_FOR:
+                final Conversation convoToWaitFor = (Conversation) getItem(position);
+                ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getTitle());
+                ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getParticipant());
+                ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToWaitFor.getTimeSinceLastAction());
+                (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
+                break;
         }
 
         return convertView;
@@ -88,39 +109,24 @@ public class ConversationListAdaptor extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return (getItem(position) instanceof String) ? TYPE_SEPARATOR : TYPE_ITEM;
+        Object object = getItem(position);
+
+        if (object instanceof String) {
+            return TYPE_SEPARATOR;
+        } else if (object instanceof ConvoToTell) {
+            return TYPE_CONVO_TO_TELL;
+        } else if (object instanceof ConvoToHear) {
+            return TYPE_CONVO_TO_HEAR;
+        } else if (object instanceof ConvoToWaitFor) {
+            return TYPE_CONVO_TO_WAIT_FOR;
+        } else{
+            return TYPE_SEPARATOR;
+        }
     }
 
     @Override
     public boolean isEnabled(int position) {
         // A separator cannot be clicked !
         return getItemViewType(position) != TYPE_SEPARATOR;
-    }
-
-
-    private ViewHolder setNewViewHolder(ViewHolder viewHolder, View convertView){
-        viewHolder.profileImage = (SquareImageView) convertView.findViewById(R.id.conversation_profile_image);
-        viewHolder.title = (TextView) convertView.findViewById(R.id.conversation_title);
-        viewHolder.participants = (TextView) convertView.findViewById(R.id.conversation_participants);
-        viewHolder.timeSinceLastAction = (TextView) convertView.findViewById(R.id.conversation_time_since_action);
-        viewHolder.storyDuration = (TextView) convertView.findViewById(R.id.conversation_story_duration);
-        return viewHolder;
-    }
-
-    //http://developer.android.com/training/improving-layouts/smooth-scrolling.html
-    //http://www.javacodegeeks.com/2013/09/android-viewholder-pattern-example.html
-    static class ViewHolder {
-        SquareImageView profileImage;
-        TextView title;
-        TextView participants;
-        TextView timeSinceLastAction;
-        TextView storyDuration;
-    }
-
-    private void populateViewWithConversationText(ViewHolder viewHolder, Conversation conversation){
-        viewHolder.title.setText(conversation.getTitle());
-        viewHolder.participants.setText(conversation.getParticipant());
-        viewHolder.timeSinceLastAction.setText(conversation.getTimeSinceLastAction());
-        viewHolder.storyDuration.setText(conversation.getStoryDuration());
     }
 }
