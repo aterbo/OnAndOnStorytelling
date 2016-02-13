@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
 
@@ -26,18 +28,18 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private int longSkipTime = 30000;
     private Handler durationHandler = new Handler();
     private SeekBar seekbar;
+    private ToggleButton playPauseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
-
         initializeViews();
-
+        setToggleButton();
     }
 
-    public void initializeViews(){
+    private void initializeViews(){
         mPlayer = MediaPlayer.create(this, R.raw.home);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         finalTime = mPlayer.getDuration();
@@ -47,7 +49,22 @@ public class ListenToStoryActivity extends AppCompatActivity {
         seekbar.setClickable(false);
     }
 
-    public void play(View view) {
+    private void setToggleButton(){
+        playPauseButton = (ToggleButton) findViewById(R.id.media_play);
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (playPauseButton.isChecked()) {
+                    play();
+                } else {
+                    pause();
+                }
+            }
+        });
+    }
+
+    private void play() {
         try{
             mPlayer.start();
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -85,7 +102,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }
     };
 
-    public void pause(View view) {
+    private void pause() {
         mPlayer.pause();
     }
 

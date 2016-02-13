@@ -74,21 +74,12 @@
             android:onClick="shortRewind"
             android:src="@android:drawable/ic_media_rew" />
 
-        <ImageButton
-            android:id="@+id/media_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:onClick="pause"
-            android:src="@android:drawable/ic_media_pause" />
-
-        <ImageButton
+        <ToggleButton
             android:id="@+id/media_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:onClick="play"
-            android:src="@android:drawable/ic_media_play" />
+            android:src="@drawable/ic_toggle_play_pause" />
 
         <ImageButton
             android:id="@+id/media_short_ff"
