@@ -45,7 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_below="@id/playImage"
-        android:enabled="false"
         android:text="Play Recording"
         android:onClick="playbackControlClick"
         android:layout_weight="1" />
