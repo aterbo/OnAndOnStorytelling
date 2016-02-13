@@ -60,43 +60,52 @@
 
         <ImageButton
             android:id="@+id/media_long_rew"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_weight="0.2"
+            android:layout_marginRight="2dp"
             android:onClick="longRewind"
             android:src="@android:drawable/ic_media_previous" />
 
         <ImageButton
             android:id="@+id/media_short_rew"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_weight="0.2"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:onClick="shortRewind"
             android:src="@android:drawable/ic_media_rew" />
 
         <ToggleButton
             android:id="@+id/media_play"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:src="@drawable/ic_toggle_play_pause" />
+            android:layout_weight="0.2"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/ic_toggle_play_pause"
+            android:textOff=""
+            android:textOn="" />
 
         <ImageButton
             android:id="@+id/media_short_ff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_weight="0.2"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:onClick="shortForward"
             android:src="@android:drawable/ic_media_ff" />
 
         <ImageButton
             android:id="@+id/media_long_ff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_weight="0.2"
+            android:layout_marginLeft="2dp"
             android:onClick="longForward"
             android:src="@android:drawable/ic_media_next" />
-
     </LinearLayout>
 
 </RelativeLayout>
