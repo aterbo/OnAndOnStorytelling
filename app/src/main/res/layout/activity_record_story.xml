@@ -34,8 +34,8 @@
         android:id="@+id/recording_status_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:layout_below="@id/prompt_text"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/sender_profile_pic"
         android:text="Recording Point: -"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
