@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -58,7 +57,6 @@ public class ToHearListAdaptor extends BaseAdapter {
         }
 
         Conversation conversation = conversationList.get(position);
-
         populateViewWithConversationText(viewHolder, conversation);
 
         return convertView;
@@ -73,8 +71,6 @@ public class ToHearListAdaptor extends BaseAdapter {
         return viewHolder;
     }
 
-
-    //ViewHolder for smooth scrolling
     //http://developer.android.com/training/improving-layouts/smooth-scrolling.html
     //http://www.javacodegeeks.com/2013/09/android-viewholder-pattern-example.html
     static class ViewHolder {
@@ -85,13 +81,10 @@ public class ToHearListAdaptor extends BaseAdapter {
         TextView storyDuration;
     }
 
-
     private void populateViewWithConversationText(ViewHolder viewHolder, Conversation conversation){
         viewHolder.title.setText(conversation.getTitle());
         viewHolder.participants.setText(conversation.getParticipant());
         viewHolder.timeSinceLastAction.setText(conversation.getTimeSinceLastAction());
         viewHolder.storyDuration.setText(conversation.getStoryDuration());
     }
-
-
 }
