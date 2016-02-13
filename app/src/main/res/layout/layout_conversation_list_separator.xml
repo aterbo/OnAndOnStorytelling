@@ -3,8 +3,8 @@
     android:id="@+id/list_separator"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:layout_marginTop="25dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="25dp"
     android:text="Stories to tell"
     android:textSize="20dp"
     android:textStyle="bold" />
