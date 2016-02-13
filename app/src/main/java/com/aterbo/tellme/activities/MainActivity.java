@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         if (position<(toHearSeparatorPosition)){
             startTellActivity();
         } else if (position<(toWaitForSeparatorPosition)){
-            //TODO: respond to click in To_Hear list
+            startListenActivity();
         } else {
             //TODO: respond to click in To_Wait_Forlist
         }
@@ -134,8 +134,13 @@ public class MainActivity extends AppCompatActivity {
         objectList.add(new String(separatorText));
     }
 
-    public void startTellActivity(){
+    private void startTellActivity(){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
+        startActivity(intent);
+    }
+
+    private void startListenActivity(){
+        Intent intent = new Intent(this, ListenToStoryActivity.class);
         startActivity(intent);
     }
 }

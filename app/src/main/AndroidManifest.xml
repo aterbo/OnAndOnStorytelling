@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".activities.PickTopicToRecordActivity" >
         </activity>
+        <activity android:name=".activities.ListenToStoryActivity" >
+        </activity>
     </application>
 
 </manifest>
