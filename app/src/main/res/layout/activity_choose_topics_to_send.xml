@@ -31,7 +31,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/send_topic_option_1"
+        android:id="@+id/record_topic_option_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
@@ -40,12 +40,12 @@
         android:onClick="sendTopic1"
         android:layout_weight="1" />
     <Button
-        android:id="@+id/send_topic_option_2"
+        android:id="@+id/record_topic_option_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="What is something that makes you laugh?"
-        android:layout_below="@id/send_topic_option_1"
+        android:layout_below="@id/record_topic_option_1"
         android:onClick="sendTopic2"
         android:layout_weight="1" />
 

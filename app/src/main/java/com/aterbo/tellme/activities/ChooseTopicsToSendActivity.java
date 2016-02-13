@@ -33,8 +33,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        sendTopicOption1 = (Button)findViewById(R.id.send_topic_option_1);
-        sendTopicOption2 = (Button)findViewById(R.id.send_topic_option_2);
+        sendTopicOption1 = (Button)findViewById(R.id.record_topic_option_1);
+        sendTopicOption2 = (Button)findViewById(R.id.record_topic_option_2);
         chosenPromptList = new ArrayList<>();
         promptOptionsList = new ArrayList<>();
     }
