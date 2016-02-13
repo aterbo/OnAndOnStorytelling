@@ -9,12 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
-import com.aterbo.tellme.adaptors.ToHearListAdaptor;
 import com.aterbo.tellme.classes.Conversation;
 
 import java.util.ArrayList;
@@ -48,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        constructConversationList();
+
         toTellList = getJunkConversationList();
         toHearList = getJunkConversationList();
         toWaitForList = getJunkConversationList();
-        OBJECTS = getObjects();
+        OBJECTS = getTestObjects();
 
         conversationListAdaptor = new ConversationListAdaptor(OBJECTS, this);
         conversationListView = (ListView)findViewById(R.id.conversation_list);
@@ -90,7 +90,25 @@ public class MainActivity extends AppCompatActivity {
         return testList;
     }
 
-    private Object[] getObjects(){
+    private void constructConversationList(){
+        addSeparator("Stories to tell");
+        addContent(toTellList);
+        addSeparator("Stories to hear");
+        addContent(toHearList);
+        addSeparator("Stories to wait for");
+        addContent(toTellList);
+
+    }
+
+    private void addSeparator(String separatorText){
+
+    }
+
+    private void addContent(List<Conversation> listToAdd){
+
+    }
+
+    private Object[] getTestObjects(){
         Object[] objects = {
                 "Stories to tell",
                 new Conversation(true),
@@ -106,25 +124,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         return objects;
-    }
-
-    private void setAdaptorToListView(List<Conversation> conversationList, ToHearListAdaptor listAdaptor, ListView listView){
-
-        listAdaptor = new ToHearListAdaptor(conversationList, this);
-        listView.setAdapter(listAdaptor);
-
-        /* getting ready for Click adaptor
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> clickListener, View view, int position, long id) {
-                int mealId = (int) mealListAdapter.getMeal(position).getMealIdNumber();
-                Intent intent = new Intent(getApplicationContext(), MealDetailsActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, mealId);
-                startActivity(intent);
-            }
-        });
-        */
     }
 
     public void startNextActivity(View view){
