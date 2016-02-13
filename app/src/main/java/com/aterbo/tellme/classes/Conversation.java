@@ -1,14 +1,12 @@
 package com.aterbo.tellme.classes;
 
-import android.widget.TextView;
-
 /**
  * Created by ATerbo on 2/12/16.
  */
 public class Conversation {
 
     private String title;
-    private String participants;
+    private String participant;
     private String timeSinceLastAction;
     private String storyDuration;
 
@@ -23,12 +21,12 @@ public class Conversation {
         this.title = title;
     }
 
-    public String getParticipants() {
-        return participants;
+    public String getParticipant() {
+        return participant;
     }
 
-    public void setParticipants(String participants) {
-        this.participants = participants;
+    public void setParticipant(String participant) {
+        this.participant = participant;
     }
 
     public String getTimeSinceLastAction() {

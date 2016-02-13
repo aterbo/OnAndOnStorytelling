@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.aterbo.tellme.R;
@@ -16,13 +17,13 @@ import java.util.List;
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class ToHearListAdaptor extends ArrayAdapter {
+public class ToHearListAdaptor extends BaseAdapter {
 
     private List<Conversation> conversationList;
     private Context context;
 
-    public toHearListAdaptor(List conversationList, Context context) {
-        this.conversationList = mealList;
+    public ToHearListAdaptor(List<Conversation> conversationList, Context context) {
+        this.conversationList = conversationList;
         this.context = context;
     }
 
@@ -87,7 +88,7 @@ public class ToHearListAdaptor extends ArrayAdapter {
 
     private void populateViewWithConversationText(ViewHolder viewHolder, Conversation conversation){
         viewHolder.title.setText(conversation.getTitle());
-        viewHolder.participants.setText(conversation.getParticipants());
+        viewHolder.participants.setText(conversation.getParticipant());
         viewHolder.timeSinceLastAction.setText(conversation.getTimeSinceLastAction());
         viewHolder.storyDuration.setText(conversation.getStoryDuration());
     }
