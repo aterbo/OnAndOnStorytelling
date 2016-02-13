@@ -1,13 +1,16 @@
 package com.aterbo.tellme.adaptors;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.activities.PickTopicToRecordActivity;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConvoToHear;
 import com.aterbo.tellme.classes.ConvoToTell;
@@ -101,6 +104,36 @@ public class ConversationListAdaptor extends BaseAdapter {
             }
 
         }
+
+        switch (type){
+            case TYPE_SEPARATOR:
+                convertView.setOnClickListener(null);
+                break;
+            case TYPE_CONVO_TO_TELL:
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "TO TELL", Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case TYPE_CONVO_TO_HEAR:
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "TO HEAR", Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            case TYPE_CONVO_TO_WAIT_FOR:
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "TO WAIT FOR", Toast.LENGTH_LONG).show();
+                    }
+                    });
+                break;
+            }
 
         return convertView;
 
