@@ -102,7 +102,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 seekbar.setProgress((int) timeElapsed);
                 //set time remaing
                 double timeRemaining = finalTime - timeElapsed;
-                duration.setText(String.format("%d min, %d sec",
+                duration.setText(String.format("%d:%d",
                         TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining),
                         TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) -
                                 TimeUnit.MINUTES.toSeconds(

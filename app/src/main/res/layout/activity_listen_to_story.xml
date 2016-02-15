@@ -41,7 +41,7 @@
         android:layout_below="@id/sender_profile_pic"
         android:layout_gravity="center"
         android:layout_marginTop="150dp"
-        android:text="songDuration" />
+        android:text="" />
 
     <SeekBar
         android:id="@+id/seekBar"
