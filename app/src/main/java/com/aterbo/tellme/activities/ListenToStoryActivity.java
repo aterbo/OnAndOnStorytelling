@@ -13,6 +13,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.classes.Prompt;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,14 +30,25 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Handler durationHandler = new Handler();
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
+    private Prompt storyPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
+        getPromptData();
+        showPromptTextInTextView();
         initializeViews();
         setToggleButton();
+    }
+
+    private void getPromptData(){
+        storyPrompt = getDummyPromptData();
+    }
+
+    private void showPromptTextInTextView(){
+        ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getPromptText());
     }
 
     private void initializeViews(){
@@ -154,5 +166,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
         stopPlayback();
         Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
         startActivity(intent);
+    }
+
+    private Prompt getDummyPromptData(){
+        return new Prompt("Tell me a story about an immigrant.");
     }
 }
