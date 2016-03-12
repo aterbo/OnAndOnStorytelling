@@ -91,9 +91,9 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void respondToListClick(int position){
         if (position<(toHearSeparatorPosition)){
-            startTellActivity();
+            startTellActivity(position);
         } else if (position<(toWaitForSeparatorPosition)){
-            startListenActivity();
+            startListenActivity(position);
         } else {
             DialogFragment newFragment = PingStorytellerDialog.newInstance();
             newFragment.show(getFragmentManager(), "ping");
@@ -104,12 +104,7 @@ public class ConversationListActivity extends AppCompatActivity {
         objectList = new ArrayList<>();
 
         getConversationList();
-        toTellSeparatorPosition = 0;
-        toHearSeparatorPosition = 1;
-        toWaitForSeparatorPosition = 2;
-        addSeparator(toTellSeparatorPosition, "Stories to tell");
-        addSeparator(toHearSeparatorPosition, "Stories to hear");
-        addSeparator(toWaitForSeparatorPosition, "Stories to wait for");
+        setAllSeparators();
 
         int status;
 
@@ -137,17 +132,28 @@ public class ConversationListActivity extends AppCompatActivity {
         conversations = testListData.getTestConvos();
     }
 
+    private void setAllSeparators() {
+        toTellSeparatorPosition = 0;
+        toHearSeparatorPosition = 1;
+        toWaitForSeparatorPosition = 2;
+        addSeparator(toTellSeparatorPosition, "Stories to tell");
+        addSeparator(toHearSeparatorPosition, "Stories to hear");
+        addSeparator(toWaitForSeparatorPosition, "Stories to wait for");
+    }
+
     private void addSeparator(int position, String separatorText){
         objectList.add(position, new String(separatorText));
     }
 
-    private void startTellActivity(){
+    private void startTellActivity(int position){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
+        intent.putExtra("selectedConversationToTell", (Conversation)objectList.get(position));
         startActivity(intent);
     }
 
-    private void startListenActivity(){
+    private void startListenActivity(int position){
         Intent intent = new Intent(this, ListenToStoryActivity.class);
+        intent.putExtra("selectedConversationToHear", (Conversation)objectList.get(position));
         startActivity(intent);
     }
 }

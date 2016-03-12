@@ -1,11 +1,14 @@
 package com.aterbo.tellme.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class Conversation {
+public class Conversation implements Parcelable {
 
     private static int STATUS_TO_TELL = 0;
     private static int STATUS_TO_HEAR = 1;
@@ -91,4 +94,66 @@ public class Conversation {
     public void setStatusToWaiting(){
         statusFlag = STATUS_WAITING;
     }
+
+
+    //Parcelabler
+    protected Conversation(Parcel in) {
+        title = in.readString();
+        timeSinceLastAction = in.readString();
+        storyDuration = in.readString();
+        if (in.readByte() == 0x01) {
+            usersInConversation = new ArrayList<User>();
+            in.readList(usersInConversation, User.class.getClassLoader());
+        } else {
+            usersInConversation = null;
+        }
+        statusFlag = in.readInt();
+        if (in.readByte() == 0x01) {
+            promptsAnswered = new ArrayList<Prompt>();
+            in.readList(promptsAnswered, Prompt.class.getClassLoader());
+        } else {
+            promptsAnswered = null;
+        }
+        currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(timeSinceLastAction);
+        dest.writeString(storyDuration);
+        if (usersInConversation == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(usersInConversation);
+        }
+        dest.writeInt(statusFlag);
+        if (promptsAnswered == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(promptsAnswered);
+        }
+        dest.writeValue(currentPrompt);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Conversation> CREATOR = new Parcelable.Creator<Conversation>() {
+        @Override
+        public Conversation createFromParcel(Parcel in) {
+            return new Conversation(in);
+        }
+
+        @Override
+        public Conversation[] newArray(int size) {
+            return new Conversation[size];
+        }
+    };
+
 }
