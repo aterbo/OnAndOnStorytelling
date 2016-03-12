@@ -33,6 +33,7 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
     }
 
     private void changeConversationStatus(){
+        conversation.setTimeSinceLastAction("now");
         conversation.setStatusToTell();
         DBHelper db = new DBHelper(this);
         db.updateConversation(conversation);

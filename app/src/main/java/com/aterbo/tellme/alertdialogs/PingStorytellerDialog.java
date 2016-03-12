@@ -20,8 +20,8 @@ public class PingStorytellerDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String dialogText = "It has been 12 hours since Bob should have told his story. " +
-                "Would you like to remind Bob that you want to hear from him?";
+        String dialogText = "It has been 12 hours since your friend should have told his story. " +
+                "Would you like send a reminder that you want to hear a story?";
 
         return new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.ping_title)
