@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.classes.Conversation;
 
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private MediaRecorder myRecorder;
     private MediaPlayer myPlayer;
+    private Conversation conversation;
     private String outputFile = null;
     private Button playbackControlButton;
     private Button recordingStatusButton;
@@ -29,6 +31,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_story);
+
+        getConversation();
+        showConversationDetails();
 
         recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
         // store it to sd card
@@ -44,6 +49,16 @@ public class RecordStoryActivity extends AppCompatActivity {
         String chosenTopic = intent.getStringExtra("ChosenTopic");
         ((TextView)findViewById(R.id.prompt_text)).setText(chosenTopic);
 
+    }
+
+    private void getConversation(){
+        Intent intent  = getIntent();
+        conversation = intent.getParcelableExtra("selectedConversation");
+    }
+
+    private void showConversationDetails(){
+        TextView senderText = (TextView)findViewById(R.id.sender_text);
+        senderText.setText(conversation.getUsersNameAsString() + " says");
     }
 
     public void recordingControlClick(View view){

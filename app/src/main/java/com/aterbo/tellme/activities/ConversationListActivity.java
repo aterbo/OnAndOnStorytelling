@@ -147,13 +147,13 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void startTellActivity(int position){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
-        intent.putExtra("selectedConversationToTell", (Conversation)objectList.get(position));
+        intent.putExtra("selectedConversation", (Conversation)objectList.get(position));
         startActivity(intent);
     }
 
     private void startListenActivity(int position){
         Intent intent = new Intent(this, ListenToStoryActivity.class);
-        intent.putExtra("selectedConversationToHear", (Conversation)objectList.get(position));
+        intent.putExtra("selectedConversation", (Conversation)objectList.get(position));
         startActivity(intent);
     }
 }

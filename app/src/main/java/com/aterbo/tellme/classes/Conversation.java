@@ -19,6 +19,7 @@ public class Conversation implements Parcelable {
     private String storyDuration;
     private ArrayList<User> usersInConversation;
     private int statusFlag;
+    private int sqlIdNumber;
 
     private ArrayList<Prompt> promptsAnswered;
     private Prompt currentPrompt;
@@ -66,6 +67,18 @@ public class Conversation implements Parcelable {
         this.usersInConversation = usersInConversation;
     }
 
+    public User getUser(int userIndex){
+        return usersInConversation.get(userIndex);
+    }
+
+    public void addUserToConversation(User user){
+        usersInConversation.add(user);
+    }
+
+    public int getNumberOfUsers(){
+        return usersInConversation.size();
+    }
+
     public String getUsersNameAsString(){
         String userNames = "";
         for (User user : usersInConversation){
@@ -83,6 +96,10 @@ public class Conversation implements Parcelable {
         return statusFlag;
     }
 
+    public void setStatus(int statusFlag){
+        this.statusFlag = statusFlag;
+    }
+
     public void setStatusToTell(){
         statusFlag = STATUS_TO_TELL;
     }
@@ -93,6 +110,15 @@ public class Conversation implements Parcelable {
 
     public void setStatusToWaiting(){
         statusFlag = STATUS_WAITING;
+    }
+
+
+    public int getSqlIdNumber() {
+        return sqlIdNumber;
+    }
+
+    public void setSqlIdNumber(int sqlIdNumber) {
+        this.sqlIdNumber = sqlIdNumber;
     }
 
 
@@ -108,6 +134,7 @@ public class Conversation implements Parcelable {
             usersInConversation = null;
         }
         statusFlag = in.readInt();
+        sqlIdNumber = in.readInt();
         if (in.readByte() == 0x01) {
             promptsAnswered = new ArrayList<Prompt>();
             in.readList(promptsAnswered, Prompt.class.getClassLoader());
@@ -134,6 +161,7 @@ public class Conversation implements Parcelable {
             dest.writeList(usersInConversation);
         }
         dest.writeInt(statusFlag);
+        dest.writeInt(sqlIdNumber);
         if (promptsAnswered == null) {
             dest.writeByte((byte) (0x00));
         } else {

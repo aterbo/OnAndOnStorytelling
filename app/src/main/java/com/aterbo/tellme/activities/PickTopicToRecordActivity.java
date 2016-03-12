@@ -5,28 +5,43 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 
 import java.util.ArrayList;
 
 public class PickTopicToRecordActivity extends AppCompatActivity {
 
-    Prompt chosenTopic;
-    ArrayList<Prompt> promptOptionsList;
-    Button topicOption1;
-    Button topicOption2;
-    Button topicOption3;
+    private Prompt chosenTopic;
+    private Conversation conversation;
+    private ArrayList<Prompt> promptOptionsList;
+    private Button topicOption1;
+    private Button topicOption2;
+    private Button topicOption3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_topic_to_record);
+        getConversation();
+        showConversationDetails();
 
         initializeViews();
         getPrompts();
         setPromptsToButtons();
+    }
+
+    private void getConversation(){
+        Intent intent  = getIntent();
+        conversation = intent.getParcelableExtra("selectedConversation");
+    }
+
+    private void showConversationDetails(){
+        TextView senderText = (TextView)findViewById(R.id.sender_text);
+        senderText.setText(conversation.getUsersNameAsString() + " wants to hear a story! Pick a topic.");
     }
 
     private void initializeViews() {
@@ -63,6 +78,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
     private void startNextActivity(){
         Intent intent = new Intent(this, RecordStoryActivity.class);
+        intent.putExtra("selectedConversation", conversation);
         intent.putExtra("ChosenTopic", chosenTopic.getPromptText());
         startActivity(intent);
     }

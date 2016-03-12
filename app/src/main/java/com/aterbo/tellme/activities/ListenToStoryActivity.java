@@ -48,7 +48,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("selectedConversationToHear");
+        conversation = intent.getParcelableExtra("selectedConversation");
     }
 
     private void showConversationDetails(){
