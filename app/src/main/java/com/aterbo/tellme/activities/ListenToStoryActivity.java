@@ -181,6 +181,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void storyComplete(){
         stopPlayback();
         Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
+        intent.putExtra("conversation", conversation);
         startActivity(intent);
     }
 
