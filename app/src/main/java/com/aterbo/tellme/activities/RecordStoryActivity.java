@@ -32,33 +32,37 @@ public class RecordStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_story);
 
+        initializeViews();
         getConversation();
+        setRecordingDetails();
         showConversationDetails();
 
-        recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
-        // store it to sd card
-        outputFile = Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/javacodegeeksRecording.3gpp";
+    }
 
+    private void initializeViews(){
+        recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackControlButton.setEnabled(false);
-
-        Intent intent = getIntent();
-        String chosenTopic = intent.getStringExtra("ChosenTopic");
-        ((TextView)findViewById(R.id.prompt_text)).setText(chosenTopic);
-
     }
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("selectedConversation");
+        conversation = intent.getParcelableExtra("conversation");
+    }
+
+    private void setRecordingDetails(){
+        // store it to sd card
+        outputFile = Environment.getExternalStorageDirectory().
+                getAbsolutePath() + "/javacodegeeksRecording.3gpp";
     }
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
         senderText.setText(conversation.getUsersNameAsString() + " says");
+
+        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getPromptText());
     }
 
     public void recordingControlClick(View view){

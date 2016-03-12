@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class PickTopicToRecordActivity extends AppCompatActivity {
 
-    private Prompt chosenTopic;
     private Conversation conversation;
     private ArrayList<Prompt> promptOptionsList;
     private Button topicOption1;
@@ -62,24 +61,26 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     public void topic1(View view){
-        chosenTopic = promptOptionsList.get(0);
+        Prompt chosenTopic = promptOptionsList.get(0);
+        conversation.setCurrentPrompt(chosenTopic);
         startNextActivity();
     }
 
     public void topic2(View view){
-        chosenTopic = promptOptionsList.get(1);
+        Prompt chosenTopic = promptOptionsList.get(1);
+        conversation.setCurrentPrompt(chosenTopic);
         startNextActivity();
     }
 
     public void topic3(View view){
-        chosenTopic = promptOptionsList.get(2);
+        Prompt chosenTopic = promptOptionsList.get(2);
+        conversation.setCurrentPrompt(chosenTopic);
         startNextActivity();
     }
 
     private void startNextActivity(){
         Intent intent = new Intent(this, RecordStoryActivity.class);
-        intent.putExtra("selectedConversation", conversation);
-        intent.putExtra("ChosenTopic", chosenTopic.getPromptText());
+        intent.putExtra("conversation", conversation);
         startActivity(intent);
     }
 
