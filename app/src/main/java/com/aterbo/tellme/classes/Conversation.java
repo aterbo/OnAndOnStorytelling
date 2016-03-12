@@ -156,6 +156,10 @@ public class Conversation implements Parcelable {
         proposedPrompts.add(prompt);
     }
 
+    public ArrayList<Prompt> getProposedPrompts(){
+        return proposedPrompts;
+    }
+
     public Prompt getProposedPromptByIndex(int promptIndex){
         return proposedPrompts.get(promptIndex);
     }

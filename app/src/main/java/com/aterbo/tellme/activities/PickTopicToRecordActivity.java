@@ -52,7 +52,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     private void getPrompts(){
-        promptOptionsList = generateDummyPromptList();
+        promptOptionsList = conversation.getProposedPrompts();
     }
 
     private void setPromptsToButtons(){
