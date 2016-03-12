@@ -25,7 +25,10 @@ public class Conversation implements Parcelable {
     private Prompt currentPrompt;
 
 
-    public Conversation() {    }
+    public Conversation() {
+        usersInConversation = new ArrayList<>();
+    }
+
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
                         ArrayList<User> usersInConversation, int statusFlag){
         this.title = title;
@@ -33,6 +36,16 @@ public class Conversation implements Parcelable {
         this.storyDuration = storyDuration;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
+    }
+
+    public Conversation(String title, String timeSinceLastAction, String storyDuration,
+                        ArrayList<User> usersInConversation, int statusFlag, int sqlIdNumber){
+        this.title = title;
+        this.timeSinceLastAction = timeSinceLastAction;
+        this.storyDuration = storyDuration;
+        this.usersInConversation = usersInConversation;
+        this.statusFlag = statusFlag;
+        this.sqlIdNumber = sqlIdNumber;
     }
 
     public String getTitle() {

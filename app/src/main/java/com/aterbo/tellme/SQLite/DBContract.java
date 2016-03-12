@@ -15,7 +15,7 @@ public class DBContract {
     public static final String ID_TYPE = " INTEGER PRIMARY KEY AUTOINCREMENT";
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INTEGER";
-    public static final String COMMA_SEP = ",";
+    public static final String COMMA_SEP = ", ";
 
     public void DBContract() {
     }
@@ -60,7 +60,7 @@ public class DBContract {
                 COLUMN_NAME_4 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_USER_NAME_4 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_5 + TEXT_TYPE + COMMA_SEP +
-                COLUMN_USER_NAME_5 + TEXT_TYPE + COMMA_SEP + " )";
+                COLUMN_USER_NAME_5 + TEXT_TYPE + " )";
     }
 
     //Conversation Table
@@ -80,8 +80,7 @@ public class DBContract {
             ConversationDBTable.COLUMN_NAME_4,
             ConversationDBTable.COLUMN_USER_NAME_4,
             ConversationDBTable.COLUMN_NAME_5,
-            ConversationDBTable.COLUMN_USER_NAME_5,
-    };
+            ConversationDBTable.COLUMN_USER_NAME_5};
 
     /*
     //Photo Table data

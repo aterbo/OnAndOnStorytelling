@@ -29,6 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // Database Name
     private static final String DATABASE_NAME = "conversationList";
+    private static final String NO_USER = "XXXXX";
 
     //Constructor code
     public DBHelper(Context context) {
@@ -83,26 +84,37 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
 
         int numberOfUsers = conversation.getNumberOfUsers();
-        if(numberOfUsers>1) {
+        if(numberOfUsers>0) {
             values.put(DBContract.ConversationDBTable.COLUMN_NAME_1, conversation.getUser(0).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_1, conversation.getUser(0).getUserName());
+        } else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_1, NO_USER);
+        }
+        if(numberOfUsers>1) {
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, conversation.getUser(1).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, NO_USER);
         }
         if(numberOfUsers>2) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, conversation.getUser(1).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_2, conversation.getUser(1).getUserName());
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, conversation.getUser(2).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, NO_USER);
         }
         if(numberOfUsers>3) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, conversation.getUser(2).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_3, conversation.getUser(2).getUserName());
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, conversation.getUser(3).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, NO_USER);
         }
         if(numberOfUsers>4) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, conversation.getUser(3).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_4, conversation.getUser(3).getUserName());
-        }
-        if(numberOfUsers>5) {
             values.put(DBContract.ConversationDBTable.COLUMN_NAME_5, conversation.getUser(4).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_5, conversation.getUser(4).getUserName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_5, NO_USER);
         }
+
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_1, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_2, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_3, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_4, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_5, NO_USER);
 
         // insert meal
         newId = db.insert(DBContract.ConversationDBTable.CONVO_TABLE, null, values);
@@ -134,64 +146,37 @@ public class DBHelper extends SQLiteOpenHelper {
                         DBContract.ConversationDBTable.COLUMN_STORY_DURATION)));
                 conversation.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable.COLUMN_STATUS_FLAG)));
+                conversation.setSqlIdNumber(cursor.getInt((cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable._ID))));
 
                 //Pull all matching users
-                String holderName = "";
-                String holderUserName = "";
-                holderName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_NAME_1));
-                holderUserName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_USER_NAME_1));
 
-                if(!holderName.isEmpty() || !holderUserName.isEmpty()){
-                    User user = new User(holderName, holderUserName);
-                    conversation.addUserToConversation(user);
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_NAME_1)).equals(NO_USER)) {
+                    conversation.addUserToConversation(
+                            new User(cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_NAME_1))));
                 }
-                holderName = "";
-                holderUserName = "";
-                holderName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_NAME_2));
-                holderUserName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_USER_NAME_2));
-
-                if(!holderName.isEmpty() || !holderUserName.isEmpty()){
-                    User user = new User(holderName, holderUserName);
-                    conversation.addUserToConversation(user);
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_NAME_2)).equals(NO_USER)){
+                    conversation.addUserToConversation(new User(cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_NAME_2))));
                 }
-                holderName = "";
-                holderUserName = "";
-                holderName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_NAME_3));
-                holderUserName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_USER_NAME_3));
-
-                if(!holderName.isEmpty() || !holderUserName.isEmpty()){
-                    User user = new User(holderName, holderUserName);
-                    conversation.addUserToConversation(user);
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_NAME_3)).equals(NO_USER)){
+                    conversation.addUserToConversation(new User(cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_NAME_3))));
                 }
-                holderName = "";
-                holderUserName = "";
-                holderName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_NAME_4));
-                holderUserName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_USER_NAME_4));
-
-                if(!holderName.isEmpty() || !holderUserName.isEmpty()){
-                    User user = new User(holderName, holderUserName);
-                    conversation.addUserToConversation(user);
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_NAME_4)).equals(NO_USER)){
+                    conversation.addUserToConversation(new User(cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_NAME_4))));
                 }
-                holderName = "";
-                holderUserName = "";
-                holderName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_NAME_5));
-                holderUserName = cursor.getString(cursor.getColumnIndexOrThrow(
-                        DBContract.ConversationDBTable.COLUMN_USER_NAME_5));
-
-                if(!holderName.isEmpty() || !holderUserName.isEmpty()){
-                    User user = new User(holderName, holderUserName);
-                    conversation.addUserToConversation(user);
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_NAME_5)).equals(NO_USER)){
+                    conversation.addUserToConversation(new User(cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_NAME_5))));
                 }
-
                 conversations.add(conversation);
             } while (cursor.moveToNext());
 
@@ -214,26 +199,37 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
 
         int numberOfUsers = conversation.getNumberOfUsers();
-        if(numberOfUsers>1) {
+        if(numberOfUsers>0) {
             values.put(DBContract.ConversationDBTable.COLUMN_NAME_1, conversation.getUser(0).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_1, conversation.getUser(0).getUserName());
+        } else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_1, NO_USER);
+        }
+        if(numberOfUsers>1) {
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, conversation.getUser(1).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, NO_USER);
         }
         if(numberOfUsers>2) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_2, conversation.getUser(1).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_2, conversation.getUser(1).getUserName());
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, conversation.getUser(2).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, NO_USER);
         }
         if(numberOfUsers>3) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_3, conversation.getUser(2).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_3, conversation.getUser(2).getUserName());
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, conversation.getUser(3).getName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, NO_USER);
         }
         if(numberOfUsers>4) {
-            values.put(DBContract.ConversationDBTable.COLUMN_NAME_4, conversation.getUser(3).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_4, conversation.getUser(3).getUserName());
-        }
-        if(numberOfUsers>5) {
             values.put(DBContract.ConversationDBTable.COLUMN_NAME_5, conversation.getUser(4).getName());
-            values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_5, conversation.getUser(4).getUserName());
+        }else{
+            values.put(DBContract.ConversationDBTable.COLUMN_NAME_5, NO_USER);
         }
+
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_1, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_2, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_3, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_4, NO_USER);
+        values.put(DBContract.ConversationDBTable.COLUMN_USER_NAME_5, NO_USER);
 
         // update
         int i = db.update(DBContract.ConversationDBTable.CONVO_TABLE, values, DBContract.ConversationDBTable._ID +
@@ -252,5 +248,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete(DBContract.ConversationDBTable.CONVO_TABLE, DBContract.ConversationDBTable._ID
                 + " = ?", new String[]{String.valueOf(conversation.getSqlIdNumber())});
         db.close();
+    }
+
+    public void addListOfConversations(ArrayList<Conversation> conversations){
+        for (Conversation conversation : conversations) {
+            addConversation(conversation);
+        }
     }
 }

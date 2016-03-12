@@ -1,5 +1,8 @@
 package com.aterbo.tellme;
 
+import android.content.Context;
+
+import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.User;
 
@@ -8,15 +11,25 @@ import java.util.ArrayList;
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class SupplyTestListData {
+public class SupplyTestSQLiteData {
 
-    public SupplyTestListData(){}
+    private Context context;
 
-    public ArrayList<Conversation> getTestConvos(){
+    public SupplyTestSQLiteData(Context context){
+        this.context = context;
+    }
+
+    public void buildTestSQLiteDB(){
+        DBHelper db = new DBHelper(context);
+        ArrayList<Conversation> testList = getTestConvos();
+        db.addListOfConversations(testList);
+    }
+
+    private ArrayList<Conversation> getTestConvos(){
         ArrayList<Conversation> testList = new ArrayList<>();
         ArrayList<User> userTestList = new ArrayList<>();
-        userTestList.add(new User("Jim Bob"));
 
+        userTestList.add(new User("Jim Bob"));
         testList.add(new Conversation("Fun, a car, and food.", "2 hours", "", userTestList, 0));
 
         userTestList = new ArrayList<>();
@@ -44,6 +57,7 @@ public class SupplyTestListData {
         userTestList = new ArrayList<>();
         userTestList.add(new User("Mike Straub"));
         testList.add(new Conversation("The Past, The President, or a book", "3 days", "", userTestList, 2));
+
         return testList;
     }
 }

@@ -14,7 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.SupplyTestListData;
+import com.aterbo.tellme.SQLite.DBHelper;
+import com.aterbo.tellme.SupplyTestSQLiteData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
@@ -40,6 +41,7 @@ public class ConversationListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
+        getConversationsFromDB();
         constructConversationList();
         setListAdaptor();
 
@@ -103,7 +105,6 @@ public class ConversationListActivity extends AppCompatActivity {
     private void constructConversationList(){
         objectList = new ArrayList<>();
 
-        getConversationList();
         setAllSeparators();
 
         int status;
@@ -127,9 +128,14 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
-    private void getConversationList(){
-        SupplyTestListData testListData = new SupplyTestListData();
-        conversations = testListData.getTestConvos();
+    private void getConversationsFromDB(){
+        DBHelper db = new DBHelper(this);
+        conversations = db.getConversationList();
+        if(conversations.size()<=1) {
+            SupplyTestSQLiteData testListData = new SupplyTestSQLiteData(this);
+            testListData.buildTestSQLiteDB();
+            conversations = db.getConversationList();
+        }
     }
 
     private void setAllSeparators() {
