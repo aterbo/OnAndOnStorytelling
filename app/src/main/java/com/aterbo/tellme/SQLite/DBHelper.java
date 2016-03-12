@@ -31,6 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "conversationList";
     private static final String NO_USER = "XXXXX";
+    private static final String NO_PROPOSED_PROMPT = "XXXX";
 
     //Constructor code
     public DBHelper(Context context) {
@@ -85,6 +86,25 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());
+
+        if(conversation.hasProposedPrompts()){
+            Prompt prompt = conversation.getProposedPromptByIndex(0);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1, prompt.getTagText());
+            prompt = conversation.getProposedPromptByIndex(1);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_2, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2, prompt.getTagText());
+            prompt = conversation.getProposedPromptByIndex(2);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_3, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3, prompt.getTagText());
+        } else {
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_2, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_3, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3, NO_PROPOSED_PROMPT);
+        }
 
         int numberOfUsers = conversation.getNumberOfUsers();
         if(numberOfUsers>0) {
@@ -157,8 +177,27 @@ public class DBHelper extends SQLiteOpenHelper {
                 String promptTag = cursor.getString(cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG));
                 conversation.setCurrentPrompt(new Prompt(promptText, promptTag));
-                //Pull all matching users
 
+                //get Proposed Prompts
+                if(!cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1)).equals(NO_PROPOSED_PROMPT)) {
+                    conversation.setToProposedPrompts(new Prompt(
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                                    DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                            DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1))));
+                    conversation.setToProposedPrompts(new Prompt(
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                                    DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_2)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                                    DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2))));
+                    conversation.setToProposedPrompts(new Prompt(
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                                    DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_3)),
+                            cursor.getString(cursor.getColumnIndexOrThrow(
+                                    DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3))));
+                }
+                //Pull all matching users
                 if(!cursor.getString(cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable.COLUMN_NAME_1)).equals(NO_USER)) {
                     conversation.addUserToConversation(
@@ -207,6 +246,26 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());
+
+
+        if(conversation.hasProposedPrompts()){
+            Prompt prompt = conversation.getProposedPromptByIndex(0);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1, prompt.getTagText());
+            prompt = conversation.getProposedPromptByIndex(1);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_2, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2, prompt.getTagText());
+            prompt = conversation.getProposedPromptByIndex(2);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_3, prompt.getPromptText());
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3, prompt.getTagText());
+        } else {
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_1, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_2, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_3, NO_PROPOSED_PROMPT);
+            values.put(DBContract.ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3, NO_PROPOSED_PROMPT);
+        }
 
         int numberOfUsers = conversation.getNumberOfUsers();
         if(numberOfUsers>0) {

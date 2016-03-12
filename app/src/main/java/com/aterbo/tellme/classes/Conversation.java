@@ -164,6 +164,10 @@ public class Conversation implements Parcelable {
         proposedPrompts.clear();
     }
 
+    public boolean hasProposedPrompts(){
+        return !proposedPrompts.isEmpty();
+    }
+
     public String getProposedPromptsTagString(){
         return proposedPrompts.get(0).getTagText() + ", " +
                 proposedPrompts.get(1).getTagText() + ", or " +

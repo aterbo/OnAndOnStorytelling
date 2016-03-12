@@ -33,6 +33,12 @@ public class DBContract {
         public static final String COLUMN_STATUS_FLAG = "statusflag";
         public static final String COLUMN_CURRENT_PROMPT = "currentprompt";
         public static final String COLUMN_CURRENT_PROMPT_TAG = "currentprompttag";
+        public static final String COLUMN_PROPOSED_PROMPT_1 = "proposedprompt1";
+        public static final String COLUMN_PROPOSED_PROMPT_TAG_1 = "proposedprompttag1";
+        public static final String COLUMN_PROPOSED_PROMPT_2 = "proposedprompt2";
+        public static final String COLUMN_PROPOSED_PROMPT_TAG_2 = "proposedprompttag2";
+        public static final String COLUMN_PROPOSED_PROMPT_3 = "proposedprompt3";
+        public static final String COLUMN_PROPOSED_PROMPT_TAG_3 = "proposedprompttag3";
         public static final String COLUMN_NAME_1 = "name1";
         public static final String COLUMN_USER_NAME_1 = "username1";
         public static final String COLUMN_NAME_2 = "name2";
@@ -55,6 +61,12 @@ public class DBContract {
                 COLUMN_STATUS_FLAG + INT_TYPE + COMMA_SEP +
                 COLUMN_CURRENT_PROMPT + TEXT_TYPE + COMMA_SEP +
                 COLUMN_CURRENT_PROMPT_TAG + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_1 + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_TAG_1 + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_2 + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_TAG_3 + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_3 + TEXT_TYPE + COMMA_SEP +
+                COLUMN_PROPOSED_PROMPT_TAG_3 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_1 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_USER_NAME_1 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_2 + TEXT_TYPE + COMMA_SEP +
@@ -77,6 +89,12 @@ public class DBContract {
             ConversationDBTable.COLUMN_STATUS_FLAG,
             ConversationDBTable.COLUMN_CURRENT_PROMPT,
             ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_1,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_1,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_2,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_2,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_3,
+            ConversationDBTable.COLUMN_PROPOSED_PROMPT_TAG_3,
             ConversationDBTable.COLUMN_NAME_1,
             ConversationDBTable.COLUMN_USER_NAME_1,
             ConversationDBTable.COLUMN_NAME_2,
