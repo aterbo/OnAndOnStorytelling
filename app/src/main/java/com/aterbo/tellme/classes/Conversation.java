@@ -3,6 +3,7 @@ package com.aterbo.tellme.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -21,32 +22,37 @@ public class Conversation implements Parcelable {
     private int statusFlag;
     private int sqlIdNumber;
 
-    private ArrayList<Prompt> promptsAnswered;
+    private ArrayList<Prompt> proposedPrompts;
     private Prompt currentPrompt;
 
 
     public Conversation() {
         usersInConversation = new ArrayList<>();
+        proposedPrompts = new ArrayList<>();
     }
 
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
-                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt){
+                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt,
+                        ArrayList<Prompt> proposedPrompts){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
         this.currentPrompt = currentPrompt;
+        this.proposedPrompts = proposedPrompts;
     }
 
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
-                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt, int sqlIdNumber){
+                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt,
+            ArrayList<Prompt> proposedPrompts, int sqlIdNumber){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
         this.currentPrompt = currentPrompt;
+        this.proposedPrompts = proposedPrompts;
         this.sqlIdNumber = sqlIdNumber;
     }
 
@@ -146,6 +152,23 @@ public class Conversation implements Parcelable {
         this.sqlIdNumber = sqlIdNumber;
     }
 
+    public void setToProposedPrompts(Prompt prompt){
+        proposedPrompts.add(prompt);
+    }
+
+    public Prompt getProposedPromptByIndex(int promptIndex){
+        return proposedPrompts.get(promptIndex);
+    }
+
+    public void clearProposedPrompts(){
+        proposedPrompts.clear();
+    }
+
+    public String getProposedPromptsTagString(){
+        return proposedPrompts.get(0).getTagText() + ", " +
+                proposedPrompts.get(1).getTagText() + ", or " +
+                proposedPrompts.get(2).getTagText();
+    }
 
     //Parcelabler
     protected Conversation(Parcel in) {
@@ -161,10 +184,10 @@ public class Conversation implements Parcelable {
         statusFlag = in.readInt();
         sqlIdNumber = in.readInt();
         if (in.readByte() == 0x01) {
-            promptsAnswered = new ArrayList<Prompt>();
-            in.readList(promptsAnswered, Prompt.class.getClassLoader());
+            proposedPrompts = new ArrayList<Prompt>();
+            in.readList(proposedPrompts, Prompt.class.getClassLoader());
         } else {
-            promptsAnswered = null;
+            proposedPrompts = null;
         }
         currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
     }
@@ -187,11 +210,11 @@ public class Conversation implements Parcelable {
         }
         dest.writeInt(statusFlag);
         dest.writeInt(sqlIdNumber);
-        if (promptsAnswered == null) {
+        if (proposedPrompts == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(promptsAnswered);
+            dest.writeList(proposedPrompts);
         }
         dest.writeValue(currentPrompt);
     }
