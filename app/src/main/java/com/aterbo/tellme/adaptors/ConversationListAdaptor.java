@@ -75,7 +75,7 @@ public class ConversationListAdaptor extends BaseAdapter {
                     break;
                 case TYPE_CONVO_TO_TELL:
                     final Conversation convoToTell = (Conversation) getItem(position);
-                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getProposedPromptsTagString());
                     ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToTell.getTimeSinceLastAction());
                     (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
@@ -89,7 +89,7 @@ public class ConversationListAdaptor extends BaseAdapter {
                     break;
                 case TYPE_CONVO_TO_WAIT_FOR:
                     final Conversation convoToWaitFor = (Conversation) getItem(position);
-                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getProposedPromptsTagString());
                     ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToWaitFor.getTimeSinceLastAction());
                     (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
