@@ -17,19 +17,16 @@ import com.aterbo.tellme.R;
 import com.aterbo.tellme.SupplyTestListData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
-import com.aterbo.tellme.classes.ConvoToHear;
-import com.aterbo.tellme.classes.ConvoToTell;
-import com.aterbo.tellme.classes.ConvoToWaitFor;
+import com.aterbo.tellme.classes.Conversation;
 
 import java.util.ArrayList;
 
 public class ConversationListActivity extends AppCompatActivity {
 
-    ArrayList<ConvoToTell> toTellList;
-    ArrayList<ConvoToHear> toHearList;
-    ArrayList<ConvoToWaitFor> toWaitForList;
+    ArrayList<Conversation> conversations;
     int toHearSeparatorPosition;
     int toWaitForSeparatorPosition;
+    int toTellSeparatorPosition;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
@@ -106,35 +103,42 @@ public class ConversationListActivity extends AppCompatActivity {
     private void constructConversationList(){
         objectList = new ArrayList<>();
 
-        SupplyTestListData testListData = new SupplyTestListData();
-        toTellList = testListData.getTestConvoToTell();
-        toHearList = testListData.getTestConvoToHear();
-        toWaitForList = testListData.getTestConvoToWaitFor();
+        getConversationList();
+        toTellSeparatorPosition = 0;
+        toHearSeparatorPosition = 1;
+        toWaitForSeparatorPosition = 2;
+        addSeparator(toTellSeparatorPosition, "Stories to tell");
+        addSeparator(toHearSeparatorPosition, "Stories to hear");
+        addSeparator(toWaitForSeparatorPosition, "Stories to wait for");
 
-        toHearSeparatorPosition = toTellList.size()+1;
-        toWaitForSeparatorPosition = toHearList.size() + toHearSeparatorPosition +1;
+        int status;
 
-        addSeparator("Stories to tell");
-
-        for (ConvoToTell conversation : toTellList){
-            objectList.add(conversation);
+        for (Conversation conversation : conversations){
+            status = conversation.getStatus();
+            switch (status) {
+                case 0:
+                    objectList.add(1, conversation);
+                    toHearSeparatorPosition = toHearSeparatorPosition + 1;
+                    toWaitForSeparatorPosition = toWaitForSeparatorPosition + 1;
+                    break;
+                case 1:
+                    objectList.add(toHearSeparatorPosition+1, conversation);
+                    toWaitForSeparatorPosition = toWaitForSeparatorPosition + 1;
+                    break;
+                case 2:
+                    objectList.add(toWaitForSeparatorPosition+1, conversation);
+                    break;
+            }
         }
-        addSeparator("Stories to hear");
-
-        for (ConvoToHear conversation : toHearList){
-            objectList.add(conversation);
-        }
-
-        addSeparator("Stories to wait for");
-
-        for (ConvoToWaitFor conversation : toWaitForList){
-            objectList.add(conversation);
-        }
-
     }
 
-    private void addSeparator(String separatorText){
-        objectList.add(new String(separatorText));
+    private void getConversationList(){
+        SupplyTestListData testListData = new SupplyTestListData();
+        conversations = testListData.getTestConvos();
+    }
+
+    private void addSeparator(int position, String separatorText){
+        objectList.add(position, new String(separatorText));
     }
 
     private void startTellActivity(){

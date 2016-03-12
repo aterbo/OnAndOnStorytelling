@@ -61,7 +61,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void questioningComplete(){
         //TODO: figure out how to send this to someone!
-        Toast.makeText(this, "PROMPTS SELECTED!!!!!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "PROMPTS SELECTED!!!!!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
         finish();
@@ -89,7 +89,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void addChosenPromptToList(int indexNumber){
         chosenPromptList.add(promptOptionsList.get(indexNumber));
-        Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList<Prompt> generateDummyPromptList(){

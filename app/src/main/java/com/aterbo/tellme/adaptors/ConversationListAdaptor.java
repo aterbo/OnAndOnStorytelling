@@ -1,21 +1,14 @@
 package com.aterbo.tellme.adaptors;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.activities.PickTopicToRecordActivity;
 import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.ConvoToHear;
-import com.aterbo.tellme.classes.ConvoToTell;
-import com.aterbo.tellme.classes.ConvoToWaitFor;
-import com.aterbo.tellme.classes.SquareImageView;
 
 import java.util.ArrayList;
 
@@ -83,21 +76,21 @@ public class ConversationListAdaptor extends BaseAdapter {
                 case TYPE_CONVO_TO_TELL:
                     final Conversation convoToTell = (Conversation) getItem(position);
                     ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToTell.getTitle());
-                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToTell.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToTell.getTimeSinceLastAction());
                     (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
                     break;
                 case TYPE_CONVO_TO_HEAR:
                     final Conversation convoToHear = (Conversation) getItem(position);
                     ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getTitle());
-                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToHear.getTimeSinceLastAction());
                     ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(convoToHear.getStoryDuration());
                     break;
                 case TYPE_CONVO_TO_WAIT_FOR:
                     final Conversation convoToWaitFor = (Conversation) getItem(position);
                     ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToWaitFor.getTitle());
-                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getParticipant());
+                    ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToWaitFor.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToWaitFor.getTimeSinceLastAction());
                     (convertView.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
                     break;
@@ -120,11 +113,11 @@ public class ConversationListAdaptor extends BaseAdapter {
 
         if (object instanceof String) {
             return TYPE_SEPARATOR;
-        } else if (object instanceof ConvoToTell) {
+        } else if (((Conversation)object).getStatus() == 0) {
             return TYPE_CONVO_TO_TELL;
-        } else if (object instanceof ConvoToHear) {
+        } else if (((Conversation)object).getStatus() == 1) {
             return TYPE_CONVO_TO_HEAR;
-        } else if (object instanceof ConvoToWaitFor) {
+        } else if (((Conversation)object).getStatus() == 2) {
             return TYPE_CONVO_TO_WAIT_FOR;
         } else{
             return TYPE_SEPARATOR;
