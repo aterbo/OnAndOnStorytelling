@@ -94,12 +94,12 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private ArrayList<Prompt> generateDummyPromptList(){
         ArrayList<Prompt> dummyList = new ArrayList<>();
-        dummyList.add(new Prompt("What is on the top of your bucket list?"));
-        dummyList.add(new Prompt("What is the most creative profanity you've ever heard? Or create your own?"));
-        dummyList.add(new Prompt("Do you follow logic?"));
-        dummyList.add(new Prompt("Do you have a photographic memory?"));
-        dummyList.add(new Prompt("Who helped you in life?"));
-        dummyList.add(new Prompt("Would you describe yourself as left-wing or right-wing?"));
+        dummyList.add(new Prompt("What is on the top of your bucket list?", "Bucket List"));
+        dummyList.add(new Prompt("What is the most creative profanity you've ever heard? Or create your own?", "Creative profanity"));
+        dummyList.add(new Prompt("Do you follow logic?", "Logic"));
+        dummyList.add(new Prompt("Do you have a photographic memory?", "Photographic Memory"));
+        dummyList.add(new Prompt("Who helped you in life?", "Life help"));
+        dummyList.add(new Prompt("Would you describe yourself as left-wing or right-wing?", "Political Wings"));
 
         return dummyList;
     }

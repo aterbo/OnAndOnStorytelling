@@ -85,9 +85,9 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
     private ArrayList<Prompt> generateDummyPromptList(){
         ArrayList<Prompt> dummyList = new ArrayList<>();
-        dummyList.add(new Prompt("Would you rather go to a greasy spoon diner or a fine dining restaurant?"));
-        dummyList.add(new Prompt("Who did you last vote for?"));
-        dummyList.add(new Prompt("What is one trait you've inherited from your mother?"));
+        dummyList.add(new Prompt("Would you rather go to a greasy spoon diner or a fine dining restaurant?", "Diner or Deluxe"));
+        dummyList.add(new Prompt("Who did you last vote for?", "Voting"));
+        dummyList.add(new Prompt("What is one trait you've inherited from your mother?", "An inherited trait"));
 
         return dummyList;
     }

@@ -185,6 +185,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private Prompt getDummyPromptData(){
-        return new Prompt("Tell me a story about an immigrant.");
+        return new Prompt("Tell me a story about an immigrant.", "An immigrant");
     }
 }
