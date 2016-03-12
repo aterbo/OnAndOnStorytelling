@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 
 import java.util.concurrent.TimeUnit;
@@ -23,6 +23,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private MediaPlayer mPlayer;
     public TextView duration;
+    private Conversation conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
     private int shortSkipTime = 5000;
@@ -37,10 +38,25 @@ public class ListenToStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
+        getConversation();
+        showConversationDetails();
         getPromptData();
         showPromptTextInTextView();
         initializeViews();
         setToggleButton();
+    }
+
+    private void getConversation(){
+        Intent intent  = getIntent();
+        conversation = intent.getParcelableExtra("selectedConversationToHear");
+    }
+
+    private void showConversationDetails(){
+        TextView senderText = (TextView)findViewById(R.id.sender_text);
+        senderText.setText(conversation.getUsersNameAsString() + " answered");
+
+        TextView recordingLength = (TextView)findViewById(R.id.story_duration);
+        recordingLength.setText(conversation.getStoryDuration());
     }
 
     private void getPromptData(){
@@ -55,7 +71,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         mPlayer = MediaPlayer.create(this, R.raw.home);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         finalTime = mPlayer.getDuration();
-        duration = (TextView) findViewById(R.id.songDuration);
+        duration = (TextView) findViewById(R.id.story_duration);
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setMax((int) finalTime);
         seekbar.setClickable(false);
