@@ -18,7 +18,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     Button sendTopicOption1;
     Button sendTopicOption2;
-    ArrayList<Prompt> chosenPromptList;
     ArrayList<Prompt> promptOptionsList;
     private Conversation conversation;
     int promptCountTracker = 0;
@@ -32,6 +31,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
         getConversation();
         initializeViews();
+        clearExistingProposedTopicsInConversation();
         getPromptOptionsList();
         askForRoundOfPrompts();
     }
@@ -44,8 +44,11 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private void initializeViews() {
         sendTopicOption1 = (Button)findViewById(R.id.record_topic_option_1);
         sendTopicOption2 = (Button)findViewById(R.id.record_topic_option_2);
-        chosenPromptList = new ArrayList<>();
         promptOptionsList = new ArrayList<>();
+    }
+
+    private void clearExistingProposedTopicsInConversation(){
+        conversation.clearProposedPrompts();
     }
 
     private void getPromptOptionsList(){
@@ -54,7 +57,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void askForRoundOfPrompts(){
         if (isQuestioningDone()) {
-            questioningComplete();
+            wrapUpActivity();
         } else {
             setOptionsToButtons();
         }
@@ -68,19 +71,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         }
     }
 
-    private void questioningComplete(){
-        //TODO: figure out how to send this to someone!
-        Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
-        changeConversationStatus();
-        Intent intent = new Intent(this, ConversationListActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void changeConversationStatus(){
-        conversation.setStatusToWaiting();
-        DBHelper db = new DBHelper(this);
-        db.updateConversation(conversation);
+    private void wrapUpActivity(){
+        updateConversation();
+        questioningComplete();
     }
 
     private void setOptionsToButtons(){
@@ -93,7 +86,22 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         sendTopicOption2.setText(promptOption2);
     }
 
-    public void sendTopic1(View view){
+    private void updateConversation(){
+        conversation.setStatusToWaiting();
+        conversation.setTimeSinceLastAction("now");
+        DBHelper db = new DBHelper(this);
+        db.updateConversation(conversation);
+    }
+
+    private void questioningComplete(){
+        //TODO: figure out how to send this to someone!
+        Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void sendTopic1(View view) {
         addChosenPromptToList(promptCountTracker - 2);
         askForRoundOfPrompts();
     }
@@ -103,8 +111,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         askForRoundOfPrompts();
     }
 
-    private void addChosenPromptToList(int indexNumber){
-        chosenPromptList.add(promptOptionsList.get(indexNumber));
+    private void addChosenPromptToList(int indexNumber) {
+        conversation.setToProposedPrompts(promptOptionsList.get(indexNumber));
         Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_SHORT).show();
     }
 
