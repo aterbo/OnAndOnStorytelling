@@ -82,7 +82,7 @@ public class ConversationListAdaptor extends BaseAdapter {
                     break;
                 case TYPE_CONVO_TO_HEAR:
                     final Conversation convoToHear = (Conversation) getItem(position);
-                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getTitle());
+                    ((TextView) convertView.findViewById(R.id.conversation_title)).setText(convoToHear.getCurrentPrompt().getTagText());
                     ((TextView) convertView.findViewById(R.id.conversation_participants)).setText(convoToHear.getUsersNameAsString());
                     ((TextView) convertView.findViewById(R.id.conversation_time_since_action)).setText(convoToHear.getTimeSinceLastAction());
                     ((TextView) convertView.findViewById(R.id.conversation_story_duration)).setText(convoToHear.getStoryDuration());

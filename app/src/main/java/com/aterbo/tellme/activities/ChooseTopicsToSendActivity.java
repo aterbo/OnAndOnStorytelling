@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.SQLite.DBHelper;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     Button sendTopicOption2;
     ArrayList<Prompt> chosenPromptList;
     ArrayList<Prompt> promptOptionsList;
+    private Conversation conversation;
     int promptCountTracker = 0;
     final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
@@ -27,9 +30,15 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_topics_to_send);
 
+        getConversation();
         initializeViews();
         getPromptOptionsList();
         askForRoundOfPrompts();
+    }
+
+    private void getConversation(){
+    Intent intent  = getIntent();
+    conversation = intent.getParcelableExtra("conversation");
     }
 
     private void initializeViews() {
@@ -61,10 +70,17 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void questioningComplete(){
         //TODO: figure out how to send this to someone!
-        Toast.makeText(this, "PROMPTS SELECTED!!!!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
+        changeConversationStatus();
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void changeConversationStatus(){
+        conversation.setStatusToWaiting();
+        DBHelper db = new DBHelper(this);
+        db.updateConversation(conversation);
     }
 
     private void setOptionsToButtons(){

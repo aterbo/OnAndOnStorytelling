@@ -60,7 +60,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getPromptData(){
-        storyPrompt = getDummyPromptData();
+        storyPrompt = conversation.getCurrentPrompt();
     }
 
     private void showPromptTextInTextView(){

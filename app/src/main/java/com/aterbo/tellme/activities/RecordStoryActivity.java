@@ -175,6 +175,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         //TODO: Figure out how the hell to send this to someone.
         showToastFromStringResource(R.string.recording_sent_notice);
         Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
+        intent.putExtra("conversation", conversation);
         startActivity(intent);
     }
 
