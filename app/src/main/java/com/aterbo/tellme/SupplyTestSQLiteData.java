@@ -58,7 +58,7 @@ public class SupplyTestSQLiteData {
                 new Prompt("Describe a good day", "Good Life"), proposedPromptTestList));
 
         userTestList = new ArrayList<>();
-        userTestList.add(new User("Mary Magdaline"));
+        userTestList.add(new User("Mary Contrary"));
         proposedPromptTestList = new ArrayList<>();
         proposedPromptTestList.add(new Prompt("Tell me a story", "A story"));
         proposedPromptTestList.add(new Prompt("Tell me about a bicycle", "Regret"));

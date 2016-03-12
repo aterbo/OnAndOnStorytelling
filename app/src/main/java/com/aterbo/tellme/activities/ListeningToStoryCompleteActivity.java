@@ -40,6 +40,8 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
     }
 
     private void setViews(){
+        ((TextView)findViewById(R.id.sender_text)).setText("You just listened to a story from " +
+                conversation.getUsersNameAsString() + " about");
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getPromptText());
     }
 

@@ -5,12 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
         getConversation();
         initializeViews();
+        setConversationToView();
         clearExistingProposedTopicsInConversation();
         getPromptOptionsList();
         askForRoundOfPrompts();
@@ -45,6 +49,10 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         sendTopicOption1 = (Button)findViewById(R.id.record_topic_option_1);
         sendTopicOption2 = (Button)findViewById(R.id.record_topic_option_2);
         promptOptionsList = new ArrayList<>();
+    }
+
+    private void setConversationToView(){
+        ((TextView)findViewById(R.id.next_storyteller_prompt)).setText(conversation.getUsersNameAsString() + " is next to tell a story");
     }
 
     private void clearExistingProposedTopicsInConversation(){
