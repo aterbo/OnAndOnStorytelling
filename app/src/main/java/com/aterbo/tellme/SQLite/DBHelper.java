@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 
 import java.util.ArrayList;
@@ -82,6 +83,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION,  conversation.getTimeSinceLastAction());
         values.put(DBContract.ConversationDBTable.COLUMN_STORY_DURATION,  conversation.getStoryDuration());
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
+        values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
+        values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());
 
         int numberOfUsers = conversation.getNumberOfUsers();
         if(numberOfUsers>0) {
@@ -149,6 +152,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 conversation.setSqlIdNumber(cursor.getInt((cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable._ID))));
 
+                String promptText = cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT));
+                String promptTag = cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG));
+                conversation.setCurrentPrompt(new Prompt(promptText, promptTag));
                 //Pull all matching users
 
                 if(!cursor.getString(cursor.getColumnIndexOrThrow(
@@ -197,6 +205,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION, conversation.getTimeSinceLastAction());
         values.put(DBContract.ConversationDBTable.COLUMN_STORY_DURATION, conversation.getStoryDuration());
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
+        values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
+        values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());
 
         int numberOfUsers = conversation.getNumberOfUsers();
         if(numberOfUsers>0) {

@@ -31,6 +31,8 @@ public class DBContract {
         public static final String COLUMN_TIME_SINCE_LAST_ACTION = "timesince";
         public static final String COLUMN_STORY_DURATION = "duration";
         public static final String COLUMN_STATUS_FLAG = "statusflag";
+        public static final String COLUMN_CURRENT_PROMPT = "currentprompt";
+        public static final String COLUMN_CURRENT_PROMPT_TAG = "currentprompttag";
         public static final String COLUMN_NAME_1 = "name1";
         public static final String COLUMN_USER_NAME_1 = "username1";
         public static final String COLUMN_NAME_2 = "name2";
@@ -51,6 +53,8 @@ public class DBContract {
                 COLUMN_TIME_SINCE_LAST_ACTION + TEXT_TYPE + COMMA_SEP +
                 COLUMN_STORY_DURATION + TEXT_TYPE + COMMA_SEP +
                 COLUMN_STATUS_FLAG + INT_TYPE + COMMA_SEP +
+                COLUMN_CURRENT_PROMPT + TEXT_TYPE + COMMA_SEP +
+                COLUMN_CURRENT_PROMPT_TAG + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_1 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_USER_NAME_1 + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_2 + TEXT_TYPE + COMMA_SEP +
@@ -71,6 +75,8 @@ public class DBContract {
             ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION,
             ConversationDBTable.COLUMN_STORY_DURATION,
             ConversationDBTable.COLUMN_STATUS_FLAG,
+            ConversationDBTable.COLUMN_CURRENT_PROMPT,
+            ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG,
             ConversationDBTable.COLUMN_NAME_1,
             ConversationDBTable.COLUMN_USER_NAME_1,
             ConversationDBTable.COLUMN_NAME_2,

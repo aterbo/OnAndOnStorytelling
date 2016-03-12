@@ -30,21 +30,23 @@ public class Conversation implements Parcelable {
     }
 
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
-                        ArrayList<User> usersInConversation, int statusFlag){
+                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
+        this.currentPrompt = currentPrompt;
     }
 
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
-                        ArrayList<User> usersInConversation, int statusFlag, int sqlIdNumber){
+                        ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt, int sqlIdNumber){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
+        this.currentPrompt = currentPrompt;
         this.sqlIdNumber = sqlIdNumber;
     }
 
@@ -105,6 +107,14 @@ public class Conversation implements Parcelable {
         return userNames;
     }
 
+    public Prompt getCurrentPrompt(){
+        return currentPrompt;
+    }
+
+    public void setCurrentPrompt(Prompt currentPrompt){
+        this.currentPrompt = currentPrompt;
+    }
+
     public int getStatus(){
         return statusFlag;
     }
@@ -112,6 +122,8 @@ public class Conversation implements Parcelable {
     public void setStatus(int statusFlag){
         this.statusFlag = statusFlag;
     }
+
+
 
     public void setStatusToTell(){
         statusFlag = STATUS_TO_TELL;
