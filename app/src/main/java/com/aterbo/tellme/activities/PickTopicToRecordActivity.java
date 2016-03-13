@@ -83,13 +83,4 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         intent.putExtra("conversation", conversation);
         startActivity(intent);
     }
-
-    private ArrayList<Prompt> generateDummyPromptList(){
-        ArrayList<Prompt> dummyList = new ArrayList<>();
-        dummyList.add(new Prompt("Would you rather go to a greasy spoon diner or a fine dining restaurant?", "Diner or Deluxe"));
-        dummyList.add(new Prompt("Who did you last vote for?", "Voting"));
-        dummyList.add(new Prompt("What is one trait you've inherited from your mother?", "An inherited trait"));
-
-        return dummyList;
-    }
 }
