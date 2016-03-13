@@ -12,9 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class RecordStoryActivity extends AppCompatActivity {
 
@@ -53,9 +55,15 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void setRecordingDetails(){
-        // store it to sd card
-        outputFile = Environment.getExternalStorageDirectory().
-                getAbsolutePath() + "/javacodegeeksRecording.3gpp";
+        if (Utils.isExternalStorageWritable()) {
+            String fileName = getRandomFileName();
+            outputFile = Environment.getExternalStorageDirectory().getAbsolutePath();
+            outputFile += "/" + fileName + ".3gp";
+        }
+    }
+
+    private String getRandomFileName(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     private void showConversationDetails(){
@@ -177,10 +185,15 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     public void sendRecordingClick(View view){
         //TODO: Figure out how the hell to send this to someone.
+        saveRecordingToConversation();
         showToastFromStringResource(R.string.recording_sent_notice);
         Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
         intent.putExtra("conversation", conversation);
         startActivity(intent);
+    }
+
+    private void saveRecordingToConversation(){
+        conversation.setStoryFilePath(outputFile);
     }
 
     private void showToastFromStringResource(int stringResourceId) {
