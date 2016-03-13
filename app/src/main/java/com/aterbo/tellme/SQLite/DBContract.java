@@ -30,6 +30,7 @@ public class DBContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_TIME_SINCE_LAST_ACTION = "timesince";
         public static final String COLUMN_STORY_DURATION = "duration";
+        public static final String COLUMN_STORY_FILE_PATH = "filepath";
         public static final String COLUMN_STATUS_FLAG = "statusflag";
         public static final String COLUMN_CURRENT_PROMPT = "currentprompt";
         public static final String COLUMN_CURRENT_PROMPT_TAG = "currentprompttag";
@@ -58,6 +59,7 @@ public class DBContract {
                 COLUMN_TITLE + TEXT_TYPE + COMMA_SEP +
                 COLUMN_TIME_SINCE_LAST_ACTION + TEXT_TYPE + COMMA_SEP +
                 COLUMN_STORY_DURATION + TEXT_TYPE + COMMA_SEP +
+                COLUMN_STORY_FILE_PATH + TEXT_TYPE + COMMA_SEP +
                 COLUMN_STATUS_FLAG + INT_TYPE + COMMA_SEP +
                 COLUMN_CURRENT_PROMPT + TEXT_TYPE + COMMA_SEP +
                 COLUMN_CURRENT_PROMPT_TAG + TEXT_TYPE + COMMA_SEP +
@@ -86,6 +88,7 @@ public class DBContract {
             ConversationDBTable.COLUMN_TITLE,
             ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION,
             ConversationDBTable.COLUMN_STORY_DURATION,
+            ConversationDBTable.COLUMN_STORY_FILE_PATH,
             ConversationDBTable.COLUMN_STATUS_FLAG,
             ConversationDBTable.COLUMN_CURRENT_PROMPT,
             ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG,

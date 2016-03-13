@@ -83,6 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_TITLE, conversation.getTitle());
         values.put(DBContract.ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION,  conversation.getTimeSinceLastAction());
         values.put(DBContract.ConversationDBTable.COLUMN_STORY_DURATION,  conversation.getStoryDuration());
+        values.put(DBContract.ConversationDBTable.COLUMN_STORY_FILE_PATH,  conversation.getStoryFilePath());
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());
@@ -167,6 +168,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         DBContract.ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION)));
                 conversation.setStoryDuration(cursor.getString(cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable.COLUMN_STORY_DURATION)));
+                conversation.setStoryFilePath(cursor.getString(cursor.getColumnIndexOrThrow(
+                        DBContract.ConversationDBTable.COLUMN_STORY_FILE_PATH)));
                 conversation.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow(
                         DBContract.ConversationDBTable.COLUMN_STATUS_FLAG)));
                 conversation.setSqlIdNumber(cursor.getInt((cursor.getColumnIndexOrThrow(
@@ -243,6 +246,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.ConversationDBTable.COLUMN_TITLE, conversation.getTitle());
         values.put(DBContract.ConversationDBTable.COLUMN_TIME_SINCE_LAST_ACTION, conversation.getTimeSinceLastAction());
         values.put(DBContract.ConversationDBTable.COLUMN_STORY_DURATION, conversation.getStoryDuration());
+        values.put(DBContract.ConversationDBTable.COLUMN_STORY_FILE_PATH, conversation.getStoryFilePath());
         values.put(DBContract.ConversationDBTable.COLUMN_STATUS_FLAG, conversation.getStatus());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT, conversation.getCurrentPrompt().getPromptText());
         values.put(DBContract.ConversationDBTable.COLUMN_CURRENT_PROMPT_TAG, conversation.getCurrentPrompt().getTagText());

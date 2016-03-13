@@ -3,6 +3,7 @@ package com.aterbo.tellme.activities;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
     private Prompt storyPrompt;
+    private Uri speechUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         getConversation();
         showConversationDetails();
         getPromptData();
+        getstoryUri();
         showPromptTextInTextView();
         initializeViews();
         setToggleButton();
@@ -63,12 +66,17 @@ public class ListenToStoryActivity extends AppCompatActivity {
         storyPrompt = conversation.getCurrentPrompt();
     }
 
+    private void getstoryUri(){
+        speechUri = Uri.parse(conversation.getStoryFilePath());
+    }
+
+
     private void showPromptTextInTextView(){
         ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getPromptText());
     }
 
     private void initializeViews(){
-        mPlayer = MediaPlayer.create(this, R.raw.home);
+        mPlayer = MediaPlayer.create(this, speechUri);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         finalTime = mPlayer.getDuration();
         duration = (TextView) findViewById(R.id.story_duration);

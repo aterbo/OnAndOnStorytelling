@@ -18,10 +18,11 @@ public class Conversation implements Parcelable {
     private String title;
     private String timeSinceLastAction;
     private String storyDuration;
-    private ArrayList<User> usersInConversation;
+    private String storyFilePath;
     private int statusFlag;
     private int sqlIdNumber;
 
+    private ArrayList<User> usersInConversation;
     private ArrayList<Prompt> proposedPrompts;
     private Prompt currentPrompt;
 
@@ -31,12 +32,13 @@ public class Conversation implements Parcelable {
         proposedPrompts = new ArrayList<>();
     }
 
-    public Conversation(String title, String timeSinceLastAction, String storyDuration,
+    public Conversation(String title, String timeSinceLastAction, String storyDuration, String storyFilePath,
                         ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt,
                         ArrayList<Prompt> proposedPrompts){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
+        this.storyFilePath = storyFilePath;
         this.usersInConversation = usersInConversation;
         this.statusFlag = statusFlag;
         this.currentPrompt = currentPrompt;
@@ -45,7 +47,7 @@ public class Conversation implements Parcelable {
 
     public Conversation(String title, String timeSinceLastAction, String storyDuration,
                         ArrayList<User> usersInConversation, int statusFlag, Prompt currentPrompt,
-            ArrayList<Prompt> proposedPrompts, int sqlIdNumber){
+                        ArrayList<Prompt> proposedPrompts, int sqlIdNumber, String storyFilePath){
         this.title = title;
         this.timeSinceLastAction = timeSinceLastAction;
         this.storyDuration = storyDuration;
@@ -54,6 +56,7 @@ public class Conversation implements Parcelable {
         this.currentPrompt = currentPrompt;
         this.proposedPrompts = proposedPrompts;
         this.sqlIdNumber = sqlIdNumber;
+        this.storyFilePath = storyFilePath;
     }
 
     public String getTitle() {
@@ -178,11 +181,20 @@ public class Conversation implements Parcelable {
                 proposedPrompts.get(2).getTagText();
     }
 
+    public String getStoryFilePath() {
+        return storyFilePath;
+    }
+
+    public void setStoryFilePath(String storyFilePath) {
+        this.storyFilePath = storyFilePath;
+    }
+
     //Parcelabler
     protected Conversation(Parcel in) {
         title = in.readString();
         timeSinceLastAction = in.readString();
         storyDuration = in.readString();
+        storyFilePath = in.readString();
         if (in.readByte() == 0x01) {
             usersInConversation = new ArrayList<User>();
             in.readList(usersInConversation, User.class.getClassLoader());
@@ -210,6 +222,7 @@ public class Conversation implements Parcelable {
         dest.writeString(title);
         dest.writeString(timeSinceLastAction);
         dest.writeString(storyDuration);
+        dest.writeString(storyFilePath);
         if (usersInConversation == null) {
             dest.writeByte((byte) (0x00));
         } else {
