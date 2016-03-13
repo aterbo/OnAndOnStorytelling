@@ -19,6 +19,7 @@ import com.aterbo.tellme.SupplyTestSQLiteData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
+import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        initializeFirebase();
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
@@ -45,6 +47,10 @@ public class ConversationListActivity extends AppCompatActivity {
         constructConversationList();
         setListAdaptor();
 
+    }
+
+    private void initializeFirebase(){
+        Firebase.setAndroidContext(this);
     }
 
     private void setFloatingActionButton() {
