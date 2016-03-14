@@ -1,10 +1,11 @@
 package com.aterbo.tellme.activities;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -29,6 +30,7 @@ public class ConversationListActivity extends AppCompatActivity {
     int toHearSeparatorPosition;
     int toWaitForSeparatorPosition;
     int toTellSeparatorPosition;
+    String chosenUserToAddNew;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
@@ -175,5 +177,18 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void startNewConversation(){
 
+        final CharSequence[] items = {
+                "andy.terbovich@gmail.com", "test@test.com", "a@a.com"
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose User to Talk To")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        chosenUserToAddNew = items[which].toString();
+                    }
+                });
+        AlertDialog pickUserAlert = builder.create();
+        pickUserAlert.show();
     }
 }
