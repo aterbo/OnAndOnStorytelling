@@ -58,8 +58,7 @@ public class ConversationListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startNewConversation();
             }
         });
     }
@@ -167,5 +166,14 @@ public class ConversationListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ListenToStoryActivity.class);
         intent.putExtra("selectedConversation", (Conversation)objectList.get(position));
         startActivity(intent);
+    }
+
+    public void goToLoginScreen(View view){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void startNewConversation(){
+
     }
 }
