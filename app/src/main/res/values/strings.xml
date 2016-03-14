@@ -5,5 +5,4 @@
     <string name="ping">Ping!</string>
     <string name="cancel">Cancel</string>
     <string name="recording_sent_notice">Your story has been sent!</string>
-    <string name="firebase_reference">https://tell-me.firebaseio.com/</string>
 </resources>
