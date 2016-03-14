@@ -12,6 +12,7 @@ import com.aterbo.tellme.R;
 import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
+import com.firebase.client.Firebase;
 
 import org.w3c.dom.Text;
 
@@ -101,13 +102,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         db.updateConversation(conversation);
     }
 
-    private void questioningComplete(){
-        //TODO: figure out how to send this to someone!
-        Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, ConversationListActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
     public void sendTopic1(View view) {
         addChosenPromptToList(promptCountTracker - 2);
@@ -124,6 +118,23 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_SHORT).show();
     }
 
+
+    private void questioningComplete(){
+        Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
+        addConversationToServer();
+        returnToConversationList();
+    }
+    private void addConversationToServer(){
+        Firebase ref = new Firebase("to-" + getResources().getString(R.string.firebase_url));
+        Firebase uploadRef =  ref.child(conversation.getUser(0).getName());
+        uploadRef.setValue(conversation);
+    }
+
+    private void returnToConversationList(){
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        startActivity(intent);
+        finish();
+    }
     private ArrayList<Prompt> generateDummyPromptList(){
         ArrayList<Prompt> dummyList = new ArrayList<>();
         dummyList.add(new Prompt("What is on the top of your bucket list?", "Bucket List"));
