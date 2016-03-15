@@ -118,15 +118,15 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_SHORT).show();
     }
 
-
     private void questioningComplete(){
         Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
         addConversationToServer();
         returnToConversationList();
     }
+
     private void addConversationToServer(){
-        Firebase ref = new Firebase("to-" + getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child(conversation.getUser(0).getName());
+        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
+        Firebase uploadRef =  ref.child(conversation.getUser(0).getName().replace(".",""));
         uploadRef.setValue(conversation);
     }
 
@@ -135,6 +135,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     private ArrayList<Prompt> generateDummyPromptList(){
         ArrayList<Prompt> dummyList = new ArrayList<>();
         dummyList.add(new Prompt("What is on the top of your bucket list?", "Bucket List"));
