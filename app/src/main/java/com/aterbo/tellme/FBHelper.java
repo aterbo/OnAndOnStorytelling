@@ -19,7 +19,7 @@ public class FBHelper {
         this.context = context;
     }
 
-    public void logInToFirebase(String email, String password){
+    public void logUserIntoServerViaEmail(String email, String password){
         Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
         ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override

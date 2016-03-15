@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         Boolean success = isValidLoginInfo();
         if (success) {
             FBHelper fbHelper = new FBHelper(this);
-            fbHelper.logInToFirebase(email, password);
+            fbHelper.logUserIntoServerViaEmail(email, password);
         }
     }
 
