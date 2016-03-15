@@ -3,6 +3,7 @@ package com.aterbo.tellme;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.aterbo.tellme.classes.Conversation;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -50,6 +51,23 @@ public class FBHelper {
         });
     }
 
+    public String getCurrentUserName(){
+        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
+        AuthData authData = ref.getAuth();
+        if (authData != null) {
+            return authData.getUid();
+        } else {
+            return "";
+        }
+    }
 
+    public void addNewConversation(Conversation newConversation){
+        String firebasePath = (getCurrentUserName() + "--" + (newConversation.getUser(0).getName()).replace(".",""));
+
+        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
+        Firebase uploadRef =  ref.child("groups").child(firebasePath);
+        uploadRef.child("").setValue(newConversation);
+    }
+    }
 
 }

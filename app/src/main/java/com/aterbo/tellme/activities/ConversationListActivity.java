@@ -14,15 +14,15 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.SQLite.DBHelper;
-import com.aterbo.tellme.SupplyTestSQLiteData;
+import com.aterbo.tellme.SupplyTestData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
-import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class ConversationListActivity extends AppCompatActivity {
         DBHelper db = new DBHelper(this);
         conversations = db.getConversationList();
         if(conversations.size()<=1) {
-            SupplyTestSQLiteData testListData = new SupplyTestSQLiteData(this);
+            SupplyTestData testListData = new SupplyTestData(this);
             testListData.buildTestSQLiteDB();
             conversations = db.getConversationList();
         }
@@ -202,27 +202,18 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void continueWithNewConvo(){
-        String currentUser = getCurrentUserName();
-        Conversation newConversation = makeConversation(currentUser);
-        uploadConversationToServer(currentUser, newConversation);
+        Conversation newConversation = makeConversation();
+
+        FBHelper fbHelper = new FBHelper(this);
+        fbHelper.addNewConversation(newConversation);
+
         startTellActivity(newConversation);
     }
 
-    private String getCurrentUserName(){
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        AuthData authData = ref.getAuth();
-        if (authData != null) {
-            return authData.getUid();
-        } else {
-            return "";
-        }
-    }
-
-    private Conversation makeConversation(String currentUser){
-        ArrayList<User> dummyUserList = new ArrayList<User>();
+    private Conversation makeConversation(){
+        ArrayList<User> dummyUserList = new ArrayList<>();
         dummyUserList.add(new User(chosenUserToAddNew, "TestUsername"));
-
-        ArrayList<Prompt> dummyPromptList = getDummyPrompts();
+        ArrayList<Prompt> dummyPromptList = SupplyTestData.getDummyPromptList();
 
         Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
                 "TestFilepath", dummyUserList,
@@ -230,33 +221,4 @@ public class ConversationListActivity extends AppCompatActivity {
 
         return conversation;
     }
-
-    private ArrayList<Prompt> getDummyPrompts(){
-
-        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
-        dummyPromptList.add(new Prompt("Tell me a story", "A story"));
-        dummyPromptList.add(new Prompt("Tell me about a bicycle", "Bicycle"));
-        dummyPromptList.add(new Prompt("Describe pure joy", "Joy"));
-
-        return dummyPromptList;
-    }
-
-    private void uploadConversationToServer(String currentUser, Conversation newConversation){
-        String firebasePath = (currentUser + "--" + chosenUserToAddNew).replace(".","");
-
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child("groups").child(firebasePath);
-        uploadRef.child("").setValue(newConversation);
-    }
-
-
-
-    /*
-    private void uploadToFirebase(String currentUser){
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child("groups").child(currentUser + "-" + chosenUserToAddNew);
-        uploadRef.child("").setValue(conversation);
-        }
-    }
-    */
 }

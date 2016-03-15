@@ -14,11 +14,11 @@ import java.util.ArrayList;
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class SupplyTestSQLiteData {
+public class SupplyTestData {
 
     private Context context;
 
-    public SupplyTestSQLiteData(Context context){
+    public SupplyTestData(Context context){
         this.context = context;
     }
 
@@ -100,5 +100,15 @@ public class SupplyTestSQLiteData {
                 new Prompt("What were you like in the past?", "The past"), proposedPromptTestList));
 
         return testList;
+    }
+
+    public static ArrayList<Prompt> getDummyPromptList(){
+
+        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
+        dummyPromptList.add(new Prompt("Tell me a story", "A story"));
+        dummyPromptList.add(new Prompt("Tell me about a bicycle", "Bicycle"));
+        dummyPromptList.add(new Prompt("Describe pure joy", "Joy"));
+
+        return dummyPromptList;
     }
 }
