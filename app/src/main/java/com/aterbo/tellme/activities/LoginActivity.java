@@ -12,14 +12,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Map;
-
+import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 
 /**
  * A login screen that offers login via email/password.
@@ -28,6 +23,8 @@ public class LoginActivity extends AppCompatActivity {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    isValidLoginInfo();
                     return true;
                 }
                 return false;
@@ -52,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                logUserIn();
             }
         });
 
@@ -60,11 +57,28 @@ public class LoginActivity extends AppCompatActivity {
         mMakeNewUserButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptAddUser();
+                addNewUser();
             }
         });
 
     }
+
+    private void logUserIn() {
+        Boolean success = isValidLoginInfo();
+        if (success){
+            FBHelper fbHelper = new FBHelper(this);
+            fbHelper.logInToFirebase(email, password);
+        }
+    }
+
+    private void addNewUser() {
+        Boolean success = isValidLoginInfo();
+        if (success){
+            FBHelper fbHelper = new FBHelper(this);
+            fbHelper.addNewUserToServer(email, password);
+        }
+    }
+
 
 
     /**
@@ -72,15 +86,15 @@ public class LoginActivity extends AppCompatActivity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private boolean isValidLoginInfo() {
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        email = mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -107,8 +121,9 @@ public class LoginActivity extends AppCompatActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
+            return false;
         } else {
-            logInToFirebase(email, password);
+            return true;
         }
     }
 
@@ -121,78 +136,4 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
-
-    private void logInToFirebase(String email, String password){
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
-                Toast.makeText(getApplicationContext(), "User logged in", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                Toast.makeText(getApplicationContext(), "Login Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void attemptAddUser(){
-
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            addUser(email, password);
-        }
-    }
-
-    private void addUser(String email, String password){
-
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                System.out.println("Successfully created user account with uid: " + result.get("uid"));
-                Toast.makeText(getApplicationContext(), "User added", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                Toast.makeText(getApplicationContext(), "Add user Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-}
 
