@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void logUserIn() {
         Boolean success = isValidLoginInfo();
-        if (success){
+        if (success) {
             FBHelper fbHelper = new FBHelper(this);
             fbHelper.logInToFirebase(email, password);
         }
@@ -73,13 +73,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void addNewUser() {
         Boolean success = isValidLoginInfo();
-        if (success){
+        if (success) {
             FBHelper fbHelper = new FBHelper(this);
             fbHelper.addNewUserToServer(email, password);
         }
     }
-
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -136,4 +134,5 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
+}
 
