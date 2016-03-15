@@ -1,7 +1,6 @@
 package com.aterbo.tellme;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.aterbo.tellme.classes.Conversation;
 import com.firebase.client.AuthData;
@@ -15,14 +14,16 @@ import java.util.Map;
  */
 public class FBHelper {
 
-    Context context;
+    private Context context;
+    private Firebase baseRef;
+
     public FBHelper(Context context){
         this.context = context;
+        baseRef = new Firebase(context.getResources().getString(R.string.firebase_url));
     }
 
     public void logUserIntoServerViaEmail(String email, String password){
-        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
-        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+        baseRef.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
@@ -37,8 +38,7 @@ public class FBHelper {
 
 
     public void addNewUserToServer(String email, String password){
-        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
-        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+        baseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 System.out.println("New user added: " + result.get("uid"));
@@ -52,8 +52,7 @@ public class FBHelper {
     }
 
     public String getCurrentUserName(){
-        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
-        AuthData authData = ref.getAuth();
+        AuthData authData = baseRef.getAuth();
         if (authData != null) {
             return authData.getUid();
         } else {
@@ -64,8 +63,7 @@ public class FBHelper {
     public void addNewConversation(Conversation newConversation){
         String firebasePath = (getCurrentUserName() + "--" + (newConversation.getUser(0).getName()).replace(".",""));
 
-        Firebase ref = new Firebase(context.getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child("groups").child(firebasePath);
+        Firebase uploadRef =  baseRef.child("groups").child(firebasePath);
         uploadRef.child("").setValue(newConversation);
     }
 }
