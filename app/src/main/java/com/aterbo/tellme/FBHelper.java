@@ -68,6 +68,4 @@ public class FBHelper {
         Firebase uploadRef =  ref.child("groups").child(firebasePath);
         uploadRef.child("").setValue(newConversation);
     }
-    }
-
 }
