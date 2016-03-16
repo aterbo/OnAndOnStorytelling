@@ -236,8 +236,6 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     public void getRandomPrompt(){
-        ArrayList<Prompt> prompts = new ArrayList<>();
-        Random random = new Random();
         Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
         Firebase promptRef = baseRef.child("prompts");
 
