@@ -23,9 +23,13 @@ import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ConversationListActivity extends AppCompatActivity {
 
@@ -34,6 +38,7 @@ public class ConversationListActivity extends AppCompatActivity {
     int toWaitForSeparatorPosition;
     int toTellSeparatorPosition;
     String chosenUserToAddNew;
+    ArrayList<Prompt> masterPromptList;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
@@ -45,6 +50,8 @@ public class ConversationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         initializeFirebase();
+        masterPromptList = new ArrayList<>();
+        getRandomPrompt();
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
@@ -204,6 +211,9 @@ public class ConversationListActivity extends AppCompatActivity {
     private void continueWithNewConvo(){
         Conversation newConversation = makeConversation();
 
+        DBHelper db = new DBHelper(this);
+        db.addConversation(newConversation);
+
         FBHelper fbHelper = new FBHelper(this);
         fbHelper.addNewConversation(newConversation);
 
@@ -213,7 +223,10 @@ public class ConversationListActivity extends AppCompatActivity {
     private Conversation makeConversation(){
         ArrayList<User> dummyUserList = new ArrayList<>();
         dummyUserList.add(new User(chosenUserToAddNew, "TestUsername"));
-        ArrayList<Prompt> dummyPromptList = SupplyTestData.getDummyPromptList();
+        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
+        dummyPromptList.add(masterPromptList.get(0));
+        dummyPromptList.add(masterPromptList.get(1));
+        dummyPromptList.add(masterPromptList.get(2));
 
         Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
                 "TestFilepath", dummyUserList,
@@ -221,4 +234,32 @@ public class ConversationListActivity extends AppCompatActivity {
 
         return conversation;
     }
+
+    public void getRandomPrompt(){
+        ArrayList<Prompt> prompts = new ArrayList<>();
+        Random random = new Random();
+        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
+        Firebase promptRef = baseRef.child("prompts");
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                int counter = 1;
+                while(counter < 8) {
+                    Prompt prompt = new Prompt((String) snapshot.child(Integer.toString(counter)).child("text").getValue(),
+                            (String) snapshot.child(Integer.toString(counter)).child("tag").getValue());
+                    //sendPromptSomewhereSomehow(prompt);
+                    masterPromptList.add(prompt);
+                    counter++;
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
 }

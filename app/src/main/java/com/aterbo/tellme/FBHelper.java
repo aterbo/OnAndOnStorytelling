@@ -3,11 +3,15 @@ package com.aterbo.tellme;
 import android.content.Context;
 
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by ATerbo on 3/14/16.
@@ -66,4 +70,33 @@ public class FBHelper {
         Firebase uploadRef =  baseRef.child("groups").child(firebasePath);
         uploadRef.child("").setValue(newConversation);
     }
+
+    public void getRandomPrompt(){
+        Random random = new Random();
+        int randomNumber = random.nextInt(8 - 1) + 1;
+        Firebase prompts = baseRef.child("prompts").child(Integer.toString(randomNumber));
+
+        prompts.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Prompt prompt = new Prompt((String) snapshot.child("text").getValue(),
+                        (String) snapshot.child("tag").getValue());
+                //sendPromptSomewhereSomehow(prompt);
+                send(prompt);
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private Prompt send(Prompt prompt){
+
+        return prompt;
+    }
+
 }
