@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
+import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -46,6 +47,7 @@ public class FBHelper {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 System.out.println("New user added: " + result.get("uid"));
+                baseRef.child("users").child((String) result.get("uid")).setValue(new User("Test", "TEST!" ));
             }
 
             @Override

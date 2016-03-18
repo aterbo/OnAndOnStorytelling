@@ -188,28 +188,60 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void startNewConversation(){
-        getUserFromPicklist();
+        getUserList();
     }
 
-    private void getUserFromPicklist() {
+    private void getUserList(){
+        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
+
+        baseRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                ArrayList<User> userList = parseUserList(snapshot);
+                selectConversationPartner(userList);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private ArrayList<User> parseUserList(DataSnapshot snapshot){
+        ArrayList<User> userList = new ArrayList<>();
+        User user1 = new User((String) snapshot.child("1").child("email").getValue(),
+                (String) snapshot.child("1").child("email").getValue());
+        User user2 = new User((String) snapshot.child("2").child("email").getValue(),
+                (String) snapshot.child("2").child("email").getValue());
+        User user3 = new User((String) snapshot.child("1").child("email").getValue(),
+                (String) snapshot.child("3").child("email").getValue());
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        return userList;
+    }
+
+    private void selectConversationPartner(final ArrayList<User> userList) {
         final CharSequence[] items = {
-                "andy.terbovich@gmail.com", "test@test.com", "a@a.com"
+                userList.get(0).getName(), userList.get(1).getName(), userList.get(2).getName()
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose User to Talk To")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        chosenUserToAddNew = items[which].toString();
-                        continueWithNewConvo();
+                        User selectedUser = userList.get(which);
+                        continueWithNewConvo(selectedUser);
                     }
                 });
         AlertDialog pickUserAlert = builder.create();
         pickUserAlert.show();
     }
 
-    private void continueWithNewConvo(){
-        Conversation newConversation = makeConversation();
+    private void continueWithNewConvo(User selectedUser){
+        Conversation newConversation = makeConversation(selectedUser);
 
         DBHelper db = new DBHelper(this);
         db.addConversation(newConversation);
@@ -220,16 +252,16 @@ public class ConversationListActivity extends AppCompatActivity {
         startTellActivity(newConversation);
     }
 
-    private Conversation makeConversation(){
-        ArrayList<User> dummyUserList = new ArrayList<>();
-        dummyUserList.add(new User(chosenUserToAddNew, "TestUsername"));
+    private Conversation makeConversation(User selectedUser){
+        ArrayList<User> choosenUserList = new ArrayList<>();
+        choosenUserList.add(selectedUser);
         ArrayList<Prompt> dummyPromptList = new ArrayList<>();
         dummyPromptList.add(masterPromptList.get(0));
         dummyPromptList.add(masterPromptList.get(1));
         dummyPromptList.add(masterPromptList.get(2));
 
         Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
-                "TestFilepath", dummyUserList,
+                "TestFilepath", choosenUserList,
                 0, new Prompt("TestPrompt", "TestTag"), dummyPromptList);
 
         return conversation;
