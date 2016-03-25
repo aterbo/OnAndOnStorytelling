@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,15 +24,19 @@ import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.ui.auth.core.AuthProviderType;
+import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
+import com.firebase.ui.auth.core.FirebaseLoginError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationListActivity extends AppCompatActivity {
+public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     ArrayList<Conversation> conversations;
     int toHearSeparatorPosition;
@@ -42,6 +47,32 @@ public class ConversationListActivity extends AppCompatActivity {
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
     ArrayList<Object> objectList;
+    private Firebase baseRef;
+
+    @Override
+    public Firebase getFirebaseRef() {
+        // TODO: Return your Firebase ref
+        return baseRef;
+    }
+
+    @Override
+    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
+        // TODO: Handle an error from the authentication provider
+    }
+
+    @Override
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
+        // TODO: Handle an error from the user
+        System.out.println("Error logging in");
+    }
+
+    @Override
+    public void onFirebaseLoggedIn(AuthData authData) {
+        // TODO: Handle successful login
+        System.out.println("User ID: ");
+        Log.e("LOGGEDIN", "YAAAAAAAAAAY");
+        Log.e("LOGGEDIN", authData.getUid());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +80,7 @@ public class ConversationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         initializeFirebase();
+/*
         masterPromptList = new ArrayList<>();
         getRandomPrompt();
         setSupportActionBar(toolbar);
@@ -58,11 +90,19 @@ public class ConversationListActivity extends AppCompatActivity {
 //        getConversationsFromDB();
         constructConversationList();
         setListAdaptor();
+        */
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 
     private void initializeFirebase(){
         Firebase.setAndroidContext(this);
+        baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
     }
 
     private void setFloatingActionButton() {
@@ -188,8 +228,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     public void goToLoginScreen(View view){
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        showFirebaseLoginPrompt();
     }
 
     private void startNewConversation(){
