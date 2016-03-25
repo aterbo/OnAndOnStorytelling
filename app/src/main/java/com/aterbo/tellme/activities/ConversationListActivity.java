@@ -29,7 +29,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.List;
 
 public class ConversationListActivity extends AppCompatActivity {
 
@@ -37,7 +37,6 @@ public class ConversationListActivity extends AppCompatActivity {
     int toHearSeparatorPosition;
     int toWaitForSeparatorPosition;
     int toTellSeparatorPosition;
-    String chosenUserToAddNew;
     ArrayList<Prompt> masterPromptList;
 
     ListView conversationListView;
@@ -55,7 +54,8 @@ public class ConversationListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
-        getConversationsFromDB();
+        getConversationsFromFB();
+//        getConversationsFromDB();
         constructConversationList();
         setListAdaptor();
 
@@ -147,14 +147,19 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
+    private void getConversationsFromFB(){
+
+    }
+
     private void getConversationsFromDB(){
         DBHelper db = new DBHelper(this);
         conversations = db.getConversationList();
+        /*
         if(conversations.size()<=1) {
             SupplyTestData testListData = new SupplyTestData(this);
             testListData.buildTestSQLiteDB();
             conversations = db.getConversationList();
-        }
+        } */
     }
 
     private void setAllSeparators() {
@@ -211,22 +216,20 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private ArrayList<User> parseUserList(DataSnapshot snapshot){
         ArrayList<User> userList = new ArrayList<>();
-        User user1 = new User((String) snapshot.child("1").child("email").getValue(),
-                (String) snapshot.child("1").child("email").getValue());
-        User user2 = new User((String) snapshot.child("2").child("email").getValue(),
-                (String) snapshot.child("2").child("email").getValue());
-        User user3 = new User((String) snapshot.child("1").child("email").getValue(),
-                (String) snapshot.child("3").child("email").getValue());
-        userList.add(user1);
-        userList.add(user2);
-        userList.add(user3);
+        for (DataSnapshot child : snapshot.getChildren()) {
+            User user = new User((String) child.child("name").getValue(),
+                    (String) child.child("userName").getValue());
+            userList.add(user);
+        }
         return userList;
     }
 
     private void selectConversationPartner(final ArrayList<User> userList) {
-        final CharSequence[] items = {
-                userList.get(0).getName(), userList.get(1).getName(), userList.get(2).getName()
-        };
+        List<String> nameList = new ArrayList<>();
+        for (User user : userList){
+            nameList.add(user.getName());
+        }
+        final CharSequence[] items = nameList.toArray(new String[nameList.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Choose User to Talk To")
@@ -243,8 +246,11 @@ public class ConversationListActivity extends AppCompatActivity {
     private void continueWithNewConvo(User selectedUser){
         Conversation newConversation = makeConversation(selectedUser);
 
+        /*
         DBHelper db = new DBHelper(this);
         db.addConversation(newConversation);
+        */
+
 
         FBHelper fbHelper = new FBHelper(this);
         fbHelper.addNewConversation(newConversation);
@@ -253,15 +259,15 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private Conversation makeConversation(User selectedUser){
-        ArrayList<User> choosenUserList = new ArrayList<>();
-        choosenUserList.add(selectedUser);
+        ArrayList<User> chosenUserList = new ArrayList<>();
+        chosenUserList.add(selectedUser);
         ArrayList<Prompt> dummyPromptList = new ArrayList<>();
         dummyPromptList.add(masterPromptList.get(0));
         dummyPromptList.add(masterPromptList.get(1));
         dummyPromptList.add(masterPromptList.get(2));
 
         Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
-                "TestFilepath", choosenUserList,
+                "TestFilepath", chosenUserList,
                 0, new Prompt("TestPrompt", "TestTag"), dummyPromptList);
 
         return conversation;
