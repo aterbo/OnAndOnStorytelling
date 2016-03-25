@@ -3,6 +3,8 @@ package com.aterbo.tellme;
 import android.content.Context;
 
 import com.aterbo.tellme.SQLite.DBHelper;
+import com.aterbo.tellme.Utils.Constants;
+import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
@@ -11,9 +13,12 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
+import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,6 +31,7 @@ public class FBHelper {
     private Firebase baseRef;
     private Firebase userRef;
     private Firebase groupRef;
+    private String mUserName, mUserEmail, mPassword;
 
     public FBHelper(Context context){
         this.context = context;
@@ -49,19 +55,60 @@ public class FBHelper {
     }
 
 
-    public void addNewUserToServer(final String email, String password){
+    public void addNewUserToServer(final String email, final String password){
         baseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 System.out.println("New user added: " + result.get("uid"));
-                User newUser = new User(email.replace(".", ""), (String) result.get("uid"));
+                mUserEmail = email.replace(".", ",");
+                mPassword = password;
+                mUserName = (String) result.get("uid");
 
-                userRef.child((String) result.get("uid")).setValue(newUser);
+                createUserInFirebaseHelper(mUserEmail);
             }
 
             @Override
             public void onError(FirebaseError firebaseError) {
                 System.out.println("Error adding new user");
+            }
+        });
+    }
+
+    /**
+     * Creates a new user in Firebase from the Java POJO
+     */
+    private void createUserInFirebaseHelper(final String authUserId) {
+
+        /**
+         * Create the user and uid mapping
+         */
+        HashMap<String, Object> userAndUidMapping = new HashMap<String, Object>();
+
+        /* Create a HashMap version of the user to add */
+        User newUser = new User(mUserEmail, mUserName);
+        HashMap<String, Object> newUserMap = (HashMap<String, Object>)
+                new ObjectMapper().convertValue(newUser, Map.class);
+
+        /* Add the user and UID to the update map */
+        userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_USERS + "/" + mUserEmail,
+                newUserMap);
+        userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_UID_MAPPINGS + "/"
+                + authUserId, mUserEmail);
+
+        /* Try to update the database; if there is already a user, this will fail */
+        baseRef.updateChildren(userAndUidMapping, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    /* Try just making a uid mapping */
+                    baseRef.child(Constants.FIREBASE_LOCATION_UID_MAPPINGS)
+                            .child(authUserId).setValue(mUserEmail);
+                }
+                /**
+                 *  The value has been set or it failed; either way, log out the user since
+                 *  they were only logged in with a temp password
+                 **/
+                baseRef.unauth();
             }
         });
     }

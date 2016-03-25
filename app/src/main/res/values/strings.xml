@@ -20,4 +20,5 @@
         completions."
     </string>
     <string name="title_activity_create_user">CreateUserActivity</string>
+    <string name="title_activity_start_new_conversation">startNewConversation</string>
 </resources>
