@@ -6,19 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.SQLite.DBHelper;
-import com.aterbo.tellme.SupplyTestData;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
@@ -227,10 +227,14 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         startActivity(intent);
     }
 
-    public void goToLoginScreen(View view){
+    public void logIn(View view){
         showFirebaseLoginPrompt();
     }
 
+    public void addNewUser(View view){
+        AlertDialog addNewUserDialog = loginDialog("Add User");
+        addNewUserDialog.show();
+    }
     private void startNewConversation(){
         getUserList();
     }
@@ -335,6 +339,43 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
+
+    public AlertDialog loginDialog(String message) {
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View textEntryView = factory.inflate(R.layout.login, null);
+        final AlertDialog.Builder failAlert = new AlertDialog.Builder(this);
+        failAlert.setTitle("Login/ Register Failed");
+        failAlert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Cancelled
+            }
+        });
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Login/ Register");
+        alert.setMessage(message);
+        alert.setView(textEntryView);
+        alert.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                try {
+                    final EditText usernameInput = (EditText) textEntryView.findViewById(R.id.userNameEditText);
+                    final EditText passwordInput = (EditText) textEntryView.findViewById(R.id.passwordEditText);
+                    Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
+
+                    FBHelper fbHelper = new FBHelper(getApplicationContext());
+                    fbHelper.addNewUserToServer(usernameInput.getText().toString(), passwordInput.getText().toString());
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        return alert.create();
     }
 
 }

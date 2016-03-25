@@ -14,11 +14,17 @@
     tools:showIn="@layout/activity_main">
 
     <Button
-        android:id="@+id/add_login_button"
+        android:id="@+id/login_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log In Screen"
-        android:onClick="goToLoginScreen"/>
+        android:text="Log In"
+        android:onClick="logIn"/>
+    <Button
+        android:id="@+id/add_user_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create New Account"
+        android:onClick="addNewUser"/>
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="wrap_content"
