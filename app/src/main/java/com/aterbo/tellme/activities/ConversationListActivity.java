@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
@@ -22,6 +23,7 @@ import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConvoLite;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
@@ -29,6 +31,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
@@ -48,6 +51,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     ConversationListAdaptor conversationListAdaptor;
     ArrayList<Object> objectList;
     private Firebase baseRef;
+    FirebaseListAdapter<ConvoLite> mListAdapter;
 
     @Override
     public Firebase getFirebaseRef() {
@@ -80,17 +84,18 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         initializeFirebase();
-/*
+
         masterPromptList = new ArrayList<>();
         getRandomPrompt();
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
-        getConversationsFromFB();
+        //getConversationsFromFB();
 //        getConversationsFromDB();
-        constructConversationList();
-        setListAdaptor();
-        */
+        //constructConversationList();
+        //setListAdaptor();
+
+        whoKnowsThisMightMakeAFirebaseList();
 
     }
 
@@ -115,6 +120,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         });
     }
 
+    /*
     private void setListAdaptor() {
         conversationListAdaptor = new ConversationListAdaptor(objectList, this);
         conversationListView = (ListView)findViewById(R.id.conversation_list);
@@ -126,7 +132,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             }
         });
     }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -215,6 +221,31 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         objectList.add(position, new String(separatorText));
     }
 
+    private void whoKnowsThisMightMakeAFirebaseList(){
+        setDummyConvoToFirebase();
+        final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
+        mListAdapter = new FirebaseListAdapter<ConvoLite>(this, ConvoLite.class,
+                android.R.layout.two_line_list_item, baseRef.child("convoLite")) {
+            @Override
+            protected void populateView(View v, ConvoLite model, int position) {
+                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getTitle());
+                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getCurrentPrompt());
+            }
+        };
+        listView.setAdapter(mListAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ConvoLite selectedConvo = mListAdapter.getItem(position);
+                if (selectedConvo != null) {
+                    String convoPushId = mListAdapter.getRef(position).getKey();
+                    //TODO: Determine which type of conversation was picked and open activity based on PushId.
+                }
+            }
+
+        });
+    }
+
     private void startTellActivity(Conversation conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         intent.putExtra("selectedConversation", conversation);
@@ -239,7 +270,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         getUserList();
     }
 
-    private void getUserList(){
+     private void getUserList(){
         Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
 
         baseRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -298,7 +329,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         FBHelper fbHelper = new FBHelper(this);
         fbHelper.addNewConversation(newConversation);
 
-        startTellActivity(newConversation);
+        //startTellActivity(newConversation);
     }
 
     private Conversation makeConversation(User selectedUser){
@@ -378,4 +409,24 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         return alert.create();
     }
 
+    private void setDummyConvoToFirebase(){
+
+        ArrayList<User> chosenUserList = new ArrayList<>();
+        chosenUserList.add(new User("Test1", "Test2"));
+        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
+        dummyPromptList.add(new Prompt("TestPrompt1", "TestTag1"));
+        dummyPromptList.add(new Prompt("TestPrompt2", "TestTag2"));
+        dummyPromptList.add(new Prompt("TestPrompt3", "TestTag3"));
+
+        Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
+                "TestFilepath", chosenUserList, 0, new Prompt("TestPrompt", "TestTag"), dummyPromptList);
+        FBHelper fbHelper = new FBHelper(this);
+        fbHelper.addNewConversation(conversation);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mListAdapter.cleanup();
+    }
 }

@@ -6,6 +6,7 @@ import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConvoLite;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
@@ -127,9 +128,12 @@ public class FBHelper {
         newGroup.setValue(newConversation);
         //build out users list under user path and under new conversation path
         for (User user : newConversation.getUsersInConversation()){
-            userRef.child(user.getUserName()).child("groups").child(newGroup.getKey()).setValue(true);
+            //userRef.child(user.getUserName()).child("groups").child(newGroup.getKey()).setValue(true);
             newGroup.child("participants").child(user.getUserName()).setValue(true);
         }
+
+        ConvoLite convoLite = new ConvoLite(newConversation.getTitle(), newConversation.getCurrentPrompt().getPromptText());
+        baseRef.child("listtest").push().setValue(convoLite);
     }
 
     public void getRandomPrompt(){
@@ -241,4 +245,6 @@ public class FBHelper {
         db.addConversation(conversation);
 
     }
+
+
 }
