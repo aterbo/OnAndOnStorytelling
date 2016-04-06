@@ -6,8 +6,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.aterbo.tellme.R;
-
 /**
  * Created by ATerbo on 3/13/16.
  */

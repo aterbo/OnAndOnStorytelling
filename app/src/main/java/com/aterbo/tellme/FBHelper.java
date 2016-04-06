@@ -3,7 +3,6 @@ package com.aterbo.tellme;
 import android.content.Context;
 
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConvoLite;
 import com.aterbo.tellme.classes.Prompt;
@@ -13,7 +12,6 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ServerValue;
 import com.firebase.client.ValueEventListener;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,11 +1,11 @@
 package com.aterbo.tellme;
 
 import android.content.Context;
+
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**

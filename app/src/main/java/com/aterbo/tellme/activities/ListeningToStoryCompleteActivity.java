@@ -1,8 +1,8 @@
 package com.aterbo.tellme.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
-
-import org.w3c.dom.Text;
 
 public class ListeningToStoryCompleteActivity extends AppCompatActivity {
 
