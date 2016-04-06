@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.Firebase;
@@ -98,8 +97,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private void updateConversation(){
         conversation.setStatusToWaiting();
         conversation.setTimeSinceLastAction("now");
-        DBHelper db = new DBHelper(this);
-        db.updateConversation(conversation);
+        //TODO: Update Convo in FB
     }
 
 

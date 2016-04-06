@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
@@ -195,17 +194,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private void getConversationsFromFB(){
 
-    }
-
-    private void getConversationsFromDB(){
-        DBHelper db = new DBHelper(this);
-        conversations = db.getConversationList();
-        /*
-        if(conversations.size()<=1) {
-            SupplyTestData testListData = new SupplyTestData(this);
-            testListData.buildTestSQLiteDB();
-            conversations = db.getConversationList();
-        } */
     }
 
     private void setAllSeparators() {

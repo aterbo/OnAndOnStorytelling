@@ -2,7 +2,6 @@ package com.aterbo.tellme;
 
 import android.content.Context;
 
-import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
@@ -170,7 +169,6 @@ public class FBHelper {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Conversation conversation = parseFBPathIntoConversation(dataSnapshot);
-                setNewConversationToDB(conversation);
             }
 
             @Override
@@ -238,12 +236,6 @@ public class FBHelper {
         Prompt currentPrompt = new Prompt((String) snapshot.child("text").getValue(),
                     (String) snapshot.child("tag").getValue());
         return currentPrompt;
-    }
-
-    private void setNewConversationToDB(Conversation conversation){
-        DBHelper db = new DBHelper(context);
-        db.addConversation(conversation);
-
     }
 
 

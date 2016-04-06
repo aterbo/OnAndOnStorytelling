@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 
@@ -35,8 +34,7 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
     private void changeConversationStatus(){
         conversation.setTimeSinceLastAction("now");
         conversation.setStatusToTell();
-        DBHelper db = new DBHelper(this);
-        db.updateConversation(conversation);
+        //TODO:Update Conversation Status in FB
     }
 
     private void setViews(){
@@ -65,8 +63,7 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
 
     private void updateConversationPrompt(Prompt newPrompt){
         conversation.setCurrentPrompt(newPrompt);
-        DBHelper db = new DBHelper(this);
-        db.updateConversation(conversation);
+        //TODO: Set prompt to FB
     }
 
     private void goBackToMainScreen(){

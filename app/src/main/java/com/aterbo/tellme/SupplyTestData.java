@@ -1,9 +1,6 @@
 package com.aterbo.tellme;
 
 import android.content.Context;
-import android.net.Uri;
-
-import com.aterbo.tellme.SQLite.DBHelper;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
@@ -20,12 +17,6 @@ public class SupplyTestData {
 
     public SupplyTestData(Context context){
         this.context = context;
-    }
-
-    public void buildTestSQLiteDB(){
-        DBHelper db = new DBHelper(context);
-        ArrayList<Conversation> testList = getTestConvos();
-        db.addListOfConversations(testList);
     }
 
     private ArrayList<Conversation> getTestConvos(){
