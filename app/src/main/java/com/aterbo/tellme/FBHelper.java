@@ -1,6 +1,7 @@
 package com.aterbo.tellme;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
@@ -29,7 +30,7 @@ public class FBHelper {
     private Firebase baseRef;
     private Firebase userRef;
     private Firebase groupRef;
-    private String mUserName, mUserEmail, mPassword;
+    private String mUserName, mUserEmail, mUserID;
 
     public FBHelper(Context context){
         this.context = context;
@@ -53,16 +54,16 @@ public class FBHelper {
     }
 
 
-    public void addNewUserToServer(final String email, final String password){
+    public void addNewUserToServer(final String userName, final String email, final String password){
         baseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 System.out.println("New user added: " + result.get("uid"));
                 mUserEmail = email.replace(".", ",");
-                mPassword = password;
-                mUserName = (String) result.get("uid");
+                mUserName = userName;
+                mUserID = (String) result.get("uid");
 
-                createUserInFirebaseHelper(mUserEmail);
+                createUserInFirebaseHelper();
             }
 
             @Override
@@ -75,7 +76,7 @@ public class FBHelper {
     /**
      * Creates a new user in Firebase from the Java POJO
      */
-    private void createUserInFirebaseHelper(final String authUserId) {
+    private void createUserInFirebaseHelper() {
 
         /**
          * Create the user and uid mapping
@@ -83,7 +84,7 @@ public class FBHelper {
         HashMap<String, Object> userAndUidMapping = new HashMap<String, Object>();
 
         /* Create a HashMap version of the user to add */
-        User newUser = new User(mUserEmail, mUserName);
+        User newUser = new User(mUserName, mUserEmail, mUserID);
         HashMap<String, Object> newUserMap = (HashMap<String, Object>)
                 new ObjectMapper().convertValue(newUser, Map.class);
 
@@ -91,7 +92,7 @@ public class FBHelper {
         userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_USERS + "/" + mUserEmail,
                 newUserMap);
         userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_UID_MAPPINGS + "/"
-                + authUserId, mUserEmail);
+                + mUserID, mUserEmail);
 
         /* Try to update the database; if there is already a user, this will fail */
         baseRef.updateChildren(userAndUidMapping, new Firebase.CompletionListener() {
@@ -100,18 +101,15 @@ public class FBHelper {
                 if (firebaseError != null) {
                     /* Try just making a uid mapping */
                     baseRef.child(Constants.FIREBASE_LOCATION_UID_MAPPINGS)
-                            .child(authUserId).setValue(mUserEmail);
+                            .child(mUserID).setValue(mUserEmail);
+                    Log.i("FIREBASELOGIN", "Error adding user to Firebase");
                 }
-                /**
-                 *  The value has been set or it failed; either way, log out the user since
-                 *  they were only logged in with a temp password
-                 **/
-                baseRef.unauth();
+                Log.i("FIREBASELOGIN", "User added to Firebase");
             }
         });
     }
 
-    public String getCurrentUserName(){
+    public String getCurrentUserID(){
         AuthData authData = baseRef.getAuth();
         if (authData != null) {
             return authData.getUid();
@@ -125,8 +123,8 @@ public class FBHelper {
         newGroup.setValue(newConversation);
         //build out users list under user path and under new conversation path
         for (User user : newConversation.getUsersInConversation()){
-            //userRef.child(user.getUserName()).child("groups").child(newGroup.getKey()).setValue(true);
-            newGroup.child("participants").child(user.getUserName()).setValue(true);
+            //userRef.child(user.getUserID()).child("groups").child(newGroup.getKey()).setValue(true);
+            newGroup.child("participants").child(user.getUserID()).setValue(true);
         }
 
         ConvoLite convoLite = new ConvoLite(newConversation.getTitle(), newConversation.getCurrentPrompt().getPromptText());
@@ -162,7 +160,7 @@ public class FBHelper {
     }
 
     public void setUserGroupListener(){
-        Firebase userGroup = userRef.child(getCurrentUserName()).child("groups");
+        Firebase userGroup = userRef.child(getCurrentUserID()).child("groups");
         userGroup.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -213,8 +211,9 @@ public class FBHelper {
     private ArrayList<User> parseUserList(DataSnapshot snapshot){
         ArrayList<User> userList = new ArrayList<>();
         for (DataSnapshot child : snapshot.getChildren()) {
-            User user = new User((String) child.child("name").getValue(),
-                    (String) child.child("userName").getValue());
+            User user = new User((String) child.child("userName").getValue(),
+                    (String) child.child("email").getValue(),
+                    (String) child.child("userId").getValue());
             userList.add(user);
         }
         return userList;

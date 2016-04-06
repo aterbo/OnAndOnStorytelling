@@ -73,8 +73,9 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     public void onFirebaseLoggedIn(AuthData authData) {
         // TODO: Handle successful login
         System.out.println("User ID: ");
-        Log.e("LOGGEDIN", "YAAAAAAAAAAY");
-        Log.e("LOGGEDIN", authData.getUid());
+        Log.i("LOGGEDIN", "YAAAAAAAAAAY");
+        Log.i("LOGGEDIN", authData.getUid());
+
     }
 
     @Override
@@ -90,11 +91,10 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
         setFloatingActionButton();
         //getConversationsFromFB();
-//        getConversationsFromDB();
         //constructConversationList();
         //setListAdaptor();
 
-        whoKnowsThisMightMakeAFirebaseList();
+        //whoKnowsThisMightMakeAFirebaseList();
 
     }
 
@@ -209,8 +209,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         objectList.add(position, new String(separatorText));
     }
 
+    /*
     private void whoKnowsThisMightMakeAFirebaseList(){
-        setDummyConvoToFirebase();
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
         mListAdapter = new FirebaseListAdapter<ConvoLite>(this, ConvoLite.class,
                 android.R.layout.two_line_list_item, baseRef.child("convoLite")) {
@@ -233,6 +233,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
         });
     }
+    */
 
     private void startTellActivity(Conversation conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
@@ -251,7 +252,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     }
 
     public void addNewUser(View view){
-        AlertDialog addNewUserDialog = loginDialog("Add User");
+        AlertDialog addNewUserDialog = addNewUserDialog("Add User");
         addNewUserDialog.show();
     }
     private void startNewConversation(){
@@ -279,8 +280,9 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     private ArrayList<User> parseUserList(DataSnapshot snapshot){
         ArrayList<User> userList = new ArrayList<>();
         for (DataSnapshot child : snapshot.getChildren()) {
-            User user = new User((String) child.child("name").getValue(),
-                    (String) child.child("userName").getValue());
+            User user = new User((String) child.child("userName").getValue(),
+                    (String) child.child("email").getValue(),
+                    (String) child.child("userId").getValue());
             userList.add(user);
         }
         return userList;
@@ -289,7 +291,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     private void selectConversationPartner(final ArrayList<User> userList) {
         List<String> nameList = new ArrayList<>();
         for (User user : userList){
-            nameList.add(user.getName());
+            nameList.add(user.getUserName());
         }
         final CharSequence[] items = nameList.toArray(new String[nameList.size()]);
 
@@ -360,7 +362,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         });
     }
 
-    public AlertDialog loginDialog(String message) {
+    public AlertDialog addNewUserDialog(String message) {
         LayoutInflater factory = LayoutInflater.from(this);
         final View textEntryView = factory.inflate(R.layout.login, null);
         final AlertDialog.Builder failAlert = new AlertDialog.Builder(this);
@@ -378,11 +380,14 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 try {
                     final EditText usernameInput = (EditText) textEntryView.findViewById(R.id.userNameEditText);
+                    final EditText emailInput = (EditText) textEntryView.findViewById(R.id.emailEditText);
                     final EditText passwordInput = (EditText) textEntryView.findViewById(R.id.passwordEditText);
                     Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
 
                     FBHelper fbHelper = new FBHelper(getApplicationContext());
-                    fbHelper.addNewUserToServer(usernameInput.getText().toString(), passwordInput.getText().toString());
+                    fbHelper.addNewUserToServer(usernameInput.getText().toString(),
+                            emailInput.getText().toString(),
+                            passwordInput.getText().toString());
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -397,20 +402,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         return alert.create();
     }
 
-    private void setDummyConvoToFirebase(){
-
-        ArrayList<User> chosenUserList = new ArrayList<>();
-        chosenUserList.add(new User("Test1", "Test2"));
-        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
-        dummyPromptList.add(new Prompt("TestPrompt1", "TestTag1"));
-        dummyPromptList.add(new Prompt("TestPrompt2", "TestTag2"));
-        dummyPromptList.add(new Prompt("TestPrompt3", "TestTag3"));
-
-        Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
-                "TestFilepath", chosenUserList, 0, new Prompt("TestPrompt", "TestTag"), dummyPromptList);
-        FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(conversation);
-    }
 
     @Override
     protected void onDestroy() {

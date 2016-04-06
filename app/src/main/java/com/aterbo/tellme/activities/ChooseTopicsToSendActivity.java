@@ -122,7 +122,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void addConversationToServer(){
         Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child(conversation.getUser(0).getName().replace(".",""));
+        Firebase uploadRef =  ref.child(conversation.getUser(0).getUserName().replace(".",""));
         uploadRef.setValue(conversation);
     }
 

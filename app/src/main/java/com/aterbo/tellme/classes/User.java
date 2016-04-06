@@ -7,30 +7,35 @@ import android.os.Parcelable;
  * Created by ATerbo on 2/14/16.
  */
 public class User implements Parcelable{
-    private String name;
     private String userName;
+    private String email;
+    private String userID;
 
-    public User(String name, String userName){
-        this.name = name;
-        this.userName = userName;
+
+    public User(String name, String email, String userID){
+        this.userName = name;
+        this.email = email;
+        this.userID = userID;
     }
 
-    public User(String name){
-        this.name = name;
-        this.userName = "";
-    }
-
-    public String getName() {
-        return name;
-    }
+    public User(){}
 
     public String getUserName() {
         return userName;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     protected User(Parcel in) {
-        name = in.readString();
         userName = in.readString();
+        email = in.readString();
+        userID = in.readString();
     }
 
     @Override
@@ -40,8 +45,9 @@ public class User implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
         dest.writeString(userName);
+        dest.writeString(email);
+        dest.writeString(userID);
     }
 
     @SuppressWarnings("unused")

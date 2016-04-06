@@ -105,7 +105,7 @@ public class Conversation implements Parcelable {
     public String getUsersNameAsString(){
         String userNames = "";
         for (User user : usersInConversation){
-            userNames = userNames + user.getName() + ", ";
+            userNames = userNames + user.getUserName() + ", ";
         }
 
         if (userNames.endsWith(", ")) {
