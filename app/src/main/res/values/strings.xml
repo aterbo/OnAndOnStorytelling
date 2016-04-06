@@ -21,4 +21,5 @@
     </string>
     <string name="title_activity_create_user">CreateUserActivity</string>
     <string name="title_activity_start_new_conversation">startNewConversation</string>
+    <string name="title_activity_pick_user">PickUserActivity</string>
 </resources>

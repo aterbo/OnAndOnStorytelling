@@ -256,7 +256,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         addNewUserDialog.show();
     }
     private void startNewConversation(){
-        getUserList();
+        Intent intent = new Intent(this, PickUserActivity.class);
+        startActivity(intent);
     }
 
      private void getUserList(){
