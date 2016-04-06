@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,15 +15,24 @@ import android.widget.TextView;
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
+import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 
-public class PickUserActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class StartNewConversationActivity extends AppCompatActivity {
 
     FirebaseListAdapter<User> mListAdapter;
     ListView mListView;
     private Firebase mUsersRef;
+    ArrayList<Prompt> masterPromptList;
+    String currentUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +40,8 @@ public class PickUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pick_user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intent = getIntent();
+        currentUserEmail = intent.getStringExtra("currentUserEmail");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -37,22 +49,14 @@ public class PickUserActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }      });
+            }
+        });
 
-    /**
-     * Create Firebase references
-     */
     mUsersRef = new Firebase(getResources().getString(R.string.firebase_url) + "/" +
             Constants.FIREBASE_LOCATION_USERS);
-
-    /**
-     * Link layout elements from XML and setup the toolbar
-     */
     initializeScreen();
-
-    /**
-     * Set interactive bits, such as click events/adapters
-     */
+    masterPromptList = new ArrayList<>();
+    getRandomPrompt();
     }
 
     @Override
@@ -82,16 +86,50 @@ public class PickUserActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User selectedUser = mListAdapter.getItem(position);
-                if (selectedUser != null) {
-                    String userEmail = selectedUser.getEmail();
-                    Log.i("SELECTED USER", userEmail);
-                    //TODO: Determine which type of conversation was picked and open activity based on PushId.
+                Log.i("SELECTED USER", selectedUser.getEmail());
+                continueWithNewConvo(selectedUser);
+            }
+        });
+    }
+
+    private void continueWithNewConvo(User selectedUser){
+        //TODO: Make PromptList Selector
+
+        ArrayList<Prompt> selectedPromptsList = new ArrayList<>();
+        selectedPromptsList.add(masterPromptList.get(0));
+        selectedPromptsList.add(masterPromptList.get(1));
+        selectedPromptsList.add(masterPromptList.get(2));
+
+        FBHelper fbHelper = new FBHelper(this);
+        fbHelper.addNewConversation(currentUserEmail, selectedUser, selectedPromptsList);
+
+        //startTellActivity(newConversation);
+    }
+
+
+    public void getRandomPrompt(){
+
+        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
+        Firebase promptRef = baseRef.child("prompts");
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                int counter = 1;
+                while (counter < 8) {
+                    Prompt prompt = new Prompt((String) snapshot.child(Integer.toString(counter)).child("text").getValue(),
+                            (String) snapshot.child(Integer.toString(counter)).child("tag").getValue());
+                    //sendPromptSomewhereSomehow(prompt);
+                    masterPromptList.add(prompt);
+                    counter++;
                 }
             }
 
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
         });
-
-
     }
-
 }

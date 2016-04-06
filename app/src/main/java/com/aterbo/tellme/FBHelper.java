@@ -29,14 +29,16 @@ public class FBHelper {
     private Context context;
     private Firebase baseRef;
     private Firebase userRef;
-    private Firebase groupRef;
+    private Firebase userConvosRef;
+    private Firebase convoParticipantsRef;
     private String mUserName, mUserEmail, mUserID;
 
     public FBHelper(Context context){
         this.context = context;
         baseRef = new Firebase(context.getResources().getString(R.string.firebase_url));
         userRef = baseRef.child("users");
-        groupRef = baseRef.child("groups");
+        userConvosRef = baseRef.child("userConvos");
+        convoParticipantsRef = baseRef.child("convoParticipants");
     }
 
     public void logUserIntoServerViaEmail(String email, String password){
@@ -73,14 +75,7 @@ public class FBHelper {
         });
     }
 
-    /**
-     * Creates a new user in Firebase from the Java POJO
-     */
     private void createUserInFirebaseHelper() {
-
-        /**
-         * Create the user and uid mapping
-         */
         HashMap<String, Object> userAndUidMapping = new HashMap<String, Object>();
 
         /* Create a HashMap version of the user to add */
@@ -118,17 +113,36 @@ public class FBHelper {
         }
     }
 
-    public void addNewConversation(Conversation newConversation){
-        Firebase newGroup = groupRef.push();
-        newGroup.setValue(newConversation);
-        //build out users list under user path and under new conversation path
-        for (User user : newConversation.getUsersInConversation()){
-            //userRef.child(user.getUserID()).child("groups").child(newGroup.getKey()).setValue(true);
-            newGroup.child("participants").child(user.getUserID()).setValue(true);
-        }
+    public void addNewConversation(String currentUserEmail, User selectedUser, ArrayList<Prompt> selectedPromptsList){
 
-        ConvoLite convoLite = new ConvoLite(newConversation.getTitle(), newConversation.getCurrentPrompt().getPromptText());
-        baseRef.child("listtest").push().setValue(convoLite);
+
+        //HashMap<String, Object> conversationMapping = new HashMap<String, Object>();
+
+        Firebase newRef = convoParticipantsRef.push();
+        String convoId = newRef.getKey();
+        String selectedUserEmail = selectedUser.getEmail();
+
+        HashMap<String, Object> convoEmails = new HashMap<String, Object>();
+
+        convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
+                + currentUserEmail.replace(".",","), "creator");
+        convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
+                + selectedUserEmail.replace(".",","), "recipient");
+        convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                + currentUserEmail.replace(".",",") + "/" + convoId, "creator");
+        convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                + selectedUserEmail.replace(".",",") + "/" + convoId, "recipient");
+
+
+        baseRef.updateChildren(convoEmails, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASECREATENEWCONVO", "Error adding convo to Firebase");
+                }
+                Log.i("FIREBASECREATENEWCONVO", "Convo added to Firebase successfully");
+            }
+        });
     }
 
     public void getRandomPrompt(){

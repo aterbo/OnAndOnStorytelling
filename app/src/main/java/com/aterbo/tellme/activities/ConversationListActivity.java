@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
@@ -23,20 +21,14 @@ import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConvoLite;
-import com.aterbo.tellme.classes.Prompt;
-import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
@@ -44,7 +36,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     int toHearSeparatorPosition;
     int toWaitForSeparatorPosition;
     int toTellSeparatorPosition;
-    ArrayList<Prompt> masterPromptList;
+    private String currentUserEmail;
 
     ListView conversationListView;
     ConversationListAdaptor conversationListAdaptor;
@@ -75,7 +67,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         System.out.println("User ID: ");
         Log.i("LOGGEDIN", "YAAAAAAAAAAY");
         Log.i("LOGGEDIN", authData.getUid());
-
+        currentUserEmail = authData.getProviderData().get("email").toString();
+        Log.i("LOGGEDIN", currentUserEmail);
     }
 
     @Override
@@ -85,8 +78,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         initializeFirebase();
 
-        masterPromptList = new ArrayList<>();
-        getRandomPrompt();
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
@@ -256,112 +247,11 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         addNewUserDialog.show();
     }
     private void startNewConversation(){
-        Intent intent = new Intent(this, PickUserActivity.class);
+        Intent intent = new Intent(this, StartNewConversationActivity.class);
+        intent.putExtra("currentUserEmail", currentUserEmail.replace(".",","));
         startActivity(intent);
     }
 
-     private void getUserList(){
-        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
-
-        baseRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                ArrayList<User> userList = parseUserList(snapshot);
-                selectConversationPartner(userList);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    private ArrayList<User> parseUserList(DataSnapshot snapshot){
-        ArrayList<User> userList = new ArrayList<>();
-        for (DataSnapshot child : snapshot.getChildren()) {
-            User user = new User((String) child.child("userName").getValue(),
-                    (String) child.child("email").getValue(),
-                    (String) child.child("userId").getValue());
-            userList.add(user);
-        }
-        return userList;
-    }
-
-    private void selectConversationPartner(final ArrayList<User> userList) {
-        List<String> nameList = new ArrayList<>();
-        for (User user : userList){
-            nameList.add(user.getUserName());
-        }
-        final CharSequence[] items = nameList.toArray(new String[nameList.size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose User to Talk To")
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        User selectedUser = userList.get(which);
-                        continueWithNewConvo(selectedUser);
-                    }
-                });
-        AlertDialog pickUserAlert = builder.create();
-        pickUserAlert.show();
-    }
-
-    private void continueWithNewConvo(User selectedUser){
-        Conversation newConversation = makeConversation(selectedUser);
-
-        /*
-        DBHelper db = new DBHelper(this);
-        db.addConversation(newConversation);
-        */
-
-
-        FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(newConversation);
-
-        //startTellActivity(newConversation);
-    }
-
-    private Conversation makeConversation(User selectedUser){
-        ArrayList<User> chosenUserList = new ArrayList<>();
-        chosenUserList.add(selectedUser);
-        ArrayList<Prompt> dummyPromptList = new ArrayList<>();
-        dummyPromptList.add(masterPromptList.get(0));
-        dummyPromptList.add(masterPromptList.get(1));
-        dummyPromptList.add(masterPromptList.get(2));
-
-        Conversation conversation = new Conversation("TestTitle", "TestTimeSince", "TestDuration",
-                "TestFilepath", chosenUserList,
-                0, new Prompt("TestPrompt", "TestTag"), dummyPromptList);
-
-        return conversation;
-    }
-
-    public void getRandomPrompt(){
-        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
-        Firebase promptRef = baseRef.child("prompts");
-
-        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                int counter = 1;
-                while(counter < 8) {
-                    Prompt prompt = new Prompt((String) snapshot.child(Integer.toString(counter)).child("text").getValue(),
-                            (String) snapshot.child(Integer.toString(counter)).child("tag").getValue());
-                    //sendPromptSomewhereSomehow(prompt);
-                    masterPromptList.add(prompt);
-                    counter++;
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
 
     public AlertDialog addNewUserDialog(String message) {
         LayoutInflater factory = LayoutInflater.from(this);

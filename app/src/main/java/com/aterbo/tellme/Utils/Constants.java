@@ -12,6 +12,8 @@ public class Constants {
     public static final String FIREBASE_LOCATION = "";
     public static final String FIREBASE_LOCATION_USERS = "users";
     public static final String FIREBASE_LOCATION_USER_LISTS = "userLists";
+    public static final String FIREBASE_LOCATION_USER_CONVOS = "userConvos";
+    public static final String FIREBASE_LOCATION_CONVO_PARTICIPANTS = "convoParticipants";
     public static final String FIREBASE_LOCATION_USER_FRIENDS = "userFriends";
     public static final String FIREBASE_LOCATION_GROUPS = "groups";
     public static final String FIREBASE_LOCATION_UID_MAPPINGS = "uidMappings";

@@ -43,7 +43,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".activities.PickUserActivity"
+            android:name=".activities.StartNewConversationActivity"
             android:label="@string/title_activity_pick_user"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
