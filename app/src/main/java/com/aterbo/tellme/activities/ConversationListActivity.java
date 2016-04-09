@@ -12,15 +12,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.ConvoLite;
+import com.aterbo.tellme.classes.ConversationSummary;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
@@ -42,7 +44,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     ConversationListAdaptor conversationListAdaptor;
     ArrayList<Object> objectList;
     private Firebase baseRef;
-    FirebaseListAdapter<ConvoLite> mListAdapter;
+    FirebaseListAdapter<ConversationSummary> mListAdapter;
 
     @Override
     public Firebase getFirebaseRef() {
@@ -69,6 +71,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         Log.i("LOGGEDIN", authData.getUid());
         currentUserEmail = authData.getProviderData().get("email").toString();
         Log.i("LOGGEDIN", currentUserEmail);
+        setFirebaseListToUserEmail();
     }
 
     @Override
@@ -81,12 +84,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
-        //getConversationsFromFB();
-        //constructConversationList();
-        //setListAdaptor();
-
-        //whoKnowsThisMightMakeAFirebaseList();
-
     }
 
     @Override
@@ -200,31 +197,32 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         objectList.add(position, new String(separatorText));
     }
 
-    /*
-    private void whoKnowsThisMightMakeAFirebaseList(){
+
+    private void setFirebaseListToUserEmail() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
-        mListAdapter = new FirebaseListAdapter<ConvoLite>(this, ConvoLite.class,
-                android.R.layout.two_line_list_item, baseRef.child("convoLite")) {
+        mListAdapter = new FirebaseListAdapter<ConversationSummary>(this, ConversationSummary.class,
+                android.R.layout.two_line_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
             @Override
-            protected void populateView(View v, ConvoLite model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getTitle());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getCurrentPrompt());
+            protected void populateView(View v, ConversationSummary model, int position) {
+                ((TextView) v.findViewById(android.R.id.text1)).setText(model.getTitle());
+                ((TextView) v.findViewById(android.R.id.text2)).setText(model.pullUserEmailsAsString());
             }
         };
         listView.setAdapter(mListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ConvoLite selectedConvo = mListAdapter.getItem(position);
+                ConversationSummary selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
                     String convoPushId = mListAdapter.getRef(position).getKey();
+
+                    Log.i("PickedAConvo!", convoPushId);
                     //TODO: Determine which type of conversation was picked and open activity based on PushId.
                 }
             }
 
         });
     }
-    */
 
     private void startTellActivity(Conversation conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);

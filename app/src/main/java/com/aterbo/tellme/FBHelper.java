@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.ConvoLite;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
@@ -16,6 +17,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +115,8 @@ public class FBHelper {
         }
     }
 
-    public void addNewConversation(String currentUserEmail, User selectedUser, ArrayList<Prompt> selectedPromptsList){
+    public void addNewConversation(String currentUserEmail, User selectedUser,
+                                   ArrayList<Integer> selectedPromptsList){
 
 
         //HashMap<String, Object> conversationMapping = new HashMap<String, Object>();
@@ -124,15 +127,30 @@ public class FBHelper {
 
         HashMap<String, Object> convoEmails = new HashMap<String, Object>();
 
+
+        ArrayList<String> usersInConversationEmails = new ArrayList<>();
+        usersInConversationEmails.add(currentUserEmail.replace(".",","));
+        usersInConversationEmails.add(selectedUserEmail.replace(".",","));
+
+        ArrayList<Integer> proposedPrompts = new ArrayList<>();
+        proposedPrompts.add(1);
+        proposedPrompts.add(2);
+        proposedPrompts.add(3);
+
+        ConversationSummary itemToAddObject = new ConversationSummary(usersInConversationEmails,
+                selectedUserEmail, 2, -1, proposedPrompts);
+        HashMap<String, Object> itemToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
+
         convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
                 + currentUserEmail.replace(".",","), "creator");
         convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
                 + selectedUserEmail.replace(".",","), "recipient");
-        convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
-                + currentUserEmail.replace(".",",") + "/" + convoId, "creator");
-        convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
-                + selectedUserEmail.replace(".",",") + "/" + convoId, "recipient");
 
+        for (String userEmail : usersInConversationEmails) {
+            convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + convoId, itemToAddHashMap);
+        }
 
         baseRef.updateChildren(convoEmails, new Firebase.CompletionListener() {
             @Override
@@ -143,34 +161,6 @@ public class FBHelper {
                 Log.i("FIREBASECREATENEWCONVO", "Convo added to Firebase successfully");
             }
         });
-    }
-
-    public void getRandomPrompt(){
-        Random random = new Random();
-        int randomNumber = random.nextInt(8 - 1) + 1;
-        Firebase prompts = baseRef.child("prompts").child(Integer.toString(randomNumber));
-
-        prompts.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                Prompt prompt = new Prompt((String) snapshot.child("text").getValue(),
-                        (String) snapshot.child("tag").getValue());
-                //sendPromptSomewhereSomehow(prompt);
-                send(prompt);
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    private Prompt send(Prompt prompt){
-
-        return prompt;
     }
 
     public void setUserGroupListener(){

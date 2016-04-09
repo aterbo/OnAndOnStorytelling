@@ -18,4 +18,7 @@ public class Constants {
     public static final String FIREBASE_LOCATION_GROUPS = "groups";
     public static final String FIREBASE_LOCATION_UID_MAPPINGS = "uidMappings";
     public static final String FIREBASE_LOCATION_OWNER_MAPPINGS = "ownerMappings";
+
+
+    public static final int NUMBER_OF_PROMPT_OPTIONS = 3;
 }

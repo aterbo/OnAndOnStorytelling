@@ -100,8 +100,10 @@ public class StartNewConversationActivity extends AppCompatActivity {
         selectedPromptsList.add(masterPromptList.get(1));
         selectedPromptsList.add(masterPromptList.get(2));
 
+        ArrayList<Integer> testList = new ArrayList<>();
+
         FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(currentUserEmail, selectedUser, selectedPromptsList);
+        fbHelper.addNewConversation(currentUserEmail, selectedUser, testList);
 
         //startTellActivity(newConversation);
     }
