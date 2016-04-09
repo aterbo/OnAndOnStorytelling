@@ -18,8 +18,7 @@ public class ConversationSummary{
     private ArrayList<Integer> proposedPromptsIdNumber;
     private int currentPromptID;
 
-    public ConversationSummary() {
-    }
+    public ConversationSummary() { }
 
     public ConversationSummary(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
                                int statusFlag, int currentPrompt, ArrayList<Integer> proposedPromptsIdNumber){
@@ -37,7 +36,7 @@ public class ConversationSummary{
 
     private void setTitleBasedOnStatus(){
         if (statusFlag == STATUS_TO_TELL){
-            title = pullProposedPromptsTagString();
+            title = proposedPromptsTagAsString();
         } else if (statusFlag == STATUS_TO_HEAR){
             title = Integer.toString(getCurrentPromptID());
         }  else if (statusFlag == STATUS_WAITING){
@@ -73,11 +72,7 @@ public class ConversationSummary{
         usersInConversationEmails.add(userEmail);
     }
 
-    public int getNumberOfUsers(){
-        return usersInConversationEmails.size();
-    }
-
-    public String pullUserEmailsAsString(){
+    public String userEmailsAsString(){
         String userEmails = "";
         for (String email : usersInConversationEmails){
             userEmails = userEmails + email.replace(".",",") + ", ";
@@ -96,10 +91,6 @@ public class ConversationSummary{
 
     public void setCurrentPromptID(int currentPromptID){
         this.currentPromptID = currentPromptID;
-    }
-
-    public int getStatus(){
-        return statusFlag;
     }
 
     public void setStatus(int statusFlag){
@@ -148,7 +139,7 @@ public class ConversationSummary{
         return !proposedPromptsIdNumber.isEmpty();
     }
 
-    public String pullProposedPromptsTagString(){
+    public String proposedPromptsTagAsString(){
         return proposedPromptsIdNumber.get(0) + ", " +
                 proposedPromptsIdNumber.get(1)+ ", or " +
                 proposedPromptsIdNumber.get(2);

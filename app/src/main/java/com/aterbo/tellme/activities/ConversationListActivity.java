@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.adaptors.ConversationListAdaptor;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
@@ -40,8 +39,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     int toTellSeparatorPosition;
     private String currentUserEmail;
 
-    ListView conversationListView;
-    ConversationListAdaptor conversationListAdaptor;
     ArrayList<Object> objectList;
     private Firebase baseRef;
     FirebaseListAdapter<ConversationSummary> mListAdapter;
@@ -201,11 +198,13 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     private void setFirebaseListToUserEmail() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
         mListAdapter = new FirebaseListAdapter<ConversationSummary>(this, ConversationSummary.class,
-                android.R.layout.two_line_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
+                R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
             @Override
             protected void populateView(View v, ConversationSummary model, int position) {
-                ((TextView) v.findViewById(android.R.id.text1)).setText(model.getTitle());
-                ((TextView) v.findViewById(android.R.id.text2)).setText(model.pullUserEmailsAsString());
+                ((TextView) v.findViewById(R.id.conversation_title)).setText(model.proposedPromptsTagAsString());
+                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(model.getNextPlayersEmail());
+                ((TextView) v.findViewById(R.id.conversation_time_since_action)).setText("TIMESINCE");
+                (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
         };
         listView.setAdapter(mListAdapter);
@@ -214,14 +213,49 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ConversationSummary selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
+
                     String convoPushId = mListAdapter.getRef(position).getKey();
 
-                    Log.i("PickedAConvo!", convoPushId);
+                    if (isCurrentPlayersTurnToTellStory(selectedConvo)) {
+                        //TODO: startTellActivity();
+                        Log.i("PickedAConvo!", "My turn to tell");
+                    } else if (isCurrentPlayersTurnToHear(selectedConvo)) {
+                        //TODO: startHearActivity();
+                        Log.i("PickedAConvo!", "My turn to hear");
+                    } else if (isWaiting(selectedConvo)) {
+                        //TODO: startWait/PingActivity();
+                        Log.i("PickedAConvo!", "My turn to hear");
+                    }
+
                     //TODO: Determine which type of conversation was picked and open activity based on PushId.
                 }
             }
 
         });
+    }
+
+    private boolean isCurrentPlayersTurnToTellStory(ConversationSummary selectedConvo) {
+        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isCurrentPlayersTurnToHear(ConversationSummary selectedConvo) {
+        if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) { //TODO: Check if a story has been recorded
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isWaiting(ConversationSummary selectedConvo) {
+        if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
+            return true;
+        } else{
+            return false;
+        }
     }
 
     private void startTellActivity(Conversation conversation){
