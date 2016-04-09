@@ -83,9 +83,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setOptionsToButtons(){
-        String promptOption1 = promptOptionsList.get(promptCountTracker).getPromptText();
+        String promptOption1 = promptOptionsList.get(promptCountTracker).getText();
         promptCountTracker++;
-        String promptOption2 = promptOptionsList.get(promptCountTracker).getPromptText();
+        String promptOption2 = promptOptionsList.get(promptCountTracker).getText();
         promptCountTracker++;
 
         sendTopicOption1.setText(promptOption1);
@@ -111,7 +111,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void addChosenPromptToList(int indexNumber) {
         conversation.setToProposedPrompts(promptOptionsList.get(indexNumber));
-        Toast.makeText(this, promptOptionsList.get(indexNumber).getPromptText(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, promptOptionsList.get(indexNumber).getText(), Toast.LENGTH_SHORT).show();
     }
 
     private void questioningComplete(){

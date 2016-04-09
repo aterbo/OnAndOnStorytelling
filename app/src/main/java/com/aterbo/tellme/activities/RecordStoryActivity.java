@@ -70,7 +70,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         TextView senderText = (TextView)findViewById(R.id.sender_text);
         senderText.setText(conversation.getUsersNameAsString() + " says");
 
-        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getPromptText());
+        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
     public void recordingControlClick(View view){

@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
+import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.DataSnapshot;
@@ -44,6 +46,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         currentUserEmail = intent.getStringExtra("currentUserEmail");
 
+        setNumberOfPromptsFBListener();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +93,16 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 continueWithNewConvo(selectedUser);
             }
         });
-        setNumberOfPromptsFBListener();
+    }
+
+    private void getThreeRandomPrompts(){
+        int[] randNumList = new int[3];
+        randNumList = getThreeRandomPromptIDNumbers();
+
+        for (int promptId :
+                randNumList) {
+            getRandomPrompt(promptId);
+        }
     }
 
     private void setNumberOfPromptsFBListener(){
@@ -102,6 +114,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 System.out.println(snapshot.getValue());
                 Long tempNumber = (Long) snapshot.getValue();
                 numberOfPrompts = tempNumber.intValue();
+                getThreeRandomPrompts();
             }
 
             @Override
@@ -112,22 +125,10 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private void continueWithNewConvo(User selectedUser){
+
         //TODO: Make PromptList Selector
-
-        int[] randNumList = new int[2];
-        randNumList = getThreeRandomPromptIDNumbers();
-        ArrayList<Integer> testList = new ArrayList<>();
-        testList.add(randNumList[0]);
-        testList.add(randNumList[1]);
-        testList.add(randNumList[2]);
-
-        ArrayList<Prompt> selectedPromptsList = new ArrayList<>();
-        selectedPromptsList.add(randomPromptList.get(0));
-        selectedPromptsList.add(randomPromptList.get(1));
-        selectedPromptsList.add(randomPromptList.get(2));
-
         FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(currentUserEmail, selectedUser, testList);
+        fbHelper.addNewConversation(currentUserEmail, selectedUser, randomPromptList);
 
         //startTellActivity(newConversation);
     }
@@ -142,7 +143,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                randomPromptList.add((Prompt)snapshot.getValue());
+                randomPromptList.add(snapshot.getValue(Prompt.class));
             }
 
             @Override

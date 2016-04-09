@@ -15,19 +15,47 @@ public class ConversationSummary{
     private int statusFlag;
     private ArrayList<String> usersInConversationEmails;
     private String nextPlayersEmail;
-    private ArrayList<Integer> proposedPromptsIdNumber;
+    private Prompt proposedPrompt1;
+    private Prompt proposedPrompt2;
+    private Prompt proposedPrompt3;
     private int currentPromptID;
 
     public ConversationSummary() { }
 
     public ConversationSummary(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                               int statusFlag, int currentPrompt, ArrayList<Integer> proposedPromptsIdNumber){
+                               int statusFlag, int currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.usersInConversationEmails = usersInConversationEmails;
         this.nextPlayersEmail = nextPlayersEmail;
         this.statusFlag = statusFlag;
         this.currentPromptID = currentPrompt;
-        this.proposedPromptsIdNumber = proposedPromptsIdNumber;
+        this.proposedPrompt1 = proposedPrompts.get(0);
+        this.proposedPrompt2 = proposedPrompts.get(1);
+        this.proposedPrompt3 = proposedPrompts.get(2);
         setTitleBasedOnStatus();
+    }
+
+    public Prompt getProposedPrompt3() {
+        return proposedPrompt3;
+    }
+
+    public void setProposedPrompt3(Prompt proposedPrompt3) {
+        this.proposedPrompt3 = proposedPrompt3;
+    }
+
+    public Prompt getProposedPrompt1() {
+        return proposedPrompt1;
+    }
+
+    public void setProposedPrompt1(Prompt proposedPrompt1) {
+        this.proposedPrompt1 = proposedPrompt1;
+    }
+
+    public Prompt getProposedPrompt2() {
+        return proposedPrompt2;
+    }
+
+    public void setProposedPrompt2(Prompt proposedPrompt2) {
+        this.proposedPrompt2 = proposedPrompt2;
     }
 
     public int getStatusFlag() {
@@ -115,33 +143,10 @@ public class ConversationSummary{
         setTitleBasedOnStatus();
     }
 
-    public void setToProposedPrompts(int prompt){
-        proposedPromptsIdNumber.add(prompt);
-    }
-
-    public ArrayList<Integer> getProposedPromptsIdNumber(){
-        return proposedPromptsIdNumber;
-    }
-
-    public void setProposedPromptsIdNumber(ArrayList<Integer> proposedPromptsIdNumber){
-        this.proposedPromptsIdNumber = proposedPromptsIdNumber;
-    }
-
-    public int getProposedPromptIdByIndex(int promptIndex){
-        return proposedPromptsIdNumber.get(promptIndex);
-    }
-
-    public void clearProposedPrompts(){
-        proposedPromptsIdNumber.clear();
-    }
-
-    public boolean hasProposedPrompts(){
-        return !proposedPromptsIdNumber.isEmpty();
-    }
 
     public String proposedPromptsTagAsString(){
-        return proposedPromptsIdNumber.get(0) + ", " +
-                proposedPromptsIdNumber.get(1)+ ", or " +
-                proposedPromptsIdNumber.get(2);
+        return proposedPrompt1.getTag() + ", " +
+                proposedPrompt2.getTag() + ", or " +
+                proposedPrompt3.getTag();
     }
 }

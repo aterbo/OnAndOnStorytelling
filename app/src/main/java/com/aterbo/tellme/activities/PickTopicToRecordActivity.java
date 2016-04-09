@@ -55,9 +55,9 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     private void setPromptsToButtons(){
-        topicOption1.setText(promptOptionsList.get(0).getPromptText());
-        topicOption2.setText(promptOptionsList.get(1).getPromptText());
-        topicOption3.setText(promptOptionsList.get(2).getPromptText());
+        topicOption1.setText(promptOptionsList.get(0).getText());
+        topicOption2.setText(promptOptionsList.get(1).getText());
+        topicOption3.setText(promptOptionsList.get(2).getText());
     }
 
     public void topic1(View view){

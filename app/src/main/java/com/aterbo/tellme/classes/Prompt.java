@@ -8,32 +8,28 @@ import android.os.Parcelable;
  */
 public class Prompt implements Parcelable{
 
-    private String promptText;
-    private int idNumber;
-    private String tagText;
+    private String text;
+    private String tag;
+
+    public Prompt(){}
 
     public Prompt(String promptText, String tagText){
-        this.promptText = promptText;
-        this.tagText = tagText;
-        this.idNumber = 1111;
+        this.text = promptText;
+        this.text = tagText;
     }
 
-    public String getPromptText() {
-        return promptText;
+    public String getText() {
+        return text;
     }
 
-    public String getTagText() {
-        return tagText;
+    public String getTag() {
+        return tag;
     }
 
-    public int getIdNumber(){
-        return idNumber;
-    }
 
     protected Prompt(Parcel in) {
-        promptText = in.readString();
-        tagText = in.readString();
-        idNumber = in.readInt();
+        text = in.readString();
+        tag = in.readString();
     }
 
     @Override
@@ -43,9 +39,8 @@ public class Prompt implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(promptText);
-        dest.writeString(tagText);
-        dest.writeInt(idNumber);
+        dest.writeString(text);
+        dest.writeString(tag);
     }
 
     @SuppressWarnings("unused")

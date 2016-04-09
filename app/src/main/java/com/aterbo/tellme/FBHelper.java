@@ -116,7 +116,7 @@ public class FBHelper {
     }
 
     public void addNewConversation(String currentUserEmail, User selectedUser,
-                                   ArrayList<Integer> selectedPromptsList){
+                                   ArrayList<Prompt> selectedPromptsList){
         Firebase newRef = convoParticipantsRef.push();
         String convoId = newRef.getKey();
         String selectedUserEmail = selectedUser.getEmail();

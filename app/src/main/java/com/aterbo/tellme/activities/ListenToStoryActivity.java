@@ -72,7 +72,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
 
     private void showPromptTextInTextView(){
-        ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getPromptText());
+        ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getText());
     }
 
     private void initializeViews(){

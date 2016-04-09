@@ -163,8 +163,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                     String convoPushId = mListAdapter.getRef(position).getKey();
 
                     if (isCurrentPlayersTurnToTellStory(selectedConvo)) {
-                        //TODO: startTellActivity();
                         Log.i("PickedAConvo!", "My turn to tell");
+                        //startTellActivity(ConversationSummary selectedConvo);
                     } else if (isCurrentPlayersTurnToHear(selectedConvo)) {
                         //TODO: startHearActivity();
                         Log.i("PickedAConvo!", "My turn to hear");

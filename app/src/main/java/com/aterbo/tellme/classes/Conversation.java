@@ -179,9 +179,9 @@ public class Conversation implements Parcelable {
     }
 
     public String getProposedPromptsTagString(){
-        return proposedPrompts.get(0).getTagText() + ", " +
-                proposedPrompts.get(1).getTagText() + ", or " +
-                proposedPrompts.get(2).getTagText();
+        return proposedPrompts.get(0).getTag() + ", " +
+                proposedPrompts.get(1).getTag() + ", or " +
+                proposedPrompts.get(2).getTag();
     }
 
     public String getStoryFilePath() {
