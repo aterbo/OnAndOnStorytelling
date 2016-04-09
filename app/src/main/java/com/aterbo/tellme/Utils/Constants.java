@@ -9,15 +9,13 @@ public class Constants {
      * Constants related to locations in Firebase, such as the name of the node
      * where user lists are stored (ie "userLists")
      */
-    public static final String FIREBASE_LOCATION = "";
+    public static final String FIREBASE_LOCATION = "https://tell-me.firebaseio.com";
     public static final String FIREBASE_LOCATION_USERS = "users";
-    public static final String FIREBASE_LOCATION_USER_LISTS = "userLists";
     public static final String FIREBASE_LOCATION_USER_CONVOS = "userConvos";
     public static final String FIREBASE_LOCATION_CONVO_PARTICIPANTS = "convoParticipants";
-    public static final String FIREBASE_LOCATION_USER_FRIENDS = "userFriends";
-    public static final String FIREBASE_LOCATION_GROUPS = "groups";
+    public static final String FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS = "numberOfPrompts";
+    public static final String FIREBASE_LOCATION_PROMPTS = "prompts";
     public static final String FIREBASE_LOCATION_UID_MAPPINGS = "uidMappings";
-    public static final String FIREBASE_LOCATION_OWNER_MAPPINGS = "ownerMappings";
 
 
     public static final int NUMBER_OF_PROMPT_OPTIONS = 3;

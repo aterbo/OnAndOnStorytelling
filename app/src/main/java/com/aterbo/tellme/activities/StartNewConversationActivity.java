@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.DataSnapshot;
@@ -25,14 +24,16 @@ import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class StartNewConversationActivity extends AppCompatActivity {
 
     FirebaseListAdapter<User> mListAdapter;
     ListView mListView;
     private Firebase mUsersRef;
-    ArrayList<Prompt> masterPromptList;
+    ArrayList<Prompt> randomPromptList;
     String currentUserEmail;
+    int numberOfPrompts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
     mUsersRef = new Firebase(getResources().getString(R.string.firebase_url) + "/" +
             Constants.FIREBASE_LOCATION_USERS);
     initializeScreen();
-    masterPromptList = new ArrayList<>();
-    getRandomPrompt();
+    randomPromptList = new ArrayList<>();
     }
 
     @Override
@@ -90,17 +90,41 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 continueWithNewConvo(selectedUser);
             }
         });
+        setNumberOfPromptsFBListener();
+    }
+
+    private void setNumberOfPromptsFBListener(){
+        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Long tempNumber = (Long) snapshot.getValue();
+                numberOfPrompts = tempNumber.intValue();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void continueWithNewConvo(User selectedUser){
         //TODO: Make PromptList Selector
 
-        ArrayList<Prompt> selectedPromptsList = new ArrayList<>();
-        selectedPromptsList.add(masterPromptList.get(0));
-        selectedPromptsList.add(masterPromptList.get(1));
-        selectedPromptsList.add(masterPromptList.get(2));
-
+        int[] randNumList = new int[2];
+        randNumList = getThreeRandomPromptIDNumbers();
         ArrayList<Integer> testList = new ArrayList<>();
+        testList.add(randNumList[0]);
+        testList.add(randNumList[1]);
+        testList.add(randNumList[2]);
+
+        ArrayList<Prompt> selectedPromptsList = new ArrayList<>();
+        selectedPromptsList.add(randomPromptList.get(0));
+        selectedPromptsList.add(randomPromptList.get(1));
+        selectedPromptsList.add(randomPromptList.get(2));
 
         FBHelper fbHelper = new FBHelper(this);
         fbHelper.addNewConversation(currentUserEmail, selectedUser, testList);
@@ -109,23 +133,16 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
 
-    public void getRandomPrompt(){
+    public void getRandomPrompt(int promptIdNumber){
 
-        Firebase baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
-        Firebase promptRef = baseRef.child("prompts");
+        Firebase promptRef = new Firebase(Constants.FIREBASE_LOCATION + "/"
+                + Constants.FIREBASE_LOCATION_PROMPTS + "/" + promptIdNumber);
 
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
-                int counter = 1;
-                while (counter < 8) {
-                    Prompt prompt = new Prompt((String) snapshot.child(Integer.toString(counter)).child("text").getValue(),
-                            (String) snapshot.child(Integer.toString(counter)).child("tag").getValue());
-                    //sendPromptSomewhereSomehow(prompt);
-                    masterPromptList.add(prompt);
-                    counter++;
-                }
+                randomPromptList.add((Prompt)snapshot.getValue());
             }
 
             @Override
@@ -133,5 +150,20 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
+
+    private int[] getThreeRandomPromptIDNumbers(){
+        Random rand = new Random();
+        int num1 = rand.nextInt((numberOfPrompts) + 1);
+        int num2 = rand.nextInt((numberOfPrompts) + 1);
+        while (num2 == num1){
+            num2 = rand.nextInt((numberOfPrompts) + 1);
+        }
+        int num3 = rand.nextInt((numberOfPrompts) + 1);
+        while (num3 == num2 || num3 == num1){
+            num3 = rand.nextInt((numberOfPrompts) + 1);
+        }
+        int[] randNumList = {num1, num2, num3};
+        return randNumList;
     }
 }

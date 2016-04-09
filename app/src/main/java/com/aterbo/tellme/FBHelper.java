@@ -117,10 +117,6 @@ public class FBHelper {
 
     public void addNewConversation(String currentUserEmail, User selectedUser,
                                    ArrayList<Integer> selectedPromptsList){
-
-
-        //HashMap<String, Object> conversationMapping = new HashMap<String, Object>();
-
         Firebase newRef = convoParticipantsRef.push();
         String convoId = newRef.getKey();
         String selectedUserEmail = selectedUser.getEmail();
@@ -132,13 +128,8 @@ public class FBHelper {
         usersInConversationEmails.add(currentUserEmail.replace(".",","));
         usersInConversationEmails.add(selectedUserEmail.replace(".",","));
 
-        ArrayList<Integer> proposedPrompts = new ArrayList<>();
-        proposedPrompts.add(1);
-        proposedPrompts.add(2);
-        proposedPrompts.add(3);
-
         ConversationSummary itemToAddObject = new ConversationSummary(usersInConversationEmails,
-                selectedUserEmail, 2, -1, proposedPrompts);
+                selectedUserEmail, 2, -1, selectedPromptsList);
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
 

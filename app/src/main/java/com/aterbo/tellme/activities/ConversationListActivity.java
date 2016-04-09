@@ -19,11 +19,15 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
@@ -33,11 +37,8 @@ import java.util.ArrayList;
 
 public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
-    ArrayList<Conversation> conversations;
-    int toHearSeparatorPosition;
-    int toWaitForSeparatorPosition;
-    int toTellSeparatorPosition;
     private String currentUserEmail;
+    private int numberOfPrompts;
 
     ArrayList<Object> objectList;
     private Firebase baseRef;
@@ -69,6 +70,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         currentUserEmail = authData.getProviderData().get("email").toString();
         Log.i("LOGGEDIN", currentUserEmail);
         setFirebaseListToUserEmail();
+        setNumberOfPromptsFBListener();
     }
 
     @Override
@@ -104,19 +106,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         });
     }
 
-    /*
-    private void setListAdaptor() {
-        conversationListAdaptor = new ConversationListAdaptor(objectList, this);
-        conversationListView = (ListView)findViewById(R.id.conversation_list);
-        conversationListView.setAdapter(conversationListAdaptor);
-        conversationListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                respondToListClick(position);
-            }
-        });
-    }
-*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -138,6 +127,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     private void respondToListClick(int position){
         if (position<(toHearSeparatorPosition)){
             Conversation selectedConversation = (Conversation)objectList.get(position);
@@ -149,51 +139,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             DialogFragment newFragment = PingStorytellerDialog.newInstance();
             newFragment.show(getFragmentManager(), "ping");
         }
-    }
-
-    private void constructConversationList(){
-        objectList = new ArrayList<>();
-
-        setAllSeparators();
-
-        int status;
-
-        for (Conversation conversation : conversations){
-            status = conversation.getStatus();
-            switch (status) {
-                case 0:
-                    objectList.add(1, conversation);
-                    toHearSeparatorPosition = toHearSeparatorPosition + 1;
-                    toWaitForSeparatorPosition = toWaitForSeparatorPosition + 1;
-                    break;
-                case 1:
-                    objectList.add(toHearSeparatorPosition+1, conversation);
-                    toWaitForSeparatorPosition = toWaitForSeparatorPosition + 1;
-                    break;
-                case 2:
-                    objectList.add(toWaitForSeparatorPosition+1, conversation);
-                    break;
-            }
-        }
-    }
-
-    private void getConversationsFromFB(){
-
-    }
-
-    private void setAllSeparators() {
-        toTellSeparatorPosition = 0;
-        toHearSeparatorPosition = 1;
-        toWaitForSeparatorPosition = 2;
-        addSeparator(toTellSeparatorPosition, "Stories to tell");
-        addSeparator(toHearSeparatorPosition, "Stories to hear");
-        addSeparator(toWaitForSeparatorPosition, "Stories to wait for");
-    }
-
-    private void addSeparator(int position, String separatorText){
-        objectList.add(position, new String(separatorText));
-    }
-
+    }*/
 
     private void setFirebaseListToUserEmail() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
@@ -231,6 +177,22 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 }
             }
 
+        });
+    }
+
+    private void setNumberOfPromptsFBListener(){
+        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Long tempNumber = (Long) snapshot.getValue();
+                numberOfPrompts = tempNumber.intValue();
+            }
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
         });
     }
 
