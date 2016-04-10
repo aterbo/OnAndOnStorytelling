@@ -5,18 +5,25 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.Prompt;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 //http://examples.javacodegeeks.com/android/android-mediaplayer-example/
@@ -36,6 +43,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Prompt storyPrompt;
     private Uri speechUri;
     private String selectedConvoPushId;
+    private String localTempFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         getConversation();
         showConversationDetails();
         getPromptData();
+        convertRecordingToTempFile();
         getstoryUri();
         showPromptTextInTextView();
         initializeViews();
@@ -70,9 +79,33 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getstoryUri(){
-        speechUri = Uri.parse(conversation.getStoryRecordingFilePath());
+        speechUri = Uri.parse(localTempFilePath);
     }
 
+    private void convertRecordingToTempFile(){
+        String encodedString = conversation.getStoryRecordingFilePath();
+        byte[] decoded = Base64.decode(encodedString, 0);
+        String outputFile;
+
+        if (Utils.isExternalStorageWritable()) {
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+            outputFile = Environment.getExternalStorageDirectory().getAbsolutePath();
+            outputFile += "/" + fileName + ".3gp";
+
+            try
+            {
+                File tempFile = new File(outputFile);
+                FileOutputStream os = new FileOutputStream(tempFile, true);
+                os.write(decoded);
+                os.close();
+                localTempFilePath = tempFile.getPath();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void showPromptTextInTextView(){
         ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getText());

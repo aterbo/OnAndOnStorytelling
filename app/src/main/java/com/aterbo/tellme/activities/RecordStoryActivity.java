@@ -6,22 +6,24 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
-import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,7 +204,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void saveRecordingToConversation(){
-        conversation.setStoryRecordingFilePath(outputFile);
+        convertAudioFileToStringAndSetToConvo();
     }
 
 
@@ -236,6 +238,19 @@ public class RecordStoryActivity extends AppCompatActivity {
                 moveToNextActivity();
             }
         });
+    }
+
+    private void convertAudioFileToStringAndSetToConvo(){
+        File file = new File(outputFile);
+        byte[] bytes = new byte[(int) file.length()];
+        try {
+            new FileInputStream(file).read(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String encoded = Base64.encodeToString(bytes, 0);
+        conversation.setStoryRecordingFilePath(encoded);
     }
 
     private void moveToNextActivity(){
