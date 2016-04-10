@@ -174,6 +174,12 @@ public class ConversationSummary implements Parcelable{
         nextPlayersEmail = holderEmail;
     }
 
+    public void clearProposedTopics(){
+        proposedPrompt1 = null;
+        proposedPrompt2 = null;
+        proposedPrompt3 = null;
+    }
+
     //Parcelabler.com
     protected ConversationSummary(Parcel in) {
         title = in.readString();

@@ -261,7 +261,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void moveToNextActivity(){
 
-        Intent intent = new Intent(this, ConversationListActivity.class);
+        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
         intent.putExtra("conversation", conversation);
         intent.putExtra("selectedConversationPushId", selectedConvoPushId);
         startActivity(intent);

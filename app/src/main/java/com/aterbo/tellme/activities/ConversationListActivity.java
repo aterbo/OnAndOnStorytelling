@@ -284,6 +284,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mListAdapter.cleanup();
+        if (mListAdapter != null) {
+            mListAdapter.cleanup();
+        }
     }
 }

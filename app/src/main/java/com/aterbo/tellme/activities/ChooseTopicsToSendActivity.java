@@ -3,25 +3,37 @@ package com.aterbo.tellme.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.Utils.Constants;
+import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.Prompt;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     Button sendTopicOption1;
     Button sendTopicOption2;
     ArrayList<Prompt> promptOptionsList;
-    private Conversation conversation;
+    ArrayList<Prompt> selectedPromptsList;
+    private String selectedConvoPushId;
+    private ConversationSummary conversation;
     int promptCountTracker = 0;
+    int numberOfPrompts;
     final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
 
@@ -32,38 +44,35 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
         getConversation();
         initializeViews();
-        setConversationToView();
-        clearExistingProposedTopicsInConversation();
         getPromptOptionsList();
-        askForRoundOfPrompts();
+        setConversationToView();
+        conversation.clearProposedTopics();
     }
 
     private void getConversation(){
-    Intent intent  = getIntent();
-    conversation = intent.getParcelableExtra("conversation");
+        Intent intent  = getIntent();
+        conversation = intent.getParcelableExtra("conversation");
+        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
     }
 
     private void initializeViews() {
         sendTopicOption1 = (Button)findViewById(R.id.record_topic_option_1);
         sendTopicOption2 = (Button)findViewById(R.id.record_topic_option_2);
         promptOptionsList = new ArrayList<>();
+        selectedPromptsList = new ArrayList<>();
     }
 
-    private void setConversationToView(){
-        ((TextView)findViewById(R.id.next_storyteller_prompt)).setText(conversation.getUsersNameAsString() + " is next to tell a story");
-    }
-
-    private void clearExistingProposedTopicsInConversation(){
-        conversation.clearProposedPrompts();
+    private void setConversationToView() {
+        ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(conversation.userEmailsAsString() + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
-        promptOptionsList = generateDummyPromptList();
+        setNumberOfPromptsFBListener();
     }
 
     private void askForRoundOfPrompts(){
         if (isQuestioningDone()) {
-            wrapUpActivity();
+            questioningComplete();
         } else {
             setOptionsToButtons();
         }
@@ -77,11 +86,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         }
     }
 
-    private void wrapUpActivity(){
-        updateConversation();
-        questioningComplete();
-    }
-
     private void setOptionsToButtons(){
         String promptOption1 = promptOptionsList.get(promptCountTracker).getText();
         promptCountTracker++;
@@ -93,9 +97,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void updateConversation(){
-        conversation.setStatusToWaiting();
-        conversation.setTimeSinceLastAction("now");
-        //TODO: Update Convo in FB
+        conversation.setProposedPrompt1(selectedPromptsList.get(0));
+        conversation.setProposedPrompt2(selectedPromptsList.get(1));
+        conversation.setProposedPrompt3(selectedPromptsList.get(2));
     }
 
 
@@ -110,20 +114,40 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void addChosenPromptToList(int indexNumber) {
-        conversation.setToProposedPrompts(promptOptionsList.get(indexNumber));
+        selectedPromptsList.add(promptOptionsList.get(indexNumber));
         Toast.makeText(this, promptOptionsList.get(indexNumber).getText(), Toast.LENGTH_SHORT).show();
     }
 
     private void questioningComplete(){
         Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
-        addConversationToServer();
-        returnToConversationList();
+        updateConversation();
+        updateConversationOnServer();
     }
 
-    private void addConversationToServer(){
-        Firebase ref = new Firebase(getResources().getString(R.string.firebase_url));
-        Firebase uploadRef =  ref.child(conversation.getUser(0).getUserName().replace(".",""));
-        uploadRef.setValue(conversation);
+    private void updateConversationOnServer(){
+        Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
+
+        HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
+
+        HashMap<String, Object> conversationToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        for (String userEmail : conversation.getUsersInConversationEmails()) {
+            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+        }
+
+        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+
+                returnToConversationList();
+            }
+        });
     }
 
     private void returnToConversationList(){
@@ -132,15 +156,80 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         finish();
     }
 
-    private ArrayList<Prompt> generateDummyPromptList(){
-        ArrayList<Prompt> dummyList = new ArrayList<>();
-        dummyList.add(new Prompt("What is on the top of your bucket list?", "Bucket List"));
-        dummyList.add(new Prompt("What is the most creative profanity you've ever heard? Or create your own?", "Creative profanity"));
-        dummyList.add(new Prompt("Do you follow logic?", "Logic"));
-        dummyList.add(new Prompt("Do you have a photographic memory?", "Photographic Memory"));
-        dummyList.add(new Prompt("Who helped you in life?", "Life help"));
-        dummyList.add(new Prompt("Would you describe yourself as left-wing or right-wing?", "Political Wings"));
 
-        return dummyList;
+    private void getSixRandomPrompts(){
+        int[] randNumList = new int[6];
+        randNumList = getSixRandomPromptIDNumbers();
+
+        for (int promptId :
+                randNumList) {
+            getRandomPrompt(promptId);
+        }
+    }
+
+    private void setNumberOfPromptsFBListener(){
+        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Long tempNumber = (Long) snapshot.getValue();
+                numberOfPrompts = tempNumber.intValue();
+                getSixRandomPrompts();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    public void getRandomPrompt(int promptIdNumber){
+        Firebase promptRef = new Firebase(Constants.FIREBASE_LOCATION + "/"
+                + Constants.FIREBASE_LOCATION_PROMPTS + "/" + promptIdNumber);
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                promptOptionsList.add(snapshot.getValue(Prompt.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private int[] getSixRandomPromptIDNumbers(){
+        Random rand = new Random();
+        int num1, num2, num3, num4, num5, num6;
+        num1 = rand.nextInt((numberOfPrompts) + 1);
+        do {
+            num2 = rand.nextInt((numberOfPrompts) + 1);
+        } while (num2 == num1);
+        do {
+            num3 = rand.nextInt((numberOfPrompts) + 1);
+        } while (num3 == num1 || num3 == num2);
+        do {
+            num4 = rand.nextInt((numberOfPrompts) + 1);
+        } while (num4 == num1 || num4 == num2 || num4 == num3);
+        do {
+            num5 = rand.nextInt((numberOfPrompts) + 1);
+        } while (num5 == num1 || num5 == num2 || num5 == num3 || num5 == num4);
+        do {
+            num6 = rand.nextInt((numberOfPrompts) + 1);
+        } while (num6 == num1 || num6 == num2 || num6 == num3 || num6 == num4 || num6 == num5);
+
+
+        int[] randNumList = {num1, num2, num3, num4, num5, num6};
+        return randNumList;
+    }
+
+    public void proceed(View view){
+        askForRoundOfPrompts();
     }
 }

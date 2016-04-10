@@ -153,17 +153,19 @@ public class StartNewConversationActivity extends AppCompatActivity {
         });
     }
 
+
     private int[] getThreeRandomPromptIDNumbers(){
         Random rand = new Random();
-        int num1 = rand.nextInt((numberOfPrompts) + 1);
-        int num2 = rand.nextInt((numberOfPrompts) + 1);
-        while (num2 == num1){
+        int num1, num2, num3;
+        num1 = rand.nextInt((numberOfPrompts) + 1);
+        do {
             num2 = rand.nextInt((numberOfPrompts) + 1);
-        }
-        int num3 = rand.nextInt((numberOfPrompts) + 1);
-        while (num3 == num2 || num3 == num1){
+        } while (num2 == num1);
+        do {
             num3 = rand.nextInt((numberOfPrompts) + 1);
-        }
+        } while (num3 == num1 || num3 == num2);
+
+
         int[] randNumList = {num1, num2, num3};
         return randNumList;
     }
