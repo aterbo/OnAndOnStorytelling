@@ -23,7 +23,6 @@ import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +39,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private Button finishAndSendButton;
     private TextView recordingStatus;
     private String selectedConvoPushId;
+    private String encodedRecording;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +204,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void saveRecordingToConversation(){
-        convertAudioFileToStringAndSetToConvo();
+        convertAudioFileToString();
     }
 
 
@@ -216,6 +216,10 @@ public class RecordStoryActivity extends AppCompatActivity {
     public void updateConversationAfterRecording(){
         Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
 
+        Firebase newRecordingRef = baseRef.child(Constants.FIREBASE_LOCATION_RECORDINGS).push();
+        String recordingPushId = newRecordingRef.getKey();
+        conversation.setStoryRecordingFilePath(recordingPushId);
+
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
         HashMap<String, Object> conversationToAddHashMap =
@@ -225,6 +229,9 @@ public class RecordStoryActivity extends AppCompatActivity {
             convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
+
+        convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_RECORDINGS + "/" + recordingPushId,
+                encodedRecording);
 
         baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
             @Override
@@ -240,7 +247,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         });
     }
 
-    private void convertAudioFileToStringAndSetToConvo(){
+    private void convertAudioFileToString(){
         File file = new File(outputFile);
         byte[] bytes = new byte[(int) file.length()];
         try {
@@ -249,8 +256,7 @@ public class RecordStoryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String encoded = Base64.encodeToString(bytes, 0);
-        conversation.setStoryRecordingFilePath(encoded);
+        encodedRecording = Base64.encodeToString(bytes, 0);
     }
 
     private void moveToNextActivity(){

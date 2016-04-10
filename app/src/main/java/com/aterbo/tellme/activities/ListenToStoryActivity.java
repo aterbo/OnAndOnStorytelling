@@ -15,10 +15,15 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.Prompt;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,17 +49,19 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Uri speechUri;
     private String selectedConvoPushId;
     private String localTempFilePath;
+    private String encodedRecording;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
+        playPauseButton = (ToggleButton) findViewById(R.id.media_play);
+        playPauseButton.setClickable(false);
         getConversation();
+        getRecording();
         showConversationDetails();
         getPromptData();
-        convertRecordingToTempFile();
-        getstoryUri();
         showPromptTextInTextView();
         initializeViews();
         setToggleButton();
@@ -64,6 +71,26 @@ public class ListenToStoryActivity extends AppCompatActivity {
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra("selectedConversation");
         selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
+    }
+
+    private void getRecording(){
+        Firebase recordingRef = new Firebase(Constants.FIREBASE_LOCATION + "/" +
+                Constants.FIREBASE_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingFilePath());
+
+        recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                encodedRecording = dataSnapshot.getValue(String.class);
+                convertRecordingToTempFile();
+                getstoryUri();
+                setUpMediaPlayer();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
     private void showConversationDetails(){
@@ -83,8 +110,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void convertRecordingToTempFile(){
-        String encodedString = conversation.getStoryRecordingFilePath();
-        byte[] decoded = Base64.decode(encodedString, 0);
+        byte[] decoded = Base64.decode(encodedRecording, 0);
         String outputFile;
 
         if (Utils.isExternalStorageWritable()) {
@@ -112,17 +138,21 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void initializeViews(){
-        mPlayer = MediaPlayer.create(this, speechUri);
-        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        finalTime = mPlayer.getDuration();
         duration = (TextView) findViewById(R.id.story_duration);
         seekbar = (SeekBar) findViewById(R.id.seekBar);
-        seekbar.setMax((int) finalTime);
         seekbar.setClickable(false);
     }
 
+    private void setUpMediaPlayer(){
+
+        mPlayer = MediaPlayer.create(this, speechUri);
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        finalTime = mPlayer.getDuration();
+        seekbar.setMax((int) finalTime);
+        playPauseButton.setClickable(true);
+    }
+
     private void setToggleButton(){
-        playPauseButton = (ToggleButton) findViewById(R.id.media_play);
         playPauseButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

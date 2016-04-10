@@ -11,6 +11,7 @@ public class Constants {
      */
     public static final String FIREBASE_LOCATION = "https://tell-me.firebaseio.com";
     public static final String FIREBASE_LOCATION_USERS = "users";
+    public static final String FIREBASE_LOCATION_RECORDINGS = "recordings";
     public static final String FIREBASE_LOCATION_USER_CONVOS = "userConvos";
     public static final String FIREBASE_LOCATION_CONVO_PARTICIPANTS = "convoParticipants";
     public static final String FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS = "numberOfPrompts";
