@@ -9,17 +9,19 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.Prompt;
 
 import java.util.ArrayList;
 
 public class PickTopicToRecordActivity extends AppCompatActivity {
 
-    private Conversation conversation;
+    private ConversationSummary conversation;
     private ArrayList<Prompt> promptOptionsList;
     private Button topicOption1;
     private Button topicOption2;
     private Button topicOption3;
+    private String selectedConvoPushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +38,12 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     private void getConversation(){
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra("selectedConversation");
+        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
     }
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getUsersNameAsString() + " wants to hear a story! Pick a topic.");
+        senderText.setText(conversation.getUsersInConversationEmails() + " wants to hear a story! Pick a topic.");
     }
 
     private void initializeViews() {
@@ -51,7 +54,9 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     private void getPrompts(){
-        promptOptionsList = conversation.getProposedPrompts();
+        promptOptionsList.add(conversation.getProposedPrompt1());
+        promptOptionsList.add(conversation.getProposedPrompt2());
+        promptOptionsList.add(conversation.getProposedPrompt3());
     }
 
     private void setPromptsToButtons(){
@@ -81,6 +86,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     private void startNextActivity(){
         Intent intent = new Intent(this, RecordStoryActivity.class);
         intent.putExtra("conversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
         startActivity(intent);
     }
 }

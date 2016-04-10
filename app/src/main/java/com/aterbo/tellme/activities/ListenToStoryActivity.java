@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConversationSummary;
 import com.aterbo.tellme.classes.Prompt;
 
 import java.util.concurrent.TimeUnit;
@@ -24,7 +25,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private MediaPlayer mPlayer;
     public TextView duration;
-    private Conversation conversation;
+    private ConversationSummary conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
     private int shortSkipTime = 5000;
@@ -34,6 +35,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private ToggleButton playPauseButton;
     private Prompt storyPrompt;
     private Uri speechUri;
+    private String selectedConvoPushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +54,15 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void getConversation(){
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra("selectedConversation");
+        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
     }
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getUsersNameAsString() + " answered");
+        senderText.setText(conversation.userEmailsAsString() + " answered");
 
         TextView recordingLength = (TextView)findViewById(R.id.story_duration);
-        recordingLength.setText(conversation.getStoryDuration());
+        recordingLength.setText("StoryLength");
     }
 
     private void getPromptData(){
@@ -67,7 +70,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getstoryUri(){
-        speechUri = Uri.parse(conversation.getStoryFilePath());
+        speechUri = Uri.parse(conversation.getStoryRecordingFilePath());
     }
 
 
@@ -190,10 +193,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         stopPlayback();
         Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
         intent.putExtra("conversation", conversation);
+        intent.putExtra("conversationPushId", selectedConvoPushId);
         startActivity(intent);
-    }
-
-    private Prompt getDummyPromptData(){
-        return new Prompt("Tell me a story about an immigrant.", "An immigrant");
     }
 }

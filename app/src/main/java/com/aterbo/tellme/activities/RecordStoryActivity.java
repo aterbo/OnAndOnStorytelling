@@ -6,28 +6,38 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.ConversationSummary;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class RecordStoryActivity extends AppCompatActivity {
 
     private MediaRecorder myRecorder;
     private MediaPlayer myPlayer;
-    private Conversation conversation;
+    private ConversationSummary conversation;
     private String outputFile = null;
     private Button playbackControlButton;
     private Button recordingStatusButton;
     private Button finishAndSendButton;
     private TextView recordingStatus;
+    private String selectedConvoPushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void getConversation(){
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra("conversation");
+        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
     }
 
     private void setRecordingDetails(){
@@ -68,7 +79,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getUsersNameAsString() + " says");
+        senderText.setText(conversation.getUsersInConversationEmails() + " says");
 
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
@@ -186,17 +197,52 @@ public class RecordStoryActivity extends AppCompatActivity {
     public void sendRecordingClick(View view){
         //TODO: Figure out how the hell to send this to someone.
         saveRecordingToConversation();
-        showToastFromStringResource(R.string.recording_sent_notice);
-        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
-        intent.putExtra("conversation", conversation);
-        startActivity(intent);
+        conversation.changeNextPlayer();
+        updateConversationAfterRecording();
     }
 
     private void saveRecordingToConversation(){
-        conversation.setStoryFilePath(outputFile);
+        conversation.setStoryRecordingFilePath(outputFile);
     }
+
 
     private void showToastFromStringResource(int stringResourceId) {
         Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_LONG).show();
+    }
+
+
+    public void updateConversationAfterRecording(){
+        Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
+
+        HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
+
+        HashMap<String, Object> conversationToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        for (String userEmail : conversation.getUsersInConversationEmails()) {
+            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+        }
+
+        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+
+                showToastFromStringResource(R.string.recording_sent_notice);
+                moveToNextActivity();
+            }
+        });
+    }
+
+    private void moveToNextActivity(){
+
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        intent.putExtra("conversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        startActivity(intent);
     }
 }

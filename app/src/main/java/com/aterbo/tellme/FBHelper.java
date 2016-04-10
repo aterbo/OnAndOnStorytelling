@@ -123,13 +123,14 @@ public class FBHelper {
 
         HashMap<String, Object> convoEmails = new HashMap<String, Object>();
 
+        Prompt noCurrentPrompt = new Prompt("", "");
 
         ArrayList<String> usersInConversationEmails = new ArrayList<>();
         usersInConversationEmails.add(currentUserEmail.replace(".",","));
         usersInConversationEmails.add(selectedUserEmail.replace(".",","));
 
         ConversationSummary itemToAddObject = new ConversationSummary(usersInConversationEmails,
-                selectedUserEmail, 2, -1, selectedPromptsList);
+                selectedUserEmail, 2, noCurrentPrompt, selectedPromptsList);
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
 
@@ -150,6 +151,29 @@ public class FBHelper {
                     Log.i("FIREBASECREATENEWCONVO", "Error adding convo to Firebase");
                 }
                 Log.i("FIREBASECREATENEWCONVO", "Convo added to Firebase successfully");
+            }
+        });
+    }
+
+    public void updateConversationAfterRecording(ConversationSummary conversation, String convoPushId){
+
+        HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
+
+        HashMap<String, Object> conversationToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        for (String userEmail : conversation.getUsersInConversationEmails()) {
+            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + convoPushId, conversationToAddHashMap);
+        }
+
+        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
             }
         });
     }

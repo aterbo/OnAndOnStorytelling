@@ -1,11 +1,14 @@
 package com.aterbo.tellme.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class ConversationSummary{
+public class ConversationSummary implements Parcelable{
 
     private static final int STATUS_TO_TELL = 0;
     private static final int STATUS_TO_HEAR = 1;
@@ -15,22 +18,24 @@ public class ConversationSummary{
     private int statusFlag;
     private ArrayList<String> usersInConversationEmails;
     private String nextPlayersEmail;
+    private String storyRecordingFilePath;
     private Prompt proposedPrompt1;
     private Prompt proposedPrompt2;
     private Prompt proposedPrompt3;
-    private int currentPromptID;
+    private Prompt currentPrompt;
 
     public ConversationSummary() { }
 
     public ConversationSummary(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                               int statusFlag, int currentPrompt, ArrayList<Prompt> proposedPrompts){
+                               int statusFlag, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.usersInConversationEmails = usersInConversationEmails;
         this.nextPlayersEmail = nextPlayersEmail;
         this.statusFlag = statusFlag;
-        this.currentPromptID = currentPrompt;
+        this.currentPrompt = currentPrompt;
         this.proposedPrompt1 = proposedPrompts.get(0);
         this.proposedPrompt2 = proposedPrompts.get(1);
         this.proposedPrompt3 = proposedPrompts.get(2);
+        storyRecordingFilePath = "none";
         setTitleBasedOnStatus();
     }
 
@@ -66,7 +71,7 @@ public class ConversationSummary{
         if (statusFlag == STATUS_TO_TELL){
             title = proposedPromptsTagAsString();
         } else if (statusFlag == STATUS_TO_HEAR){
-            title = Integer.toString(getCurrentPromptID());
+            title = currentPrompt.getText();
         }  else if (statusFlag == STATUS_WAITING){
             title = "I'm WAAAIII-TING.";
         }
@@ -113,12 +118,20 @@ public class ConversationSummary{
         return userEmails;
     }
 
-    public int getCurrentPromptID(){
-        return currentPromptID;
+    public Prompt getCurrentPrompt(){
+        return currentPrompt;
     }
 
-    public void setCurrentPromptID(int currentPromptID){
-        this.currentPromptID = currentPromptID;
+    public void setCurrentPrompt(Prompt currentPrompt){
+        this.currentPrompt = currentPrompt;
+    }
+
+    public String getStoryRecordingFilePath(){
+        return storyRecordingFilePath;
+    }
+
+    public void setStoryRecordingFilePath(String storyRecordingFilePath){
+        this.storyRecordingFilePath = storyRecordingFilePath;
     }
 
     public void setStatus(int statusFlag){
@@ -149,4 +162,69 @@ public class ConversationSummary{
                 proposedPrompt2.getTag() + ", or " +
                 proposedPrompt3.getTag();
     }
+
+    public void changeNextPlayer(){
+        int counter = 0;
+        String holderEmail;
+
+        do {
+            holderEmail = usersInConversationEmails.get(counter);
+            counter = counter + 1;
+        } while(holderEmail.equals(nextPlayersEmail));
+        nextPlayersEmail = holderEmail;
+    }
+
+    //Parcelabler.com
+    protected ConversationSummary(Parcel in) {
+        title = in.readString();
+        statusFlag = in.readInt();
+        if (in.readByte() == 0x01) {
+            usersInConversationEmails = new ArrayList<String>();
+            in.readList(usersInConversationEmails, String.class.getClassLoader());
+        } else {
+            usersInConversationEmails = null;
+        }
+        nextPlayersEmail = in.readString();
+        storyRecordingFilePath = in.readString();
+        proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeInt(statusFlag);
+        if (usersInConversationEmails == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(usersInConversationEmails);
+        }
+        dest.writeString(nextPlayersEmail);
+        dest.writeString(storyRecordingFilePath);
+        dest.writeValue(proposedPrompt1);
+        dest.writeValue(proposedPrompt2);
+        dest.writeValue(proposedPrompt3);
+        dest.writeValue(currentPrompt);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ConversationSummary> CREATOR = new Parcelable.Creator<ConversationSummary>() {
+        @Override
+        public ConversationSummary createFromParcel(Parcel in) {
+            return new ConversationSummary(in);
+        }
+
+        @Override
+        public ConversationSummary[] newArray(int size) {
+            return new ConversationSummary[size];
+        }
+    };
 }

@@ -1,7 +1,6 @@
 package com.aterbo.tellme.activities;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,15 +18,10 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
 import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
@@ -38,8 +32,7 @@ import java.util.ArrayList;
 public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private String currentUserEmail;
-    private int numberOfPrompts;
-
+    private String selectedConvoPushId;
     ArrayList<Object> objectList;
     private Firebase baseRef;
     FirebaseListAdapter<ConversationSummary> mListAdapter;
@@ -70,7 +63,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         currentUserEmail = authData.getProviderData().get("email").toString();
         Log.i("LOGGEDIN", currentUserEmail);
         setFirebaseListToUserEmail();
-        setNumberOfPromptsFBListener();
     }
 
     @Override
@@ -147,7 +139,9 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
             @Override
             protected void populateView(View v, ConversationSummary model, int position) {
-                ((TextView) v.findViewById(R.id.conversation_title)).setText(model.proposedPromptsTagAsString());
+
+                String title = determineTitle(model);
+                ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(model.getNextPlayersEmail());
                 ((TextView) v.findViewById(R.id.conversation_time_since_action)).setText("TIMESINCE");
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
@@ -160,13 +154,13 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 ConversationSummary selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
 
-                    String convoPushId = mListAdapter.getRef(position).getKey();
+                    selectedConvoPushId = mListAdapter.getRef(position).getKey();
 
                     if (isCurrentPlayersTurnToTellStory(selectedConvo)) {
                         Log.i("PickedAConvo!", "My turn to tell");
-                        //startTellActivity(ConversationSummary selectedConvo);
+                        startTellActivity(selectedConvo);
                     } else if (isCurrentPlayersTurnToHear(selectedConvo)) {
-                        //TODO: startHearActivity();
+                        startListenActivity(selectedConvo);
                         Log.i("PickedAConvo!", "My turn to hear");
                     } else if (isWaiting(selectedConvo)) {
                         //TODO: startWait/PingActivity();
@@ -180,24 +174,20 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         });
     }
 
-    private void setNumberOfPromptsFBListener(){
-        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
-
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                Long tempNumber = (Long) snapshot.getValue();
-                numberOfPrompts = tempNumber.intValue();
-            }
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
+    private String determineTitle(ConversationSummary conversation){
+        if (isCurrentPlayersTurnToTellStory(conversation)) {
+            return conversation.proposedPromptsTagAsString();
+        } else if (isCurrentPlayersTurnToHear(conversation)) {
+            return conversation.getCurrentPrompt().getText();
+        } else if (isWaiting(conversation)) {
+            return "Waiting!";
+        }
+        return "Oops";
     }
 
     private boolean isCurrentPlayersTurnToTellStory(ConversationSummary selectedConvo) {
-        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
+        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+                && selectedConvo.getStoryRecordingFilePath().equals("none")) {
             return true;
         } else{
             return false;
@@ -205,7 +195,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     }
 
     private boolean isCurrentPlayersTurnToHear(ConversationSummary selectedConvo) {
-        if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) { //TODO: Check if a story has been recorded
+        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+                && !selectedConvo.getStoryRecordingFilePath().equals("none")) { //TODO: Check if a story has been recorded
             return true;
         } else{
             return false;
@@ -220,15 +211,17 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
-    private void startTellActivity(Conversation conversation){
+    private void startTellActivity(ConversationSummary conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         intent.putExtra("selectedConversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
         startActivity(intent);
     }
 
-    private void startListenActivity(Conversation conversation){
+    private void startListenActivity(ConversationSummary conversation){
         Intent intent = new Intent(this, ListenToStoryActivity.class);
         intent.putExtra("selectedConversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
         startActivity(intent);
     }
 
