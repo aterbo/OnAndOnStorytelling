@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_below="@id/sender_profile_pic"
-            android:text="Tell me a story that ends in a joke."
+            android:text=""
             android:onClick="topic1"
             android:layout_weight="1" />
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Tell me a sad story"
+            android:text=""
             android:onClick="topic2"
             android:layout_weight="1" />
 
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="What is the time you've laughed the hardest?"
+            android:text=""
             android:onClick="topic3"
             android:layout_weight="1" />
 

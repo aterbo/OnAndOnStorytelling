@@ -142,8 +142,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
                 String title = determineTitle(model);
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(model.getNextPlayersEmail());
-                ((TextView) v.findViewById(R.id.conversation_time_since_action)).setText("TIMESINCE");
+                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText("Next Up: " + model.getNextPlayersEmail());
+                ((TextView) v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
         };

@@ -38,21 +38,13 @@
         android:orientation="vertical"
         android:layout_below="@id/sender_profile_pic">
 
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="85dp"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/wait_button"
-            android:layout_gravity="center_horizontal"
-            android:onClick="proceed"/>
 
         <Button
             android:id="@+id/record_topic_option_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:text="What is something that annoys you?"
+            android:text=""
             android:onClick="sendTopic1"
             android:layout_weight="1" />
 
@@ -69,8 +61,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="What is something that makes you laugh?"
+            android:text=""
             android:onClick="sendTopic2"
             android:layout_weight="1" />
+
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Wait"
+            android:id="@+id/wait_button"
+            android:layout_gravity="center_horizontal"
+            android:onClick="proceed"/>
     </LinearLayout>
 </RelativeLayout>
