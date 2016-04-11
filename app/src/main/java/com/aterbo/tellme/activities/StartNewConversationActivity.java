@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.DataSnapshot;
@@ -23,8 +24,12 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
+import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class StartNewConversationActivity extends AppCompatActivity {
@@ -32,9 +37,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
     FirebaseListAdapter<User> mListAdapter;
     ListView mListView;
     private Firebase mUsersRef;
-    ArrayList<Prompt> randomPromptList;
     String currentUserEmail;
-    int numberOfPrompts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +48,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         currentUserEmail = intent.getStringExtra("currentUserEmail");
 
-        setNumberOfPromptsFBListener();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +60,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
     mUsersRef = new Firebase(Constants.FB_LOCATION+ "/" + Constants.FB_LOCATION_USERS);
     initializeScreen();
-    randomPromptList = new ArrayList<>();
     }
 
     @Override
@@ -103,70 +104,58 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private void makeANewConversationWith(User selectedUser){
-        FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(currentUserEmail, selectedUser, randomPromptList);
-    }
+        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
+        Firebase convoParticipantsRef = baseRef.child(Constants.FB_LOCATION_CONVO_PARTICIPANTS);
 
-    private void getRandomPrompts(){
-        int[] randNumList;
-        randNumList = getThreeRandomPromptIDNumbers();
+        Firebase newConversationRef = convoParticipantsRef.push();
+        final String newConversationPushId = newConversationRef.getKey();
+        String selectedUserEmail = selectedUser.getEmail();
 
-        for (int promptId :
-                randNumList) {
-            getRandomPrompt(promptId);
+        HashMap<String, Object> convoEmails = new HashMap<String, Object>();
+
+        Prompt noCurrentPrompt = new Prompt();
+        ArrayList<Prompt> promptArrayList = new ArrayList<>();
+        promptArrayList.add(new Prompt());
+        promptArrayList.add(new Prompt());
+        promptArrayList.add(new Prompt());
+
+        ArrayList<String> usersInConversationEmails = new ArrayList<>();
+        usersInConversationEmails.add(currentUserEmail.replace(".",","));
+        usersInConversationEmails.add(selectedUserEmail.replace(".",","));
+
+        final Conversation conversation = new Conversation(usersInConversationEmails,
+                selectedUserEmail, noCurrentPrompt, promptArrayList);
+
+        HashMap<String, Object> itemToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                newConversationPushId + "/" + currentUserEmail.replace(".",","), "creator");
+        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                newConversationPushId + "/" + selectedUserEmail.replace(".",","), "recipient");
+
+        for (String userEmail : usersInConversationEmails) {
+            convoEmails.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + newConversationPushId, itemToAddHashMap);
         }
-    }
 
-    private void setNumberOfPromptsFBListener(){
-        Firebase ref = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
-
-        ref.addValueEventListener(new ValueEventListener() {
+        baseRef.updateChildren(convoEmails, new Firebase.CompletionListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                numberOfPrompts = ((Long) snapshot.getValue()).intValue();
-                getRandomPrompts();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    public void getRandomPrompt(int promptIdNumber){
-
-        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
-                + Constants.FB_LOCATION_PROMPTS + "/" + promptIdNumber);
-
-        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                randomPromptList.add(snapshot.getValue(Prompt.class));
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASECREATENEWCONVO", "Error adding convo to Firebase");
+                }
+                Log.i("FIREBASECREATENEWCONVO", "Convo added to Firebase successfully");
+                moveToNextActivity(conversation, newConversationPushId);
             }
         });
     }
 
 
-    private int[] getThreeRandomPromptIDNumbers(){
-        Random rand = new Random();
-        int num1, num2, num3;
-        num1 = rand.nextInt((numberOfPrompts) + 1);
-        do {
-            num2 = rand.nextInt((numberOfPrompts) + 1);
-        } while (num2 == num1);
-        do {
-            num3 = rand.nextInt((numberOfPrompts) + 1);
-        } while (num3 == num1 || num3 == num2);
-
-
-        int[] randNumList = {num1, num2, num3};
-        return randNumList;
+    private void moveToNextActivity(Conversation conversation, String selectedConvoPushId){
+        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
+        intent.putExtra("conversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        startActivity(intent);
     }
 }
