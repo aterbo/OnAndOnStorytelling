@@ -41,13 +41,9 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
     }
 
     private void eliminateCurrentStory(){
-        updateConversationPrompt(new Prompt("null", "null"));
         recordingPushId = conversation.getStoryRecordingFilePath();
         conversation.setStoryRecordingFilePath("none");
-    }
-
-    private void updateConversationPrompt(Prompt newPrompt){
-        conversation.setCurrentPrompt(newPrompt);
+        conversation.setCurrentPrompt(new Prompt("null", "null"));
     }
 
     private void setViews() {
