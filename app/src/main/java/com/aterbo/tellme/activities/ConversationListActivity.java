@@ -250,7 +250,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                     final EditText passwordInput = (EditText) textEntryView.findViewById(R.id.passwordEditText);
                     Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
 
-                    FBHelper fbHelper = new FBHelper(getApplicationContext());
+                    FBHelper fbHelper = new FBHelper();
                     fbHelper.addNewUserToServer(usernameInput.getText().toString(),
                             emailInput.getText().toString(),
                             passwordInput.getText().toString());
