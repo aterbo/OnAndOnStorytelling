@@ -197,7 +197,6 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     public void sendRecordingClick(View view){
-        //TODO: Figure out how the hell to send this to someone.
         saveRecordingToConversation();
         conversation.changeNextPlayer();
         updateConversationAfterRecording();
@@ -209,7 +208,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     private void showToastFromStringResource(int stringResourceId) {
-        Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_SHORT).show();
     }
 
 
