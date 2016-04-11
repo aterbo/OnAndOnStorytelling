@@ -10,10 +10,6 @@ import java.util.ArrayList;
  */
 public class ConversationSummary implements Parcelable{
 
-    private static final int STATUS_TO_TELL = 0;
-    private static final int STATUS_TO_HEAR = 1;
-    private static final int STATUS_WAITING = 2;
-
     private String title;
     private int statusFlag;
     private ArrayList<String> usersInConversationEmails;
@@ -36,7 +32,6 @@ public class ConversationSummary implements Parcelable{
         this.proposedPrompt2 = proposedPrompts.get(1);
         this.proposedPrompt3 = proposedPrompts.get(2);
         storyRecordingFilePath = "none";
-        setTitleBasedOnStatus();
     }
 
     public Prompt getProposedPrompt3() {
@@ -65,16 +60,6 @@ public class ConversationSummary implements Parcelable{
 
     public int getStatusFlag() {
         return statusFlag;
-    }
-
-    private void setTitleBasedOnStatus(){
-        if (statusFlag == STATUS_TO_TELL){
-            title = proposedPromptsTagAsString();
-        } else if (statusFlag == STATUS_TO_HEAR){
-            title = currentPrompt.getText();
-        }  else if (statusFlag == STATUS_WAITING){
-            title = "I'm WAAAIII-TING.";
-        }
     }
 
     public String getTitle() {
@@ -133,29 +118,6 @@ public class ConversationSummary implements Parcelable{
     public void setStoryRecordingFilePath(String storyRecordingFilePath){
         this.storyRecordingFilePath = storyRecordingFilePath;
     }
-
-    public void setStatus(int statusFlag){
-        this.statusFlag = statusFlag;
-        setTitleBasedOnStatus();
-    }
-
-
-
-    public void setStatusToTell(){
-        statusFlag = STATUS_TO_TELL;
-        setTitleBasedOnStatus();
-    }
-
-    public void setStatusToHear(){
-        statusFlag = STATUS_TO_HEAR;
-        setTitleBasedOnStatus();
-    }
-
-    public void setStatusToWaiting(){
-        statusFlag = STATUS_WAITING;
-        setTitleBasedOnStatus();
-    }
-
 
     public String proposedPromptsTagAsString(){
         return proposedPrompt1.getTag() + ", " +
