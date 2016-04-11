@@ -17,7 +17,7 @@ import android.widget.ToggleButton;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -35,7 +35,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private MediaPlayer mPlayer;
     public TextView duration;
-    private ConversationSummary conversation;
+    private Conversation conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
     private int shortSkipTime = 5000;

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
@@ -34,7 +34,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     private String selectedConvoPushId;
     ArrayList<Object> objectList;
     private Firebase baseRef;
-    FirebaseListAdapter<ConversationSummary> mListAdapter;
+    FirebaseListAdapter<Conversation> mListAdapter;
 
     @Override
     public Firebase getFirebaseRef() {
@@ -134,10 +134,10 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private void setFirebaseListToUserEmail() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
-        mListAdapter = new FirebaseListAdapter<ConversationSummary>(this, ConversationSummary.class,
+        mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
                 R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
             @Override
-            protected void populateView(View v, ConversationSummary model, int position) {
+            protected void populateView(View v, Conversation model, int position) {
 
                 String title = determineTitle(model);
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
@@ -150,7 +150,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ConversationSummary selectedConvo = mListAdapter.getItem(position);
+                Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
 
                     selectedConvoPushId = mListAdapter.getRef(position).getKey();
@@ -173,7 +173,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         });
     }
 
-    private String determineTitle(ConversationSummary conversation){
+    private String determineTitle(Conversation conversation){
         if (isCurrentPlayersTurnToTellStory(conversation)) {
             return conversation.proposedPromptsTagAsString();
         } else if (isCurrentPlayersTurnToHear(conversation)) {
@@ -184,7 +184,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         return "Oops";
     }
 
-    private boolean isCurrentPlayersTurnToTellStory(ConversationSummary selectedConvo) {
+    private boolean isCurrentPlayersTurnToTellStory(Conversation selectedConvo) {
         if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
                 && selectedConvo.getStoryRecordingFilePath().equals("none")) {
             return true;
@@ -193,7 +193,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
-    private boolean isCurrentPlayersTurnToHear(ConversationSummary selectedConvo) {
+    private boolean isCurrentPlayersTurnToHear(Conversation selectedConvo) {
         if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
                 && !selectedConvo.getStoryRecordingFilePath().equals("none")) { //TODO: Check if a story has been recorded
             return true;
@@ -202,7 +202,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
-    private boolean isWaiting(ConversationSummary selectedConvo) {
+    private boolean isWaiting(Conversation selectedConvo) {
         if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
             return true;
         } else{
@@ -210,14 +210,14 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
-    private void startTellActivity(ConversationSummary conversation){
+    private void startTellActivity(Conversation conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         intent.putExtra("selectedConversation", conversation);
         intent.putExtra("selectedConversationPushId", selectedConvoPushId);
         startActivity(intent);
     }
 
-    private void startListenActivity(ConversationSummary conversation){
+    private void startListenActivity(Conversation conversation){
         Intent intent = new Intent(this, ListenToStoryActivity.class);
         intent.putExtra("selectedConversation", conversation);
         intent.putExtra("selectedConversationPushId", selectedConvoPushId);

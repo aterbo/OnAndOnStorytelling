@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -31,7 +31,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     ArrayList<Prompt> promptOptionsList;
     ArrayList<Prompt> selectedPromptsList;
     private String selectedConvoPushId;
-    private ConversationSummary conversation;
+    private Conversation conversation;
     int promptCountTracker = 0;
     int numberOfPrompts;
     final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;

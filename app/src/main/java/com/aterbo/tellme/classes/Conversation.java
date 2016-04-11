@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class ConversationSummary implements Parcelable{
+public class Conversation implements Parcelable{
 
     private String title;
     private int statusFlag;
@@ -20,10 +20,10 @@ public class ConversationSummary implements Parcelable{
     private Prompt proposedPrompt3;
     private Prompt currentPrompt;
 
-    public ConversationSummary() { }
+    public Conversation() { }
 
-    public ConversationSummary(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                               int statusFlag, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
+    public Conversation(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
+                        int statusFlag, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.usersInConversationEmails = usersInConversationEmails;
         this.nextPlayersEmail = nextPlayersEmail;
         this.statusFlag = statusFlag;
@@ -143,7 +143,7 @@ public class ConversationSummary implements Parcelable{
     }
 
     //Parcelabler.com
-    protected ConversationSummary(Parcel in) {
+    protected Conversation(Parcel in) {
         title = in.readString();
         statusFlag = in.readInt();
         if (in.readByte() == 0x01) {
@@ -184,15 +184,15 @@ public class ConversationSummary implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ConversationSummary> CREATOR = new Parcelable.Creator<ConversationSummary>() {
+    public static final Parcelable.Creator<Conversation> CREATOR = new Parcelable.Creator<Conversation>() {
         @Override
-        public ConversationSummary createFromParcel(Parcel in) {
-            return new ConversationSummary(in);
+        public Conversation createFromParcel(Parcel in) {
+            return new Conversation(in);
         }
 
         @Override
-        public ConversationSummary[] newArray(int size) {
-            return new ConversationSummary[size];
+        public Conversation[] newArray(int size) {
+            return new Conversation[size];
         }
     };
 }

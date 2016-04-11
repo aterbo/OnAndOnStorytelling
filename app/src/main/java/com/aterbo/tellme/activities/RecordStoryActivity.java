@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private MediaRecorder myRecorder;
     private MediaPlayer myPlayer;
-    private ConversationSummary conversation;
+    private Conversation conversation;
     private String outputFile = null;
     private Button playbackControlButton;
     private Button recordingStatusButton;

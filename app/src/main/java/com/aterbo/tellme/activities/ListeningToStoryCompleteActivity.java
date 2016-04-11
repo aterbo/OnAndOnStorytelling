@@ -10,22 +10,18 @@ import android.widget.Toast;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class ListeningToStoryCompleteActivity extends AppCompatActivity {
 
-    private ConversationSummary conversation;
+    private Conversation conversation;
     private String selectedConvoPushId;
     private String recordingPushId;
 

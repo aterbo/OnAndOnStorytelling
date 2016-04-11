@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.ConversationSummary;
+import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
@@ -122,7 +122,7 @@ public class FBHelper {
         usersInConversationEmails.add(currentUserEmail.replace(".",","));
         usersInConversationEmails.add(selectedUserEmail.replace(".",","));
 
-        ConversationSummary itemToAddObject = new ConversationSummary(usersInConversationEmails,
+        Conversation itemToAddObject = new Conversation(usersInConversationEmails,
                 selectedUserEmail, 2, noCurrentPrompt, selectedPromptsList);
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
@@ -148,7 +148,7 @@ public class FBHelper {
         });
     }
 
-    public void updateConversationAfterRecording(ConversationSummary conversation, String convoPushId){
+    public void updateConversationAfterRecording(Conversation conversation, String convoPushId){
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
