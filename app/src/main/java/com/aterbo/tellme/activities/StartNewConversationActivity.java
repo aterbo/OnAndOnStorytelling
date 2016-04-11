@@ -49,13 +49,13 @@ public class StartNewConversationActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "This will eventually let you add a new friend to your " +
+                        "contact list", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }
         });
 
-    mUsersRef = new Firebase(getResources().getString(R.string.firebase_url) + "/" +
-            Constants.FB_LOCATION_USERS);
+    mUsersRef = new Firebase(Constants.FB_LOCATION+ "/" + Constants.FB_LOCATION_USERS);
     initializeScreen();
     randomPromptList = new ArrayList<>();
     }
@@ -68,9 +68,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Link layout elements from XML and setup the toolbar
-     */
     public void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_display_all_users);
 
@@ -88,13 +85,13 @@ public class StartNewConversationActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User selectedUser = mListAdapter.getItem(position);
                 Log.i("SELECTED USER", selectedUser.getEmail());
-                continueWithNewConvo(selectedUser);
+                makeANewConversationWith(selectedUser);
             }
         });
     }
 
-    private void getThreeRandomPrompts(){
-        int[] randNumList = new int[3];
+    private void getRandomPrompts(){
+        int[] randNumList;
         randNumList = getThreeRandomPromptIDNumbers();
 
         for (int promptId :
@@ -109,10 +106,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                Long tempNumber = (Long) snapshot.getValue();
-                numberOfPrompts = tempNumber.intValue();
-                getThreeRandomPrompts();
+                numberOfPrompts = ((Long)snapshot.getValue()).intValue();
+                getRandomPrompts();
             }
 
             @Override
@@ -122,13 +117,9 @@ public class StartNewConversationActivity extends AppCompatActivity {
         });
     }
 
-    private void continueWithNewConvo(User selectedUser){
-
-        //TODO: Make PromptList Selector
+    private void makeANewConversationWith(User selectedUser){
         FBHelper fbHelper = new FBHelper(this);
         fbHelper.addNewConversation(currentUserEmail, selectedUser, randomPromptList);
-
-        //startTellActivity(newConversation);
     }
 
 
