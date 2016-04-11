@@ -38,11 +38,6 @@
         <activity android:name=".activities.ChooseTopicsToSendActivity" >
         </activity>
         <activity
-            android:name=".activities.startNewConversation"
-            android:label="@string/title_activity_start_new_conversation"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".activities.StartNewConversationActivity"
             android:label="@string/title_activity_pick_user"
             android:theme="@style/AppTheme.NoActionBar" >
