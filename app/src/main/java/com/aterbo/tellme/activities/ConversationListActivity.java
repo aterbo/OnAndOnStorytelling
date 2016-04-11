@@ -121,72 +121,77 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
                 R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
             @Override
-            protected void populateView(View v, Conversation model, int position) {
+            protected void populateView(View v, Conversation conversation, int position) {
 
-                String title = determineTitle(model);
+                String title = determineTitle(conversation);
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText("Next Up: " + model.getNextPlayersEmail());
+                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText("Next Up: " + conversation.getNextPlayersEmail());
                 ((TextView) v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
         };
+
         listView.setAdapter(mListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
-
                     selectedConvoPushId = mListAdapter.getRef(position).getKey();
-
-                    if (isCurrentPlayersTurnToTellStory(selectedConvo)) {
-                        Log.i("PickedAConvo!", "My turn to tell");
-                        startTellActivity(selectedConvo);
-                    } else if (isCurrentPlayersTurnToHear(selectedConvo)) {
-                        startListenActivity(selectedConvo);
-                        Log.i("PickedAConvo!", "My turn to hear");
-                    } else if (isWaiting(selectedConvo)) {
-                        //TODO: startWait/PingActivity();
-                        Log.i("PickedAConvo!", "My turn to hear");
-                    }
-
-                    //TODO: Determine which type of conversation was picked and open activity based on PushId.
+                    determineActivityToStart(selectedConvo);
                 }
             }
-
         });
     }
 
+    private void determineActivityToStart(Conversation conversation){
+
+        if (isUserTurnToTell(conversation)) {
+            Log.i("PickedAConvo!", "My turn to tell");
+            startTellActivity(conversation);
+
+        } else if (isUserTurnToHear(conversation)) {
+            startListenActivity(conversation);
+            Log.i("PickedAConvo!", "My turn to hear");
+
+        } else if (isUserWaiting(conversation)) {
+            //TODO: startWait/PingActivity();
+            Log.i("PickedAConvo!", "My turn to hear");
+        }
+    }
+
     private String determineTitle(Conversation conversation){
-        if (isCurrentPlayersTurnToTellStory(conversation)) {
+        if (isUserTurnToTell(conversation)) {
             return conversation.proposedPromptsTagAsString();
-        } else if (isCurrentPlayersTurnToHear(conversation)) {
+
+        } else if (isUserTurnToHear(conversation)) {
             return conversation.getCurrentPrompt().getText();
-        } else if (isWaiting(conversation)) {
+
+        } else if (isUserWaiting(conversation)) {
             return "Waiting!";
         }
         return "Oops";
     }
 
-    private boolean isCurrentPlayersTurnToTellStory(Conversation selectedConvo) {
-        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
-                && selectedConvo.getStoryRecordingFilePath().equals("none")) {
+    private boolean isUserTurnToTell(Conversation conversation) {
+        if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+                && conversation.getStoryRecordingFilePath().equals("none")) {
             return true;
         } else{
             return false;
         }
     }
 
-    private boolean isCurrentPlayersTurnToHear(Conversation selectedConvo) {
-        if(selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
-                && !selectedConvo.getStoryRecordingFilePath().equals("none")) { //TODO: Check if a story has been recorded
+    private boolean isUserTurnToHear(Conversation conversation) {
+        if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+                && !conversation.getStoryRecordingFilePath().equals("none")) {
             return true;
         } else{
             return false;
         }
     }
 
-    private boolean isWaiting(Conversation selectedConvo) {
+    private boolean isUserWaiting(Conversation selectedConvo) {
         if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
             return true;
         } else{
@@ -213,7 +218,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     }
 
     public void addNewUser(View view){
-        AlertDialog addNewUserDialog = addNewUserDialog("Add User");
+        AlertDialog addNewUserDialog = addNewUserDialog("Add New User");
         addNewUserDialog.show();
     }
     private void startNewConversation(){
@@ -227,17 +232,17 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         LayoutInflater factory = LayoutInflater.from(this);
         final View textEntryView = factory.inflate(R.layout.login, null);
         final AlertDialog.Builder failAlert = new AlertDialog.Builder(this);
-        failAlert.setTitle("Login/ Register Failed");
+        failAlert.setTitle("Registration Failed");
         failAlert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Cancelled
             }
         });
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Login/ Register");
+        alert.setTitle("Add New User");
         alert.setMessage(message);
         alert.setView(textEntryView);
-        alert.setPositiveButton("Login", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton("Create User", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 try {
                     final EditText usernameInput = (EditText) textEntryView.findViewById(R.id.userNameEditText);
