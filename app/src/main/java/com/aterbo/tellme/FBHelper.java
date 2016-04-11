@@ -4,24 +4,17 @@ import android.content.Context;
 import android.util.Log;
 
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.ConversationSummary;
-import com.aterbo.tellme.classes.ConvoLite;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by ATerbo on 3/14/16.
@@ -177,82 +170,4 @@ public class FBHelper {
             }
         });
     }
-
-    public void setUserGroupListener(){
-        Firebase userGroup = userRef.child(getCurrentUserID()).child("groups");
-        userGroup.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Conversation conversation = parseFBPathIntoConversation(dataSnapshot);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                userRemovedFromConversation(dataSnapshot);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-
-    private Conversation parseFBPathIntoConversation(DataSnapshot dataSnapshot){
-        Conversation conversation = new Conversation();
-        conversation.setTitle((String) dataSnapshot.child("title").getValue());
-        conversation.setTimeSinceLastAction((String) dataSnapshot.child("timeSinceLastAction").getValue());
-        conversation.setStoryDuration((String) dataSnapshot.child("storyDuration").getValue());
-        conversation.setStoryFilePath((String) dataSnapshot.child("storyFilePath").getValue());
-        conversation.setStatus((int) dataSnapshot.child("statusFlag").getValue());
-        conversation.setSqlIdNumber((int) dataSnapshot.child("sqlIdNumber").getValue());
-        conversation.setUsersInConversation(parseUserList(dataSnapshot.child("usersInConversation")));
-        conversation.setProposedPrompts(parsePromptList(dataSnapshot.child("proposedPrompts")));
-        conversation.setCurrentPrompt(parsePrompt(dataSnapshot.child("currentPrompt")));
-
-        return conversation;
-    }
-
-    private void userRemovedFromConversation(DataSnapshot dataSnapshot){
-
-    }
-
-    private ArrayList<User> parseUserList(DataSnapshot snapshot){
-        ArrayList<User> userList = new ArrayList<>();
-        for (DataSnapshot child : snapshot.getChildren()) {
-            User user = new User((String) child.child("userName").getValue(),
-                    (String) child.child("email").getValue(),
-                    (String) child.child("userId").getValue());
-            userList.add(user);
-        }
-        return userList;
-    }
-
-    private ArrayList<Prompt> parsePromptList(DataSnapshot snapshot){
-        ArrayList<Prompt> promptList = new ArrayList<>();
-        for (DataSnapshot child : snapshot.getChildren()) {
-            Prompt prompt = new Prompt((String) child.child("text").getValue(),
-                    (String) child.child("tag").getValue());
-            promptList.add(prompt);
-        }
-        return promptList;
-    }
-
-    private Prompt parsePrompt(DataSnapshot snapshot){
-        Prompt currentPrompt = new Prompt((String) snapshot.child("text").getValue(),
-                    (String) snapshot.child("tag").getValue());
-        return currentPrompt;
-    }
-
-
 }
