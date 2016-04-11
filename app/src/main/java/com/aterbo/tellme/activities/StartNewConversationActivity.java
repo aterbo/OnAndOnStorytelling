@@ -1,6 +1,5 @@
 package com.aterbo.tellme.activities;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.alertdialogs.PingStorytellerDialog;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.DataSnapshot;
@@ -57,7 +55,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         });
 
     mUsersRef = new Firebase(getResources().getString(R.string.firebase_url) + "/" +
-            Constants.FIREBASE_LOCATION_USERS);
+            Constants.FB_LOCATION_USERS);
     initializeScreen();
     randomPromptList = new ArrayList<>();
     }
@@ -106,7 +104,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private void setNumberOfPromptsFBListener(){
-        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+        Firebase ref = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -136,8 +134,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
     public void getRandomPrompt(int promptIdNumber){
 
-        Firebase promptRef = new Firebase(Constants.FIREBASE_LOCATION + "/"
-                + Constants.FIREBASE_LOCATION_PROMPTS + "/" + promptIdNumber);
+        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
+                + Constants.FB_LOCATION_PROMPTS + "/" + promptIdNumber);
 
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

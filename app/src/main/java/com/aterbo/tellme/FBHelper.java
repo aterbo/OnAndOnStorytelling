@@ -79,9 +79,9 @@ public class FBHelper {
                 new ObjectMapper().convertValue(newUser, Map.class);
 
         /* Add the user and UID to the update map */
-        userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_USERS + "/" + mUserEmail,
+        userAndUidMapping.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserEmail,
                 newUserMap);
-        userAndUidMapping.put("/" + Constants.FIREBASE_LOCATION_UID_MAPPINGS + "/"
+        userAndUidMapping.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
                 + mUserID, mUserEmail);
 
         /* Try to update the database; if there is already a user, this will fail */
@@ -90,7 +90,7 @@ public class FBHelper {
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
                     /* Try just making a uid mapping */
-                    baseRef.child(Constants.FIREBASE_LOCATION_UID_MAPPINGS)
+                    baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS)
                             .child(mUserID).setValue(mUserEmail);
                     Log.i("FIREBASELOGIN", "Error adding user to Firebase");
                 }
@@ -127,13 +127,13 @@ public class FBHelper {
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
 
-        convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
+        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
                 + currentUserEmail.replace(".",","), "creator");
-        convoEmails.put("/" + Constants.FIREBASE_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
+        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" + convoId + "/"
                 + selectedUserEmail.replace(".",","), "recipient");
 
         for (String userEmail : usersInConversationEmails) {
-            convoEmails.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+            convoEmails.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + convoId, itemToAddHashMap);
         }
 
@@ -156,7 +156,7 @@ public class FBHelper {
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
         for (String userEmail : conversation.getUsersInConversationEmails()) {
-            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + convoPushId, conversationToAddHashMap);
         }
 

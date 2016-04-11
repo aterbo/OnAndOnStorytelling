@@ -125,7 +125,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void updateConversationOnServer(){
-        Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
+        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
@@ -133,7 +133,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
         for (String userEmail : conversation.getUsersInConversationEmails()) {
-            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
@@ -168,7 +168,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setNumberOfPromptsFBListener(){
-        Firebase ref = new Firebase(Constants.FIREBASE_LOCATION + "/" + Constants.FIREBASE_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+        Firebase ref = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -187,8 +187,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     public void getRandomPrompt(int promptIdNumber){
-        Firebase promptRef = new Firebase(Constants.FIREBASE_LOCATION + "/"
-                + Constants.FIREBASE_LOCATION_PROMPTS + "/" + promptIdNumber);
+        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
+                + Constants.FB_LOCATION_PROMPTS + "/" + promptIdNumber);
 
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

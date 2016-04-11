@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -26,13 +27,10 @@ import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 
-import java.util.ArrayList;
-
 public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private String currentUserEmail;
     private String selectedConvoPushId;
-    ArrayList<Object> objectList;
     private Firebase baseRef;
     FirebaseListAdapter<Conversation> mListAdapter;
 
@@ -84,7 +82,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private void initializeFirebase(){
         Firebase.setAndroidContext(this);
-        baseRef = new Firebase(this.getResources().getString(R.string.firebase_url));
+        baseRef = new Firebase(Constants.FB_LOCATION);
     }
 
     private void setFloatingActionButton() {
@@ -117,20 +115,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    private void respondToListClick(int position){
-        if (position<(toHearSeparatorPosition)){
-            Conversation selectedConversation = (Conversation)objectList.get(position);
-            startTellActivity(selectedConversation);
-        } else if (position<(toWaitForSeparatorPosition)){
-            Conversation selectedConversation = (Conversation)objectList.get(position);
-            startListenActivity(selectedConversation);
-        } else {
-            DialogFragment newFragment = PingStorytellerDialog.newInstance();
-            newFragment.show(getFragmentManager(), "ping");
-        }
-    }*/
 
     private void setFirebaseListToUserEmail() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);

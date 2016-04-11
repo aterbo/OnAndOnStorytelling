@@ -66,7 +66,7 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
 
 
     public void updateConversationAfterListening(){
-        Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
+        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
@@ -74,11 +74,11 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
         for (String userEmail : conversation.getUsersInConversationEmails()) {
-            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
-        convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_RECORDINGS + "/" + recordingPushId,
+        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
                 null);
 
         baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {

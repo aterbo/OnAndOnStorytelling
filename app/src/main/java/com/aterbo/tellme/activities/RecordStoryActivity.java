@@ -214,9 +214,9 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     public void updateConversationAfterRecording(){
-        Firebase baseRef = new Firebase(Constants.FIREBASE_LOCATION);
+        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
-        Firebase newRecordingRef = baseRef.child(Constants.FIREBASE_LOCATION_RECORDINGS).push();
+        Firebase newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
         String recordingPushId = newRecordingRef.getKey();
         conversation.setStoryRecordingFilePath(recordingPushId);
 
@@ -226,11 +226,11 @@ public class RecordStoryActivity extends AppCompatActivity {
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
         for (String userEmail : conversation.getUsersInConversationEmails()) {
-            convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_USER_CONVOS + "/"
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
-        convoInfoToUpdate.put("/" + Constants.FIREBASE_LOCATION_RECORDINGS + "/" + recordingPushId,
+        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
                 encodedRecording);
 
         baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {

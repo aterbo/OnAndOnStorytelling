@@ -72,8 +72,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getRecording(){
-        Firebase recordingRef = new Firebase(Constants.FIREBASE_LOCATION + "/" +
-                Constants.FIREBASE_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingFilePath());
+        Firebase recordingRef = new Firebase(Constants.FB_LOCATION + "/" +
+                Constants.FB_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingFilePath());
 
         recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
