@@ -18,7 +18,6 @@ import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -71,7 +70,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void getRecording(){
         Firebase recordingRef = new Firebase(Constants.FB_LOCATION + "/" +
-                Constants.FB_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingFilePath());
+                Constants.FB_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingPushId());
 
         recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

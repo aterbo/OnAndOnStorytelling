@@ -123,7 +123,7 @@ public class FBHelper {
         usersInConversationEmails.add(selectedUserEmail.replace(".",","));
 
         Conversation itemToAddObject = new Conversation(usersInConversationEmails,
-                selectedUserEmail, 2, noCurrentPrompt, selectedPromptsList);
+                selectedUserEmail, noCurrentPrompt, selectedPromptsList);
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(itemToAddObject, Map.class);
 

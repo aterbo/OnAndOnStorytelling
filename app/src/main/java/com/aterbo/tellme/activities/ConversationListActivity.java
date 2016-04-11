@@ -175,7 +175,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private boolean isUserTurnToTell(Conversation conversation) {
         if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
-                && conversation.getStoryRecordingFilePath().equals("none")) {
+                && conversation.getStoryRecordingPushId().equals("none")) {
             return true;
         } else{
             return false;
@@ -184,7 +184,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private boolean isUserTurnToHear(Conversation conversation) {
         if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
-                && !conversation.getStoryRecordingFilePath().equals("none")) {
+                && !conversation.getStoryRecordingPushId().equals("none")) {
             return true;
         } else{
             return false;

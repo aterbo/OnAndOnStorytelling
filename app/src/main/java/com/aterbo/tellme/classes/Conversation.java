@@ -10,11 +10,9 @@ import java.util.ArrayList;
  */
 public class Conversation implements Parcelable{
 
-    private String title;
-    private int statusFlag;
     private ArrayList<String> usersInConversationEmails;
     private String nextPlayersEmail;
-    private String storyRecordingFilePath;
+    private String storyRecordingPushId;
     private Prompt proposedPrompt1;
     private Prompt proposedPrompt2;
     private Prompt proposedPrompt3;
@@ -23,15 +21,14 @@ public class Conversation implements Parcelable{
     public Conversation() { }
 
     public Conversation(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                        int statusFlag, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
+                        Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.usersInConversationEmails = usersInConversationEmails;
         this.nextPlayersEmail = nextPlayersEmail;
-        this.statusFlag = statusFlag;
         this.currentPrompt = currentPrompt;
         this.proposedPrompt1 = proposedPrompts.get(0);
         this.proposedPrompt2 = proposedPrompts.get(1);
         this.proposedPrompt3 = proposedPrompts.get(2);
-        storyRecordingFilePath = "none";
+        storyRecordingPushId = "none";
     }
 
     public Prompt getProposedPrompt3() {
@@ -56,14 +53,6 @@ public class Conversation implements Parcelable{
 
     public void setProposedPrompt2(Prompt proposedPrompt2) {
         this.proposedPrompt2 = proposedPrompt2;
-    }
-
-    public int getStatusFlag() {
-        return statusFlag;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public ArrayList<String> getUsersInConversationEmails() {
@@ -111,12 +100,12 @@ public class Conversation implements Parcelable{
         this.currentPrompt = currentPrompt;
     }
 
-    public String getStoryRecordingFilePath(){
-        return storyRecordingFilePath;
+    public String getStoryRecordingPushId(){
+        return storyRecordingPushId;
     }
 
-    public void setStoryRecordingFilePath(String storyRecordingFilePath){
-        this.storyRecordingFilePath = storyRecordingFilePath;
+    public void setStoryRecordingPushId(String storyRecordingPushId){
+        this.storyRecordingPushId = storyRecordingPushId;
     }
 
     public String proposedPromptsTagAsString(){
@@ -144,8 +133,6 @@ public class Conversation implements Parcelable{
 
     //Parcelabler.com
     protected Conversation(Parcel in) {
-        title = in.readString();
-        statusFlag = in.readInt();
         if (in.readByte() == 0x01) {
             usersInConversationEmails = new ArrayList<String>();
             in.readList(usersInConversationEmails, String.class.getClassLoader());
@@ -153,7 +140,7 @@ public class Conversation implements Parcelable{
             usersInConversationEmails = null;
         }
         nextPlayersEmail = in.readString();
-        storyRecordingFilePath = in.readString();
+        storyRecordingPushId = in.readString();
         proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
@@ -167,8 +154,6 @@ public class Conversation implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeInt(statusFlag);
         if (usersInConversationEmails == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -176,7 +161,7 @@ public class Conversation implements Parcelable{
             dest.writeList(usersInConversationEmails);
         }
         dest.writeString(nextPlayersEmail);
-        dest.writeString(storyRecordingFilePath);
+        dest.writeString(storyRecordingPushId);
         dest.writeValue(proposedPrompt1);
         dest.writeValue(proposedPrompt2);
         dest.writeValue(proposedPrompt3);

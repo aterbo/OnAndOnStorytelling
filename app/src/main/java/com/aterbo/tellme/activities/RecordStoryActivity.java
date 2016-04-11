@@ -217,7 +217,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         Firebase newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
         String recordingPushId = newRecordingRef.getKey();
-        conversation.setStoryRecordingFilePath(recordingPushId);
+        conversation.setStoryRecordingPushId(recordingPushId);
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
