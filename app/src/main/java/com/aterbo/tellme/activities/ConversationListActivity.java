@@ -126,7 +126,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 String title = determineTitle(conversation);
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_next_turn)).setText("Next Up: " + conversation.getNextPlayersEmail());
-                ((TextView) v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
+                (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
         };
