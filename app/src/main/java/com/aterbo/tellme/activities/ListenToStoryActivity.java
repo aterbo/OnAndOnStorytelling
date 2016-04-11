@@ -43,7 +43,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Handler durationHandler = new Handler();
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
-    private Prompt storyPrompt;
     private Uri speechUri;
     private String selectedConvoPushId;
     private String localTempFilePath;
@@ -59,7 +58,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
         getConversation();
         getRecording();
         showConversationDetails();
-        getPromptData();
         showPromptTextInTextView();
         initializeViews();
         setToggleButton();
@@ -80,7 +78,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 encodedRecording = dataSnapshot.getValue(String.class);
                 convertRecordingToTempFile();
-                getstoryUri();
+                getStoryUri();
                 setUpMediaPlayer();
             }
 
@@ -99,11 +97,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         recordingLength.setText("StoryLength");
     }
 
-    private void getPromptData(){
-        storyPrompt = conversation.getCurrentPrompt();
-    }
-
-    private void getstoryUri(){
+    private void getStoryUri(){
         speechUri = Uri.parse(localTempFilePath);
     }
 
@@ -132,7 +126,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void showPromptTextInTextView(){
-        ((TextView)findViewById(R.id.prompt_text)).setText(storyPrompt.getText());
+        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
     private void initializeViews(){
