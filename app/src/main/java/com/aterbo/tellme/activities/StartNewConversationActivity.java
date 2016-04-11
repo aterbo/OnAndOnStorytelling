@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
@@ -85,9 +86,25 @@ public class StartNewConversationActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User selectedUser = mListAdapter.getItem(position);
                 Log.i("SELECTED USER", selectedUser.getEmail());
-                makeANewConversationWith(selectedUser);
+                if (isSelectedUserCurrentUser(selectedUser)) {
+                    Toast.makeText(getApplicationContext(), "You can only talk to yourself if you're crazy.", Toast.LENGTH_SHORT).show();
+                } else {
+                    makeANewConversationWith(selectedUser);
+                }
             }
         });
+    }
+
+    private boolean isSelectedUserCurrentUser(User selectedUser){
+        if (selectedUser.getEmail().equals(currentUserEmail)){
+            return true;
+        }
+        return false;
+    }
+
+    private void makeANewConversationWith(User selectedUser){
+        FBHelper fbHelper = new FBHelper(this);
+        fbHelper.addNewConversation(currentUserEmail, selectedUser, randomPromptList);
     }
 
     private void getRandomPrompts(){
@@ -106,7 +123,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                numberOfPrompts = ((Long)snapshot.getValue()).intValue();
+                numberOfPrompts = ((Long) snapshot.getValue()).intValue();
                 getRandomPrompts();
             }
 
@@ -116,12 +133,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void makeANewConversationWith(User selectedUser){
-        FBHelper fbHelper = new FBHelper(this);
-        fbHelper.addNewConversation(currentUserEmail, selectedUser, randomPromptList);
-    }
-
 
     public void getRandomPrompt(int promptIdNumber){
 
