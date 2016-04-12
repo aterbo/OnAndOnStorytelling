@@ -48,13 +48,13 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
 
     private void setViews() {
         ((TextView) findViewById(R.id.sender_text)).setText("You just listened to a story from " +
-                conversation.getLastPlayersEmail() + " about");
+                conversation.getLastPlayersEmail().replace(",", ".") + " about");
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
     public void goBackToMainScreenButtonClick(View view){
-        Toast.makeText(this, "Now that you've heard this story, " + conversation.getLastPlayersEmail()
-                + " wants to hear a story from you!"
+        Toast.makeText(this, "Now that you've heard this story, " +
+                conversation.getLastPlayersEmail().replace(",",".") + " wants to hear a story from you!"
                 , Toast.LENGTH_LONG).show();
 
         updateConversationAfterListening();

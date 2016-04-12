@@ -63,7 +63,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setConversationToView() {
-        ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(conversation.getNextPlayersEmail() + " is next to tell a story");
+        ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
+                conversation.getNextPlayersEmail().replace(",",".") + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
@@ -115,7 +116,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void addChosenPromptToList(int indexNumber) {
         selectedPromptsList.add(promptOptionsList.get(indexNumber));
-        Toast.makeText(this, promptOptionsList.get(indexNumber).getText(), Toast.LENGTH_SHORT).show();
     }
 
     private void questioningComplete(){
