@@ -124,7 +124,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         usersInConversationEmails.add(selectedUserEmail.replace(".",","));
 
         final Conversation conversation = new Conversation(usersInConversationEmails,
-                selectedUserEmail, noCurrentPrompt, promptArrayList);
+                selectedUserEmail, currentUserEmail, noCurrentPrompt, promptArrayList);
 
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);

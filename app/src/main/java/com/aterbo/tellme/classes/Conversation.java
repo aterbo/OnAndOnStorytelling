@@ -12,6 +12,7 @@ public class Conversation implements Parcelable{
 
     private ArrayList<String> usersInConversationEmails;
     private String nextPlayersEmail;
+    private String lastPlayersEmail;
     private String storyRecordingPushId;
     private Prompt proposedPrompt1;
     private Prompt proposedPrompt2;
@@ -21,9 +22,10 @@ public class Conversation implements Parcelable{
     public Conversation() { }
 
     public Conversation(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                        Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
+                        String lastPlayersEmail, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.usersInConversationEmails = usersInConversationEmails;
         this.nextPlayersEmail = nextPlayersEmail;
+        this.lastPlayersEmail = lastPlayersEmail;
         this.currentPrompt = currentPrompt;
         this.proposedPrompt1 = proposedPrompts.get(0);
         this.proposedPrompt2 = proposedPrompts.get(1);
@@ -71,6 +73,14 @@ public class Conversation implements Parcelable{
         this.nextPlayersEmail = nextPlayersEmail;
     }
 
+    public String getLastPlayersEmail() {
+        return lastPlayersEmail;
+    }
+
+    public void setLastPlayersEmail(String lastPlayersEmail){
+        this.lastPlayersEmail = lastPlayersEmail;
+    }
+
     public String getUserEmails(int userIndex){
         return usersInConversationEmails.get(userIndex);
     }
@@ -115,6 +125,7 @@ public class Conversation implements Parcelable{
     }
 
     public void changeNextPlayer(){
+        makeLastPlayerCurrentNextPlayer();
         int counter = 0;
         String holderEmail;
 
@@ -123,6 +134,10 @@ public class Conversation implements Parcelable{
             counter = counter + 1;
         } while(holderEmail.equals(nextPlayersEmail));
         nextPlayersEmail = holderEmail;
+    }
+
+    public void makeLastPlayerCurrentNextPlayer(){
+        lastPlayersEmail = nextPlayersEmail;
     }
 
     public void clearProposedTopics(){
