@@ -155,6 +155,7 @@ public class Conversation implements Parcelable{
             usersInConversationEmails = null;
         }
         nextPlayersEmail = in.readString();
+        lastPlayersEmail = in.readString();
         storyRecordingPushId = in.readString();
         proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
@@ -176,6 +177,7 @@ public class Conversation implements Parcelable{
             dest.writeList(usersInConversationEmails);
         }
         dest.writeString(nextPlayersEmail);
+        dest.writeString(lastPlayersEmail);
         dest.writeString(storyRecordingPushId);
         dest.writeValue(proposedPrompt1);
         dest.writeValue(proposedPrompt2);

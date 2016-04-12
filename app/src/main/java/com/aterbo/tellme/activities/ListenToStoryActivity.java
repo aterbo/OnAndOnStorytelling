@@ -90,7 +90,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.userEmailsAsString() + " answered");
+        senderText.setText(conversation.getLastPlayersEmail() + " answered");
 
         TextView recordingLength = (TextView)findViewById(R.id.story_duration);
         recordingLength.setText("StoryLength");

@@ -42,7 +42,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getUsersInConversationEmails() + " wants to hear a story! Pick a topic.");
+        senderText.setText(conversation.getLastPlayersEmail() + " wants to hear a story! Pick a topic.");
     }
 
     private void initializeViews() {

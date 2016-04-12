@@ -63,7 +63,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setConversationToView() {
-        ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(conversation.userEmailsAsString() + " is next to tell a story");
+        ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(conversation.getNextPlayersEmail() + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
