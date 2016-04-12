@@ -56,8 +56,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        sendTopicOption1 = (Button)findViewById(R.id.record_topic_option_1);
-        sendTopicOption2 = (Button)findViewById(R.id.record_topic_option_2);
+        sendTopicOption1 = (Button)findViewById(R.id.send_topic_option_1);
+        sendTopicOption2 = (Button)findViewById(R.id.send_topic_option_2);
         promptOptionsList = new ArrayList<>();
         selectedPromptsList = new ArrayList<>();
     }
@@ -230,6 +230,11 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     public void proceed(View view){
+        findViewById(R.id.instructions_text).setVisibility(View.GONE);
+        findViewById(R.id.wait_button).setVisibility(View.GONE);
+        findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
+        findViewById(R.id.or_section).setVisibility(View.VISIBLE);
+        findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
         askForRoundOfPrompts();
     }
 }

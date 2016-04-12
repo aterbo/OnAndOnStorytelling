@@ -38,42 +38,55 @@
         android:orientation="vertical"
         android:layout_below="@id/sender_profile_pic">
 
-
-        <Button
-            android:id="@+id/record_topic_option_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text=""
-            android:onClick="sendTopic1"
-            android:layout_weight="1" />
-
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center_horizontal"
-            android:text=" - OR - "
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <Button
-            android:id="@+id/record_topic_option_2"
+            android:id="@+id/instructions_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text=""
-            android:onClick="sendTopic2"
-            android:layout_weight="1" />
-
+            android:text="You'll get three pairs of topics. Please choose one from each pair to send."
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Wait"
+            android:text="OK!"
             android:id="@+id/wait_button"
             android:layout_gravity="center_horizontal"
             android:onClick="proceed"/>
+
+
+        <Button
+            android:id="@+id/send_topic_option_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text=""
+            android:onClick="sendTopic1"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/or_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/send_topic_option_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text=""
+            android:onClick="sendTopic2"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+
     </LinearLayout>
 </RelativeLayout>
