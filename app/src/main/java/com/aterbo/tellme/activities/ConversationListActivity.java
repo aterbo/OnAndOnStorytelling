@@ -174,16 +174,16 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
     private String determineTitle(Conversation conversation){
         if (isUserTurnToTell(conversation)) {
-            return conversation.proposedPromptsTagAsString();
+            return "Tell a story about: " + conversation.proposedPromptsTagAsString();
 
         } else if (isUserTurnToHear(conversation)) {
-            return conversation.getCurrentPrompt().getText();
+            return "Hear a story about: " + conversation.getCurrentPrompt().getText();
 
         } else if (doesUserNeedToPickTopics(conversation)) {
             return "You need to send topics!";
 
         } else if (isUserWaiting(conversation)) {
-            return "Waiting!";
+            return "Waiting for a story.";
         }
         return "Oops";
     }
