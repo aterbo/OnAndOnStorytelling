@@ -33,7 +33,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private String selectedConvoPushId;
     private Conversation conversation;
     int promptCountTracker = 0;
-    int numberOfPrompts;
+    int numberOfPromptsOnServer;
+    int numberOfPromptsToGet;
     final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
 
@@ -158,11 +159,11 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
 
     private void getSixRandomPrompts(){
-        int[] randNumList = new int[6];
+        numberOfPromptsToGet = NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND * TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT;
+        int[] randNumList = new int[numberOfPromptsToGet];
         randNumList = getSixRandomPromptIDNumbers();
 
-        for (int promptId :
-                randNumList) {
+        for (int promptId : randNumList) {
             getRandomPrompt(promptId);
         }
     }
@@ -175,7 +176,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
                 Long tempNumber = (Long) snapshot.getValue();
-                numberOfPrompts = tempNumber.intValue();
+                numberOfPromptsOnServer = tempNumber.intValue();
                 getSixRandomPrompts();
             }
 
@@ -195,6 +196,10 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
                 promptOptionsList.add(snapshot.getValue(Prompt.class));
+                numberOfPromptsToGet--;
+                if ( numberOfPromptsToGet == 0 ){
+                    proceed(new View(getApplicationContext()));
+                }
             }
 
             @Override
@@ -207,21 +212,21 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private int[] getSixRandomPromptIDNumbers(){
         Random rand = new Random();
         int num1, num2, num3, num4, num5, num6;
-        num1 = rand.nextInt((numberOfPrompts) + 1);
+        num1 = rand.nextInt((numberOfPromptsOnServer) + 1);
         do {
-            num2 = rand.nextInt((numberOfPrompts) + 1);
+            num2 = rand.nextInt((numberOfPromptsOnServer) + 1);
         } while (num2 == num1);
         do {
-            num3 = rand.nextInt((numberOfPrompts) + 1);
+            num3 = rand.nextInt((numberOfPromptsOnServer) + 1);
         } while (num3 == num1 || num3 == num2);
         do {
-            num4 = rand.nextInt((numberOfPrompts) + 1);
+            num4 = rand.nextInt((numberOfPromptsOnServer) + 1);
         } while (num4 == num1 || num4 == num2 || num4 == num3);
         do {
-            num5 = rand.nextInt((numberOfPrompts) + 1);
+            num5 = rand.nextInt((numberOfPromptsOnServer) + 1);
         } while (num5 == num1 || num5 == num2 || num5 == num3 || num5 == num4);
         do {
-            num6 = rand.nextInt((numberOfPrompts) + 1);
+            num6 = rand.nextInt((numberOfPromptsOnServer) + 1);
         } while (num6 == num1 || num6 == num2 || num6 == num3 || num6 == num4 || num6 == num5);
 
 
@@ -230,8 +235,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     public void proceed(View view){
-        findViewById(R.id.instructions_text).setVisibility(View.GONE);
-        findViewById(R.id.wait_button).setVisibility(View.GONE);
         findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
         findViewById(R.id.or_section).setVisibility(View.VISIBLE);
         findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
