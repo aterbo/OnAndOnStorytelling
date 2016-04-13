@@ -198,6 +198,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     public void sendRecordingClick(View view){
         saveRecordingToConversation();
+        conversation.clearProposedTopics();
         conversation.changeNextPlayer();
         updateConversationAfterRecording();
     }

@@ -124,9 +124,17 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             protected void populateView(View v, Conversation conversation, int position) {
 
                 String title = determineTitle(conversation);
+                if (conversation.getNextPlayersEmail().replace(",",".").equals(currentUserEmail)) {
+                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("");
+                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
+                            "You're up next!");
+                } else {
+                    String firstChar = conversation.getNextPlayersEmail().substring(0, 1);
+                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(firstChar);
+                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
+                            "Next Up: " + conversation.getNextPlayersEmail().replace(",","."));
+                }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-                ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                        "Next Up: " + conversation.getNextPlayersEmail().replace(",",".") );
                 (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
@@ -155,7 +163,10 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             startListenActivity(conversation);
             Log.i("PickedAConvo!", "My turn to hear");
 
-        } else if (isUserWaiting(conversation)) {
+        } else if (doesUserNeedToPickTopics(conversation)) {
+            startChooseTopicsToSendActivity(conversation);
+        }
+        else if (isUserWaiting(conversation)) {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "My turn to hear");
         }
@@ -167,6 +178,9 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
         } else if (isUserTurnToHear(conversation)) {
             return conversation.getCurrentPrompt().getText();
+
+        } else if (doesUserNeedToPickTopics(conversation)) {
+            return "You need to send topics!";
 
         } else if (isUserWaiting(conversation)) {
             return "Waiting!";
@@ -200,6 +214,15 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
+    private boolean doesUserNeedToPickTopics(Conversation selectedConvo) {
+        if(selectedConvo.getLastPlayersEmail().equals(currentUserEmail.replace(".",",")) &&
+                selectedConvo.getProposedPrompt1() == null) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     private void startTellActivity(Conversation conversation){
         Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         intent.putExtra("selectedConversation", conversation);
@@ -214,6 +237,12 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         startActivity(intent);
     }
 
+    private void startChooseTopicsToSendActivity(Conversation conversation){
+        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
+        intent.putExtra("conversation", conversation);
+        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        startActivity(intent);
+    }
     public void logIn(View view){
         showFirebaseLoginPrompt();
     }
