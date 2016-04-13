@@ -1,5 +1,7 @@
 package com.aterbo.tellme.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -163,7 +165,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    storyComplete();
+                    askIfUserWantsToListenAgain();
                 }
             });
             timeElapsed = mPlayer.getCurrentPosition();
@@ -243,8 +245,39 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void storyComplete(){
+    private void askIfUserWantsToListenAgain() {
         stopPlayback();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Listen again?");
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                resetPlayer();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                moveToNextActivity();
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void resetPlayer(){
+        timeElapsed = 0;
+        finalTime = 0;
+        playPauseButton.setChecked(false);
+        seekbar.setProgress(0);
+        setUpMediaPlayer();
+        initializeViews();
+        setToggleButton();
+
+    }
+
+    private void moveToNextActivity(){
         Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
         intent.putExtra("conversation", conversation);
         intent.putExtra("conversationPushId", selectedConvoPushId);
