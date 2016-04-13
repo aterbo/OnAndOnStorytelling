@@ -154,8 +154,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
     private void moveToNextActivity(Conversation conversation, String selectedConvoPushId){
         Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
-        intent.putExtra("conversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
 }

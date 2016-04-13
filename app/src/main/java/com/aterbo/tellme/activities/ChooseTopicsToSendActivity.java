@@ -52,8 +52,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("conversation");
-        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
+        conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
+        selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
     private void initializeViews() {
@@ -197,7 +197,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                 System.out.println(snapshot.getValue());
                 promptOptionsList.add(snapshot.getValue(Prompt.class));
                 numberOfPromptsToGet--;
-                if ( numberOfPromptsToGet == 0 ){
+                if (numberOfPromptsToGet == 0) {
                     proceed(new View(getApplicationContext()));
                 }
             }

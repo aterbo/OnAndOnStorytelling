@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.aterbo.tellme.R;
+import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 
@@ -36,8 +37,8 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("selectedConversation");
-        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
+        conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
+        selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
     private void showConversationDetails(){
@@ -84,8 +85,8 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
     private void startNextActivity(){
         Intent intent = new Intent(this, RecordStoryActivity.class);
-        intent.putExtra("conversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
 }

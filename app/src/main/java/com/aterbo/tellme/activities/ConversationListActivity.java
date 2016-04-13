@@ -157,14 +157,14 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
         if (isUserTurnToTell(conversation)) {
             Log.i("PickedAConvo!", "My turn to tell");
-            startTellActivity(conversation);
+            startNextActivity(conversation, PickTopicToRecordActivity.class);
 
         } else if (isUserTurnToHear(conversation)) {
-            startListenActivity(conversation);
+            startNextActivity(conversation, ListenToStoryActivity.class);
             Log.i("PickedAConvo!", "My turn to hear");
 
         } else if (doesUserNeedToPickTopics(conversation)) {
-            startChooseTopicsToSendActivity(conversation);
+            startNextActivity(conversation, ChooseTopicsToSendActivity.class);
         }
         else if (isUserWaiting(conversation)) {
             //TODO: startWait/PingActivity();
@@ -223,26 +223,13 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         }
     }
 
-    private void startTellActivity(Conversation conversation){
-        Intent intent = new Intent(this, PickTopicToRecordActivity.class);
-        intent.putExtra("selectedConversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+    private void startNextActivity(Conversation conversation, Class classToStart){
+        Intent intent = new Intent(this, classToStart);
+        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
 
-    private void startListenActivity(Conversation conversation){
-        Intent intent = new Intent(this, ListenToStoryActivity.class);
-        intent.putExtra("selectedConversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
-        startActivity(intent);
-    }
-
-    private void startChooseTopicsToSendActivity(Conversation conversation){
-        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
-        intent.putExtra("conversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
-        startActivity(intent);
-    }
     public void logIn(View view){
         showFirebaseLoginPrompt();
     }

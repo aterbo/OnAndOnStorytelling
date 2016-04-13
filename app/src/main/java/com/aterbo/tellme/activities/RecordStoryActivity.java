@@ -63,8 +63,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("conversation");
-        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
+        conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
+        selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
     private void setRecordingDetails(){
@@ -262,8 +262,8 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void moveToNextActivity(){
 
         Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
-        intent.putExtra("conversation", conversation);
-        intent.putExtra("selectedConversationPushId", selectedConvoPushId);
+        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
 }

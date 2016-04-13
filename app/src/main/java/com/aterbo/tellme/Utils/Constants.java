@@ -19,4 +19,8 @@ public class Constants {
     public static final String FB_LOCATION_UID_MAPPINGS = "uidMappings";
 
     public static final int NUMBER_OF_PROMPT_OPTIONS = 3;
+
+    public static final String CONVERSATION_INTENT_KEY = "conversation";
+    public static final String CONVERSATION_PUSH_ID_INTENT_KEY = "conversationPushId";
+
 }

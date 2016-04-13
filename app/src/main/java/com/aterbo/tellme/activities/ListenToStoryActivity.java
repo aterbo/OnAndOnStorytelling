@@ -66,8 +66,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void getConversation(){
         Intent intent  = getIntent();
-        conversation = intent.getParcelableExtra("selectedConversation");
-        selectedConvoPushId = intent.getStringExtra("selectedConversationPushId");
+        conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
+        selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
     private void getRecording(){
@@ -279,8 +279,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void moveToNextActivity(){
         Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
-        intent.putExtra("conversation", conversation);
-        intent.putExtra("conversationPushId", selectedConvoPushId);
+        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
 }
