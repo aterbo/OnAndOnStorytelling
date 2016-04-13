@@ -250,15 +250,15 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Listen again?");
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Back to Main Menu", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                resetPlayer();
+                moveToNextActivity();
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Listen Again", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                moveToNextActivity();
+                resetPlayer();
                 dialog.dismiss();
             }
         });
