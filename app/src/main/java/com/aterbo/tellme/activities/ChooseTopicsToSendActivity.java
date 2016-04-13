@@ -38,6 +38,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
 
+    private Firebase mNumberOfPromptsRef;
+    private ValueEventListener mNumberOfPromptsRefListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,9 +172,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setNumberOfPromptsFBListener(){
-        Firebase ref = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+        mNumberOfPromptsRef = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
 
-        ref.addValueEventListener(new ValueEventListener() {
+        mNumberOfPromptsRefListener = mNumberOfPromptsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
@@ -239,5 +242,12 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         findViewById(R.id.or_section).setVisibility(View.VISIBLE);
         findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
         askForRoundOfPrompts();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+
+        mNumberOfPromptsRef.removeEventListener(mNumberOfPromptsRefListener);
+
     }
 }
