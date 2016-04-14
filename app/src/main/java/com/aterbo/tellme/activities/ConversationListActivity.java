@@ -20,12 +20,15 @@ import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
+
+import org.w3c.dom.Text;
 
 public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
@@ -142,6 +145,8 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                             "Next Up: " + conversation.getNextPlayersEmail().replace(",","."));
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
+                ((TextView) v.findViewById(R.id.conversation_participants)).setText(
+                        otherConversationParticipants(conversation));
                 (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
@@ -165,7 +170,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     }
 
     private void determineActivityToStart(Conversation conversation){
-
         if (isUserTurnToTell(conversation)) {
             Log.i("PickedAConvo!", "My turn to tell");
             startNextActivity(conversation, PickTopicToRecordActivity.class);
@@ -181,6 +185,18 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "My turn to hear");
         }
+    }
+
+    private String otherConversationParticipants(Conversation conversation){
+        String participantsString = "";
+        for (String userEmail :
+                conversation.getUsersInConversationEmails()) {
+            if(!userEmail.equals(currentUserEmail)) {
+                participantsString = ", " + participantsString + ", " + userEmail;
+            }
+        }
+
+        return participantsString.substring(2, participantsString.length()-2);
     }
 
     private String determineTitle(Conversation conversation){
