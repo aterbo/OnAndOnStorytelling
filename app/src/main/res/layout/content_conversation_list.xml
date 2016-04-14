@@ -13,6 +13,12 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <TextView
+        android:id="@+id/log_in_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"/>
+
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="wrap_content"

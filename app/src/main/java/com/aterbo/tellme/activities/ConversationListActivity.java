@@ -60,6 +60,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         currentUserEmail = authData.getProviderData().get("email").toString();
         Log.i("LOGGEDIN", currentUserEmail);
         setFirebaseListToUserEmail();
+        showUserEmailInTextView();
     }
 
     @Override
@@ -157,6 +158,10 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 }
             }
         });
+    }
+
+    private void showUserEmailInTextView(){
+        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserEmail);
     }
 
     private void determineActivityToStart(Conversation conversation){
