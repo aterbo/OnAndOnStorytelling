@@ -8,7 +8,7 @@
         android:orderInCategory="30"
         android:title="Add Conversation"
         android:icon="@mipmap/ic_add_white_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/log_in_menu"
         android:orderInCategory="40"
