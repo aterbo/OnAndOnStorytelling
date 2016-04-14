@@ -146,7 +146,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_participants)).setText(
-                        otherConversationParticipants(conversation));
+                        "Group:  " + otherConversationParticipants(conversation));
                 (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
                 (v.findViewById(R.id.conversation_story_duration)).setVisibility(View.GONE);
             }
@@ -191,12 +191,12 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         String participantsString = "";
         for (String userEmail :
                 conversation.getUsersInConversationEmails()) {
-            if(!userEmail.equals(currentUserEmail)) {
-                participantsString = ", " + participantsString + ", " + userEmail;
+            if(!userEmail.replace(",",".").equals(currentUserEmail)) {
+                participantsString = participantsString + ", " + userEmail.replace(",",".");
             }
         }
 
-        return participantsString.substring(2, participantsString.length()-2);
+        return participantsString.substring(2, participantsString.length());
     }
 
     private String determineTitle(Conversation conversation){
