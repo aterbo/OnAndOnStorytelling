@@ -106,14 +106,20 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.add_conversation_menu:
+                startNewConversation();
+                return true;
+            case R.id.log_in_menu:
+                showFirebaseLoginPrompt();
+                return true;
+            case R.id.add_new_user_menu:
+                addNewUser();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void setFirebaseListToUserEmail() {
@@ -230,11 +236,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         startActivity(intent);
     }
 
-    public void logIn(View view){
-        showFirebaseLoginPrompt();
-    }
-
-    public void addNewUser(View view){
+    private void addNewUser(){
         AlertDialog addNewUserDialog = addNewUserDialog("Add New User");
         addNewUserDialog.show();
     }
