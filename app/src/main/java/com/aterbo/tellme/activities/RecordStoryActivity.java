@@ -147,7 +147,8 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingStatusButton.setText("Reset");
         recordingStatus.setText("Recording finished");
         recordingDuration.setVisibility(View.VISIBLE);
-        recordingDuration.setText(recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
+        recordingDuration.setText("Story Length: " +
+                recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
         playbackControlButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
     }
@@ -155,7 +156,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void resetRecording(){
         recordingStatusButton.setText("Start Recording");
         recordingDuration.setVisibility(View.INVISIBLE);
-        recordingStatus.setText("-");
+        recordingStatus.setText("");
         playbackControlButton.setEnabled(false);
     }
 
@@ -198,7 +199,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
-                recordingStatus.setText("-");
+                recordingStatus.setText("");
 
             }
         } catch (Exception e) {

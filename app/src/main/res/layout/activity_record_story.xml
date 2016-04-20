@@ -36,11 +36,13 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/recording_status_indicator"
+        android:id="@+id/recording_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text=""
+        android:layout_gravity="center"
+        android:visibility="invisible"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
@@ -52,20 +54,20 @@
         android:src="@android:drawable/presence_audio_online" />
 
     <TextView
-        android:id="@+id/recording_duration"
+        android:id="@+id/recording_status_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text=""
+        android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:visibility="invisible"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
 
     <Button
         android:id="@+id/recording_control_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="25dp"
         android:text="Start Recording"
         android:onClick="recordingControlClick"
         android:layout_weight="1" />
