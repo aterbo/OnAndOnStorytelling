@@ -6,8 +6,7 @@
     <item
         android:id="@+id/add_conversation_menu"
         android:orderInCategory="30"
-        android:title="Add Conversation"
-        android:icon="@mipmap/ic_add_white_24dp"
+        android:title="Add Convo"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/log_in_menu"
@@ -17,6 +16,6 @@
     <item
         android:id="@+id/add_new_user_menu"
         android:orderInCategory="50"
-        android:title="Add New User"
+        android:title="Add User"
         app:showAsAction="ifRoom" />
 </menu>
