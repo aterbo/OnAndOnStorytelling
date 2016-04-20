@@ -18,6 +18,7 @@ public class Conversation implements Parcelable{
     private Prompt proposedPrompt2;
     private Prompt proposedPrompt3;
     private Prompt currentPrompt;
+    private long storyRecordingDuration;
 
     public Conversation() { }
 
@@ -31,6 +32,7 @@ public class Conversation implements Parcelable{
         this.proposedPrompt2 = proposedPrompts.get(1);
         this.proposedPrompt3 = proposedPrompts.get(2);
         storyRecordingPushId = "none";
+        storyRecordingDuration = 0;
     }
 
     public Prompt getProposedPrompt3() {
@@ -118,6 +120,14 @@ public class Conversation implements Parcelable{
         this.storyRecordingPushId = storyRecordingPushId;
     }
 
+    public long getStoryRecordingDuration() {
+        return storyRecordingDuration;
+    }
+
+    public void setStoryRecordingDuration(long storyRecordingDuration) {
+        this.storyRecordingDuration = storyRecordingDuration;
+    }
+
     public String proposedPromptsTagAsString(){
         return proposedPrompt1.getTag() + ", " +
                 proposedPrompt2.getTag() + ", or " +
@@ -146,6 +156,26 @@ public class Conversation implements Parcelable{
         proposedPrompt3 = null;
     }
 
+    public String recordingDurationAsFormattedString(){
+        if (storyRecordingDuration != 0) {
+            final int MINUTES_IN_AN_HOUR = 60;
+            final int SECONDS_IN_A_MINUTE = 60;
+            int totalSeconds = (int) storyRecordingDuration;
+
+            int seconds = totalSeconds % SECONDS_IN_A_MINUTE;
+            int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
+            int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+
+            if (seconds < 10){
+                return minutes + ":0" + seconds;
+            }
+            return minutes + ":" + seconds;
+
+        } else {
+            return "";
+        }
+    }
+
     //Parcelabler.com
     protected Conversation(Parcel in) {
         if (in.readByte() == 0x01) {
@@ -161,6 +191,7 @@ public class Conversation implements Parcelable{
         proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        storyRecordingDuration = in.readLong();
     }
 
     @Override
@@ -183,6 +214,7 @@ public class Conversation implements Parcelable{
         dest.writeValue(proposedPrompt2);
         dest.writeValue(proposedPrompt3);
         dest.writeValue(currentPrompt);
+        dest.writeLong(storyRecordingDuration);
     }
 
     @SuppressWarnings("unused")

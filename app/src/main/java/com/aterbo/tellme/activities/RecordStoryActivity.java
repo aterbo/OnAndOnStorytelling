@@ -1,8 +1,10 @@
 package com.aterbo.tellme.activities;
 
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +40,11 @@ public class RecordStoryActivity extends AppCompatActivity {
     private Button recordingStatusButton;
     private Button finishAndSendButton;
     private TextView recordingStatus;
+    private TextView recordingDuration;
     private String selectedConvoPushId;
     private String encodedRecording;
+    private long recordingStartTime;
+    private long recordingEndTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void initializeViews(){
         recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
+        recordingDuration = (TextView) findViewById(R.id.recording_duration);
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
@@ -108,6 +114,7 @@ public class RecordStoryActivity extends AppCompatActivity {
             myRecorder.setOutputFile(outputFile);
 
             myRecorder.prepare();
+            recordingStartTime = System.nanoTime();
             myRecorder.start();
         } catch (IllegalStateException e) {
             // start:it is called before prepare()
@@ -119,12 +126,13 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
 
         recordingStatusButton.setText("Stop Recording");
-        recordingStatus.setText("Recording Point: Recording");
+        recordingStatus.setText("Recording");
         playbackControlButton.setEnabled(false);
     }
 
     private void stopRecording(){
         try {
+            recordingEndTime = System.nanoTime();
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
@@ -137,14 +145,17 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
 
         recordingStatusButton.setText("Reset");
-        recordingStatus.setText("Recording Point: Stop recording");
+        recordingStatus.setText("Recording finished");
+        recordingDuration.setVisibility(View.VISIBLE);
+        recordingDuration.setText(recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
         playbackControlButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
     }
 
     private void resetRecording(){
         recordingStatusButton.setText("Start Recording");
-        recordingStatus.setText("Recording Point: -");
+        recordingDuration.setVisibility(View.INVISIBLE);
+        recordingStatus.setText("-");
         playbackControlButton.setEnabled(false);
     }
 
@@ -172,7 +183,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 }
             });
 
-            recordingStatus.setText("Recording Point: Playing");
+            recordingStatus.setText("Playing");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -187,7 +198,8 @@ public class RecordStoryActivity extends AppCompatActivity {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
-                recordingStatus.setText("Recording Point: -");
+                recordingStatus.setText("-");
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,8 +217,16 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void saveRecordingToConversation(){
         convertAudioFileToString();
+        setRecordingTime();
     }
 
+    private void setRecordingTime(){
+        conversation.setStoryRecordingDuration(getRecordingTimeInSeconds());
+    }
+
+    private long getRecordingTimeInSeconds(){
+        return ((recordingEndTime - recordingStartTime)/1000000000);
+    }
 
     private void showToastFromStringResource(int stringResourceId) {
         Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_SHORT).show();
@@ -265,5 +285,25 @@ public class RecordStoryActivity extends AppCompatActivity {
         intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
         intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
+    }
+
+    public String recordingDurationAsFormattedString(long storyRecordingDuration){
+        if (storyRecordingDuration != 0) {
+            final int MINUTES_IN_AN_HOUR = 60;
+            final int SECONDS_IN_A_MINUTE = 60;
+            int totalSeconds = (int) storyRecordingDuration;
+
+            int seconds = totalSeconds % SECONDS_IN_A_MINUTE;
+            int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
+            int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+
+            if (seconds < 10){
+                return minutes + ":0" + seconds;
+            }
+            return minutes + ":" + seconds;
+
+        } else {
+            return "";
+        }
     }
 }

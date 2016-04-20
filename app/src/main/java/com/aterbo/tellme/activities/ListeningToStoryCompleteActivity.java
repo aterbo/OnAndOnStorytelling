@@ -44,6 +44,7 @@ public class ListeningToStoryCompleteActivity extends AppCompatActivity {
         recordingPushId = conversation.getStoryRecordingPushId();
         conversation.setStoryRecordingPushId("none");
         conversation.setCurrentPrompt(new Prompt("null", "null"));
+        conversation.setStoryRecordingDuration(0);
     }
 
     private void setViews() {
