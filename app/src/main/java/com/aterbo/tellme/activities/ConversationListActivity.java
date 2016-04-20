@@ -135,7 +135,7 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
 
                 String title = determineTitle(conversation);
                 if (conversation.getNextPlayersEmail().replace(",",".").equals(currentUserEmail)) {
-                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("");
+                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
                             "You're up next!");
                 } else {
