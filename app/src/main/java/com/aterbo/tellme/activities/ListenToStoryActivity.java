@@ -11,22 +11,28 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.Prompt;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +54,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private String selectedConvoPushId;
     private String localTempFilePath;
     private String encodedRecording;
+    private String recordingPushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +78,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getRecording(){
+        recordingPushId = conversation.getStoryRecordingPushId();
         Firebase recordingRef = new Firebase(Constants.FB_LOCATION + "/" +
-                Constants.FB_LOCATION_RECORDINGS + "/" + conversation.getStoryRecordingPushId());
+                Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId);
 
         recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -126,8 +134,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void showPromptTextInTextView(){
-        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
+    private void showPromptTextInTextView() {
+        ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
     private void initializeViews(){
@@ -252,7 +260,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
         builder.setTitle("Listen again?");
         builder.setPositiveButton("Back to Main Menu", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                moveToNextActivity();
+                eliminateCurrentStory();
+                updateConversationAfterListening();
                 dialog.dismiss();
             }
         });
@@ -277,10 +286,42 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     }
 
-    private void moveToNextActivity(){
-        Intent intent = new Intent(this, ListeningToStoryCompleteActivity.class);
-        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
-        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
+    private void eliminateCurrentStory(){
+        conversation.setStoryRecordingPushId("none");
+        conversation.setCurrentPrompt(new Prompt("null", "null"));
+        conversation.setStoryRecordingDuration(0);
+    }
+
+    public void updateConversationAfterListening(){
+        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
+
+        HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
+
+        HashMap<String, Object> conversationToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        for (String userEmail : conversation.getUsersInConversationEmails()) {
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+        }
+
+        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
+                null);
+
+        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+                goBackToMainScreen();
+            }
+        });
+    }
+
+    private void goBackToMainScreen(){
+        Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
     }
 }
