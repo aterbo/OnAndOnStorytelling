@@ -110,7 +110,7 @@ public class RecordStoryActivity extends AppCompatActivity {
             myRecorder = new MediaRecorder();
             myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+            myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB); //Optimized for speech coding
             myRecorder.setOutputFile(outputFile);
             myRecorder.setAudioChannels(1);
 
