@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,6 +24,7 @@ import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
+import com.aterbo.tellme.classes.VisualizerView;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -37,6 +39,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 //http://examples.javacodegeeks.com/android/android-mediaplayer-example/
+//Visualizer: http://android-er.blogspot.com/2015/02/create-audio-visualizer-for-mediaplayer.html
 
 public class ListenToStoryActivity extends AppCompatActivity {
 
@@ -55,6 +58,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private String localTempFilePath;
     private String encodedRecording;
     private String recordingPushId;
+
+    VisualizerView mVisualizerView;
+    private Visualizer mVisualizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +148,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         duration = (TextView) findViewById(R.id.story_duration);
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setClickable(false);
+        mVisualizerView = (VisualizerView) findViewById(R.id.visualizer);
     }
 
     private void setUpMediaPlayer(){
@@ -151,6 +158,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
         finalTime = mPlayer.getDuration();
         seekbar.setMax((int) finalTime);
         playPauseButton.setClickable(true);
+
+        setupVisualizerFxAndUI();
+        mVisualizer.setEnabled(true);
     }
 
     private void setToggleButton(){
@@ -173,6 +183,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
+                    mVisualizer.setEnabled(false);
                     askIfUserWantsToListenAgain();
                 }
             });
@@ -323,5 +334,20 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void goBackToMainScreen(){
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+    }
+    private void setupVisualizerFxAndUI() {
+        mVisualizer = new Visualizer(mPlayer.getAudioSessionId());
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+        mVisualizer.setDataCaptureListener(
+                new Visualizer.OnDataCaptureListener() {
+                    public void onWaveFormDataCapture(Visualizer visualizer,
+                                                      byte[] bytes, int samplingRate) {
+                        mVisualizerView.updateVisualizer(bytes);
+                    }
+
+                    public void onFftDataCapture(Visualizer visualizer,
+                                                 byte[] bytes, int samplingRate) {
+                    }
+                }, Visualizer.getMaxCaptureRate() / 2, true, false);
     }
 }

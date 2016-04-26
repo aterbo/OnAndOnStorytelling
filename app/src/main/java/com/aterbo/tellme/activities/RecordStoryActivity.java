@@ -19,6 +19,7 @@ import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
+import com.aterbo.tellme.classes.VisualizerView;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Handler;
 
 public class RecordStoryActivity extends AppCompatActivity {
 
