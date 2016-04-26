@@ -7,11 +7,13 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private MediaRecorder myRecorder;
     private MediaPlayer myPlayer;
     private Conversation conversation;
+    private Chronometer recordingDurationCounter;
     private String outputFile = null;
     private Button playbackControlButton;
     private Button recordingStatusButton;
@@ -63,6 +66,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void initializeViews(){
         recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
         recordingDuration = (TextView) findViewById(R.id.recording_duration);
+        recordingDurationCounter = (Chronometer) findViewById(R.id.recording_time_counter);
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
@@ -119,6 +123,10 @@ public class RecordStoryActivity extends AppCompatActivity {
             myRecorder.prepare();
             recordingStartTime = System.nanoTime();
             myRecorder.start();
+
+            recordingDurationCounter.setVisibility(View.VISIBLE);
+            recordingDurationCounter.setBase(SystemClock.elapsedRealtime());
+            recordingDurationCounter.start();
         } catch (IllegalStateException e) {
             // start:it is called before prepare()
             // prepare: it is called after start() or before setOutputFormat()
@@ -139,6 +147,7 @@ public class RecordStoryActivity extends AppCompatActivity {
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
+            recordingDurationCounter.stop();
         } catch (IllegalStateException e) {
             //  it is called before start()
             e.printStackTrace();
@@ -149,6 +158,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         recordingStatusButton.setText("Reset");
         recordingStatus.setText("Recording finished");
+        recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.VISIBLE);
         recordingDuration.setText("Story Length: " +
                 recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
@@ -158,7 +168,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void resetRecording(){
         recordingStatusButton.setText("Start Recording");
-        recordingDuration.setVisibility(View.INVISIBLE);
+        recordingDurationCounter.setVisibility(View.INVISIBLE);
+        recordingDuration.setVisibility(View.GONE);
         recordingStatus.setText("");
         playbackControlButton.setEnabled(false);
     }
