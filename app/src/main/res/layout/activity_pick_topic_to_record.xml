@@ -33,33 +33,40 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_below="@id/sender_profile_pic"
-            android:padding="15dp"
-            android:background="@drawable/brushstroke1"
-            android:textColor="@android:color/white"
             android:text=""
             android:onClick="topic1"
             android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
             android:id="@+id/record_topic_option_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:padding="15dp"
             android:text=""
-            android:background="@drawable/brushstroke2"
-            android:textColor="@android:color/white"
             android:onClick="topic2"
             android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text=" - OR - "
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
             android:id="@+id/record_topic_option_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:padding="15dp"
-            android:background="@drawable/brushstroke3"
-            android:textColor="@android:color/white"
             android:text=""
             android:onClick="topic3"
             android:layout_weight="1" />
