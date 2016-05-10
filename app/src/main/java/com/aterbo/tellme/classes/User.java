@@ -10,12 +10,14 @@ public class User implements Parcelable{
     private String userName;
     private String email;
     private String userID;
+    private String profilePhotoUrl;
 
 
-    public User(String name, String email, String userID){
+    public User(String name, String email, String userID, String profilePhotoUrl){
         this.userName = name;
         this.email = email;
         this.userID = userID;
+        this.profilePhotoUrl = profilePhotoUrl;
     }
 
     public User(){}
@@ -32,10 +34,15 @@ public class User implements Parcelable{
         return email;
     }
 
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
     protected User(Parcel in) {
         userName = in.readString();
         email = in.readString();
         userID = in.readString();
+        profilePhotoUrl = in.readString();
     }
 
     @Override
@@ -48,6 +55,7 @@ public class User implements Parcelable{
         dest.writeString(userName);
         dest.writeString(email);
         dest.writeString(userID);
+        dest.writeString(profilePhotoUrl);
     }
 
     @SuppressWarnings("unused")
