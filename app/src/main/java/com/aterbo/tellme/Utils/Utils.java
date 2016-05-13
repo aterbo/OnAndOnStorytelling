@@ -1,5 +1,7 @@
 package com.aterbo.tellme.Utils;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Environment;
 
 /**
@@ -15,4 +17,14 @@ public class Utils {
         return false;
     }
 
+    public static ProgressDialog getSpinnerDialog(Context context) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading story...");
+        progressDialog.setTitle("Uploading");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        return progressDialog;
+    }
 }

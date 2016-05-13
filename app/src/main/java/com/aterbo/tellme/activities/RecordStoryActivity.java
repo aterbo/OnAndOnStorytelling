@@ -251,7 +251,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     public void updateConversationAfterRecording(){
-        showProgressDialog();
+        progressDialog = Utils.getSpinnerDialog(this);
+
         Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
         Firebase newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
@@ -279,7 +280,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 }
                 Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
 
-                dismissProgressDialog();
+                progressDialog.dismiss();
                 showToastFromStringResource(R.string.recording_sent_notice);
                 moveToNextActivity();
             }
@@ -326,16 +327,4 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgressDialog(){
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Uploading story...");
-        progressDialog.setTitle("Uploading");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog(){
-        progressDialog.dismiss();
-    }
 }
