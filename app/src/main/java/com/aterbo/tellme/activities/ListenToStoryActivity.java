@@ -1,6 +1,7 @@
 package com.aterbo.tellme.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -58,6 +59,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private String localTempFilePath;
     private String encodedRecording;
     private String recordingPushId;
+    private ProgressDialog progressDialog;
 
     VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
@@ -69,6 +71,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
         playPauseButton = (ToggleButton) findViewById(R.id.media_play);
         playPauseButton.setClickable(false);
+        progressDialog = Utils.getSpinnerDialog(this);
         getConversation();
         getRecording();
         showConversationDetails();
@@ -152,7 +155,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void setUpMediaPlayer(){
-
         mPlayer = MediaPlayer.create(this, speechUri);
         mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         finalTime = mPlayer.getDuration();
@@ -349,5 +351,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
                                                  byte[] bytes, int samplingRate) {
                     }
                 }, Visualizer.getMaxCaptureRate() / 2, true, false);
+
+        progressDialog.dismiss();
     }
 }
