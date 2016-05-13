@@ -121,16 +121,14 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void convertRecordingToTempFile(){
         byte[] decoded = Base64.decode(encodedRecording, 0);
-        String outputFile;
 
         if (Utils.isExternalStorageWritable()) {
             String fileName = UUID.randomUUID().toString().replaceAll("-", "");
-            outputFile = Environment.getExternalStorageDirectory().getAbsolutePath();
-            outputFile += "/" + fileName + ".3gp";
+            File tempFileDir = this.getCacheDir();
 
             try
             {
-                File tempFile = new File(outputFile);
+                File tempFile = File.createTempFile(fileName, ".3gp", tempFileDir);
                 FileOutputStream os = new FileOutputStream(tempFile, true);
                 os.write(decoded);
                 os.close();
