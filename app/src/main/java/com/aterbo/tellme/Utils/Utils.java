@@ -18,7 +18,7 @@ public class Utils {
     }
 
     public static ProgressDialog getSpinnerDialog(Context context) {
-        ProgressDialog progressDialog = new ProgressDialog(this);
+        ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Uploading story...");
         progressDialog.setTitle("Uploading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
