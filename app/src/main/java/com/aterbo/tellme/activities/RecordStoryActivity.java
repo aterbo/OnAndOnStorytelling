@@ -1,5 +1,6 @@
 package com.aterbo.tellme.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -50,6 +51,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private String encodedRecording;
     private long recordingStartTime;
     private long recordingEndTime;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,6 +251,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     public void updateConversationAfterRecording(){
+        showProgressDialog();
         Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
         Firebase newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
@@ -276,6 +279,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 }
                 Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
 
+                dismissProgressDialog();
                 showToastFromStringResource(R.string.recording_sent_notice);
                 moveToNextActivity();
             }
@@ -320,5 +324,18 @@ public class RecordStoryActivity extends AppCompatActivity {
         } else {
             return "";
         }
+    }
+
+    private void showProgressDialog(){
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading story...");
+        progressDialog.setTitle("Uploading");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog(){
+        progressDialog.dismiss();
     }
 }
