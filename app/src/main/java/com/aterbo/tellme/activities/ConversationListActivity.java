@@ -259,10 +259,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
     }
 
     private void addNewUser(){
-        /*
-        AlertDialog addNewUserDialog = addNewUserDialog("Add New User");
-        addNewUserDialog.show();
-        */
         Intent intent = new Intent(this, AddNewUserActivity.class);
         startActivity(intent);
     }
@@ -270,47 +266,6 @@ public class ConversationListActivity extends FirebaseLoginBaseActivity {
         Intent intent = new Intent(this, StartNewConversationActivity.class);
         intent.putExtra("currentUserEmail", currentUserEmail.replace(".",","));
         startActivity(intent);
-    }
-
-
-    public AlertDialog addNewUserDialog(String message) {
-        LayoutInflater factory = LayoutInflater.from(this);
-        final View textEntryView = factory.inflate(R.layout.login, null);
-        final AlertDialog.Builder failAlert = new AlertDialog.Builder(this);
-        failAlert.setTitle("Registration Failed");
-        failAlert.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Cancelled
-            }
-        });
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Add New User");
-        alert.setMessage(message);
-        alert.setView(textEntryView);
-        alert.setPositiveButton("Create User", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                try {
-                    final EditText usernameInput = (EditText) textEntryView.findViewById(R.id.userNameEditText);
-                    final EditText emailInput = (EditText) textEntryView.findViewById(R.id.emailEditText);
-                    final EditText passwordInput = (EditText) textEntryView.findViewById(R.id.passwordEditText);
-                    Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
-
-                    FBHelper fbHelper = new FBHelper();
-                    fbHelper.addNewUserToServer(usernameInput.getText().toString(),
-                            emailInput.getText().toString(),
-                            passwordInput.getText().toString());
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-        return alert.create();
     }
 
 
