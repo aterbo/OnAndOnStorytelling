@@ -51,10 +51,9 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
     public void onFirebaseLoggedIn(AuthData authData) {
         // TODO: Handle successful login
         System.out.println("User ID: ");
-        Log.i("LOGGEDIN", "YAAAAAAAAAAY");
-        Log.i("LOGGEDIN", authData.getUid());
+        Log.i("LOGGEDIN", "Logged in to Firebase UID: " + authData.getUid());
         currentUserEmail = authData.getProviderData().get("email").toString();
-        Log.i("LOGGEDIN", currentUserEmail);
+        Log.i("LOGGEDIN", "Logged in to Firebase Email: " +  currentUserEmail);
 
         getUserData();
     }
