@@ -47,9 +47,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Conversation conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
-    private int shortSkipTime = 5000;
-    private int longSkipTime = 30000;
-    private Handler durationHandler = new Handler();
+    private final int shortSkipTime = 5000;
+    private final int longSkipTime = 30000;
+    private final Handler durationHandler = new Handler();
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
     private Uri speechUri;
@@ -194,7 +194,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     //handler to change seekBarTime
-    private Runnable updateSeekBarTime = new Runnable() {
+    private final Runnable updateSeekBarTime = new Runnable() {
         public void run() {
             if (mPlayer!=null){
                 timeElapsed = mPlayer.getCurrentPosition();

@@ -15,8 +15,8 @@ public class VisualizerView extends View {
 
     private byte[] mBytes;
     private float[] mPoints;
-    private Rect mRect = new Rect();
-    private Paint mForePaint = new Paint();
+    private final Rect mRect = new Rect();
+    private final Paint mForePaint = new Paint();
 
     public VisualizerView(Context context) {
         super(context);
