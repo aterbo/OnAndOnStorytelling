@@ -146,7 +146,7 @@ public class Conversation implements Parcelable{
         nextPlayersUserName = holderUserName;
     }
 
-    public void makeLastPlayerCurrentNextPlayer(){
+    private void makeLastPlayerCurrentNextPlayer(){
         lastPlayersUserName = nextPlayersUserName;
     }
 

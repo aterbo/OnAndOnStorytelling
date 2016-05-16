@@ -246,7 +246,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
 
-    public void updateConversationAfterRecording(){
+    private void updateConversationAfterRecording(){
         progressDialog = Utils.getSpinnerDialog(this);
 
         Firebase baseRef = new Firebase(Constants.FB_LOCATION);
@@ -303,7 +303,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public String recordingDurationAsFormattedString(long storyRecordingDuration){
+    private String recordingDurationAsFormattedString(long storyRecordingDuration){
         if (storyRecordingDuration != 0) {
             final int MINUTES_IN_AN_HOUR = 60;
             final int SECONDS_IN_A_MINUTE = 60;

@@ -88,7 +88,7 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
         baseRef = new Firebase(Constants.FB_LOCATION);
     }
 
-    public void getUserData(){
+    private void getUserData(){
         Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
                 + Constants.FB_LOCATION_USERS + "/" + currentUserEmail.replace(".",","));
 

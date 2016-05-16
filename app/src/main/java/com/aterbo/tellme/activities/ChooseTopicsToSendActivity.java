@@ -26,17 +26,17 @@ import java.util.Random;
 
 public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
-    Button sendTopicOption1;
-    Button sendTopicOption2;
-    ArrayList<Prompt> promptOptionsList;
-    ArrayList<Prompt> selectedPromptsList;
+    private Button sendTopicOption1;
+    private Button sendTopicOption2;
+    private ArrayList<Prompt> promptOptionsList;
+    private ArrayList<Prompt> selectedPromptsList;
     private String selectedConvoPushId;
     private Conversation conversation;
-    int promptCountTracker = 0;
-    int numberOfPromptsOnServer;
-    int numberOfPromptsToGet;
-    final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
-    final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
+    private int promptCountTracker = 0;
+    private int numberOfPromptsOnServer;
+    private int numberOfPromptsToGet;
+    private final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
+    private final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
 
     private Firebase mNumberOfPromptsRef;
     private ValueEventListener mNumberOfPromptsRefListener;
@@ -190,7 +190,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         });
     }
 
-    public void getRandomPrompt(int promptIdNumber){
+    private void getRandomPrompt(int promptIdNumber){
         Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
                 + Constants.FB_LOCATION_PROMPTS + "/" + promptIdNumber);
 
@@ -201,7 +201,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                 promptOptionsList.add(snapshot.getValue(Prompt.class));
                 numberOfPromptsToGet--;
                 if (numberOfPromptsToGet == 0) {
-                    proceed(new View(getApplicationContext()));
+                    proceed();
                 }
             }
 
@@ -237,7 +237,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         return randNumList;
     }
 
-    public void proceed(View view){
+    private void proceed(){
         findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
         findViewById(R.id.or_section).setVisibility(View.VISIBLE);
         findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);

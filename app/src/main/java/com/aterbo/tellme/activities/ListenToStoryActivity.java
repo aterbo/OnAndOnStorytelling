@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class ListenToStoryActivity extends AppCompatActivity {
 
     private MediaPlayer mPlayer;
-    public TextView duration;
+    private TextView duration;
     private Conversation conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
@@ -59,7 +59,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private String recordingPushId;
     private ProgressDialog progressDialog;
 
-    VisualizerView mVisualizerView;
+    private VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
 
     @Override
@@ -301,7 +301,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         conversation.setStoryRecordingDuration(0);
     }
 
-    public void updateConversationAfterListening(){
+    private void updateConversationAfterListening(){
         Firebase baseRef = new Firebase(Constants.FB_LOCATION);
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();

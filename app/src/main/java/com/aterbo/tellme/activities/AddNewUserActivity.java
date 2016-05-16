@@ -57,7 +57,7 @@ public class AddNewUserActivity extends AppCompatActivity {
 
 
 
-    public void addNewUserToServer(final String userName, final String email, final String password){
+    private void addNewUserToServer(final String userName, final String email, final String password){
         baseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {

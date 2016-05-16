@@ -29,10 +29,10 @@ import java.util.Map;
 
 public class StartNewConversationActivity extends AppCompatActivity {
 
-    FirebaseListAdapter<User> mListAdapter;
-    ListView mListView;
+    private FirebaseListAdapter<User> mListAdapter;
+    private ListView mListView;
     private Firebase mUsersRef;
-    String currentUserName;
+    private String currentUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         }
     }
 
-    public void initializeScreen() {
+    private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_display_all_users);
 
         mListAdapter = new FirebaseListAdapter<User>(this, User.class,

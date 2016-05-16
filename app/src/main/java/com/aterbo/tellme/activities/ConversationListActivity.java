@@ -27,7 +27,7 @@ public class ConversationListActivity extends AppCompatActivity {
     private User currentUser;
     private String selectedConvoPushId;
     private Firebase baseRef;
-    FirebaseListAdapter<Conversation> mListAdapter;
+    private FirebaseListAdapter<Conversation> mListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
