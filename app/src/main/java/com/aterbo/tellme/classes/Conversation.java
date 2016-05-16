@@ -10,9 +10,9 @@ import java.util.ArrayList;
  */
 public class Conversation implements Parcelable{
 
-    private ArrayList<String> usersInConversationEmails;
-    private String nextPlayersEmail;
-    private String lastPlayersEmail;
+    private ArrayList<String> userNamesInConversation;
+    private String nextPlayersUserName;
+    private String lastPlayersUserName;
     private String storyRecordingPushId;
     private Prompt proposedPrompt1;
     private Prompt proposedPrompt2;
@@ -22,11 +22,11 @@ public class Conversation implements Parcelable{
 
     public Conversation() { }
 
-    public Conversation(ArrayList<String> usersInConversationEmails, String nextPlayersEmail,
-                        String lastPlayersEmail, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
-        this.usersInConversationEmails = usersInConversationEmails;
-        this.nextPlayersEmail = nextPlayersEmail;
-        this.lastPlayersEmail = lastPlayersEmail;
+    public Conversation(ArrayList<String> userNamesInConversation, String nextPlayersUserName,
+                        String lastPlayersUserNames, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
+        this.userNamesInConversation = userNamesInConversation;
+        this.nextPlayersUserName = nextPlayersUserName;
+        this.lastPlayersUserName = lastPlayersUserNames;
         this.currentPrompt = currentPrompt;
         this.proposedPrompt1 = proposedPrompts.get(0);
         this.proposedPrompt2 = proposedPrompts.get(1);
@@ -59,49 +59,49 @@ public class Conversation implements Parcelable{
         this.proposedPrompt2 = proposedPrompt2;
     }
 
-    public ArrayList<String> getUsersInConversationEmails() {
-        return usersInConversationEmails;
+    public ArrayList<String> getUserNamesInConversation() {
+        return userNamesInConversation;
     }
 
-    public void setUsersInConversationEmails(ArrayList<String> usersInConversationEmails) {
-        this.usersInConversationEmails = usersInConversationEmails;
+    public void setUserNamesInConversation(ArrayList<String> userNamesInConversation) {
+        this.userNamesInConversation = userNamesInConversation;
     }
 
-    public String getNextPlayersEmail() {
-        return nextPlayersEmail;
+    public String getNextPlayersUserName() {
+        return nextPlayersUserName;
     }
 
-    public void setNextPlayersEmail(String nextPlayersEmail) {
-        this.nextPlayersEmail = nextPlayersEmail;
+    public void setNextPlayersUserName(String nextPlayersUserName) {
+        this.nextPlayersUserName = nextPlayersUserName;
     }
 
-    public String getLastPlayersEmail() {
-        return lastPlayersEmail;
+    public String getLastPlayersUserName() {
+        return lastPlayersUserName;
     }
 
-    public void setLastPlayersEmail(String lastPlayersEmail){
-        this.lastPlayersEmail = lastPlayersEmail;
+    public void setLastPlayersUserName(String lastPlayersUserName){
+        this.lastPlayersUserName = lastPlayersUserName;
     }
 
-    public String getUserEmails(int userIndex){
-        return usersInConversationEmails.get(userIndex);
+    public String getUserNames(int userIndex){
+        return userNamesInConversation.get(userIndex);
     }
 
-    public void addUserEmailToConversation(String userEmail){
-        usersInConversationEmails.add(userEmail);
+    public void addUserNameToConversation(String userName){
+        userNamesInConversation.add(userName);
     }
 
-    public String userEmailsAsString(){
-        String userEmails = "";
-        for (String email : usersInConversationEmails){
-            userEmails = userEmails + email.replace(".",",") + ", ";
+    public String userNamesAsString(){
+        String userNames = "";
+        for (String name : userNamesInConversation){
+            userNames = userNames + name.replace(".",",") + ", ";
         }
 
-        if (userEmails.endsWith(", ")) {
-            userEmails = userEmails.substring(0, userEmails.length() - 2);
+        if (userNames.endsWith(", ")) {
+            userNames = userNames.substring(0, userNames.length() - 2);
         }
 
-        return userEmails;
+        return userNames;
     }
 
     public Prompt getCurrentPrompt(){
@@ -137,17 +137,17 @@ public class Conversation implements Parcelable{
     public void changeNextPlayer(){
         makeLastPlayerCurrentNextPlayer();
         int counter = 0;
-        String holderEmail;
+        String holderUserName;
 
         do {
-            holderEmail = usersInConversationEmails.get(counter);
+            holderUserName = userNamesInConversation.get(counter);
             counter = counter + 1;
-        } while(holderEmail.equals(nextPlayersEmail));
-        nextPlayersEmail = holderEmail;
+        } while(holderUserName.equals(nextPlayersUserName));
+        nextPlayersUserName = holderUserName;
     }
 
     public void makeLastPlayerCurrentNextPlayer(){
-        lastPlayersEmail = nextPlayersEmail;
+        lastPlayersUserName = nextPlayersUserName;
     }
 
     public void clearProposedTopics(){
@@ -179,13 +179,13 @@ public class Conversation implements Parcelable{
     //Parcelabler.com
     protected Conversation(Parcel in) {
         if (in.readByte() == 0x01) {
-            usersInConversationEmails = new ArrayList<String>();
-            in.readList(usersInConversationEmails, String.class.getClassLoader());
+            userNamesInConversation = new ArrayList<String>();
+            in.readList(userNamesInConversation, String.class.getClassLoader());
         } else {
-            usersInConversationEmails = null;
+            userNamesInConversation = null;
         }
-        nextPlayersEmail = in.readString();
-        lastPlayersEmail = in.readString();
+        nextPlayersUserName = in.readString();
+        lastPlayersUserName = in.readString();
         storyRecordingPushId = in.readString();
         proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
@@ -201,14 +201,14 @@ public class Conversation implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (usersInConversationEmails == null) {
+        if (userNamesInConversation == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(usersInConversationEmails);
+            dest.writeList(userNamesInConversation);
         }
-        dest.writeString(nextPlayersEmail);
-        dest.writeString(lastPlayersEmail);
+        dest.writeString(nextPlayersUserName);
+        dest.writeString(lastPlayersUserName);
         dest.writeString(storyRecordingPushId);
         dest.writeValue(proposedPrompt1);
         dest.writeValue(proposedPrompt2);

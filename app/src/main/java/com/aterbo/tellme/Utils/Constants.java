@@ -21,6 +21,7 @@ public class Constants {
     public static final int NUMBER_OF_PROMPT_OPTIONS = 3;
 
     public static final String CONVERSATION_INTENT_KEY = "conversation";
+    public static final String USER_NAME_INTENT_KEY = "currentUserName";
     public static final String CONVERSATION_PUSH_ID_INTENT_KEY = "conversationPushId";
 
 }

@@ -13,31 +13,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
 import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.firebase.ui.FirebaseListAdapter;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class StartNewConversationActivity extends AppCompatActivity {
 
     FirebaseListAdapter<User> mListAdapter;
     ListView mListView;
     private Firebase mUsersRef;
-    String currentUserEmail;
+    String currentUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +41,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
-        currentUserEmail = intent.getStringExtra("currentUserEmail");
+        currentUserName = intent.getStringExtra(Constants.USER_NAME_INTENT_KEY);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -77,8 +72,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 android.R.layout.two_line_list_item, mUsersRef) {
             @Override
             protected void populateView(View v, User model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getEmail().replace(",", "."));
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getUserName());
+                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
+                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
             }
         };
         mListView.setAdapter(mListAdapter);
@@ -86,7 +81,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User selectedUser = mListAdapter.getItem(position);
-                Log.i("SELECTED USER", selectedUser.getEmail());
+                Log.i("SELECTED USER", selectedUser.getUserName());
                 if (isSelectedUserCurrentUser(selectedUser)) {
                     Toast.makeText(getApplicationContext(), "You can only talk to yourself if you're crazy.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -97,7 +92,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private boolean isSelectedUserCurrentUser(User selectedUser){
-        if (selectedUser.getEmail().equals(currentUserEmail)){
+        if (selectedUser.getUserName().equals(currentUserName)){
             return true;
         }
         return false;
@@ -109,9 +104,9 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
         Firebase newConversationRef = convoParticipantsRef.push();
         final String newConversationPushId = newConversationRef.getKey();
-        String selectedUserEmail = selectedUser.getEmail();
+        String selectedUserName = selectedUser.getUserName();
 
-        HashMap<String, Object> convoEmails = new HashMap<String, Object>();
+        HashMap<String, Object> convoUserNames = new HashMap<String, Object>();
 
         Prompt noCurrentPrompt = new Prompt();
         ArrayList<Prompt> promptArrayList = new ArrayList<>();
@@ -119,27 +114,27 @@ public class StartNewConversationActivity extends AppCompatActivity {
         promptArrayList.add(new Prompt());
         promptArrayList.add(new Prompt());
 
-        ArrayList<String> usersInConversationEmails = new ArrayList<>();
-        usersInConversationEmails.add(currentUserEmail.replace(".",","));
-        usersInConversationEmails.add(selectedUserEmail.replace(".",","));
+        ArrayList<String> userNamesInConversation = new ArrayList<>();
+        userNamesInConversation.add(currentUserName);
+        userNamesInConversation.add(selectedUserName);
 
-        final Conversation conversation = new Conversation(usersInConversationEmails,
-                selectedUserEmail, currentUserEmail, noCurrentPrompt, promptArrayList);
+        final Conversation conversation = new Conversation(userNamesInConversation,
+                selectedUserName, currentUserName, noCurrentPrompt, promptArrayList);
 
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
-        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
-                newConversationPushId + "/" + currentUserEmail.replace(".",","), "creator");
-        convoEmails.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
-                newConversationPushId + "/" + selectedUserEmail.replace(".",","), "recipient");
+        convoUserNames.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                newConversationPushId + "/" + currentUserName, "creator");
+        convoUserNames.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                newConversationPushId + "/" + selectedUserName, "recipient");
 
-        for (String userEmail : usersInConversationEmails) {
-            convoEmails.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userEmail + "/" + newConversationPushId, itemToAddHashMap);
+        for (String userNames : userNamesInConversation) {
+            convoUserNames.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                    + userNames + "/" + newConversationPushId, itemToAddHashMap);
         }
 
-        baseRef.updateChildren(convoEmails, new Firebase.CompletionListener() {
+        baseRef.updateChildren(convoUserNames, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {

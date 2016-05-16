@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -17,7 +16,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.aterbo.tellme.R;
@@ -109,7 +107,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastPlayersEmail().replace(",",".") + " answered");
+        senderText.setText(conversation.getLastPlayersUserName().replace(",",".") + " answered");
 
         TextView recordingLength = (TextView)findViewById(R.id.story_duration);
         recordingLength.setText("StoryLength");
@@ -311,9 +309,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
         HashMap<String, Object> conversationToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
-        for (String userEmail : conversation.getUsersInConversationEmails()) {
+        for (String userName : conversation.getUserNamesInConversation()) {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+                    + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
         convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,

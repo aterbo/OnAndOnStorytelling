@@ -106,10 +106,10 @@ public class AddNewUserActivity extends AppCompatActivity {
                 new ObjectMapper().convertValue(newUser, Map.class);
 
         /* Add the user and UID to the update map */
-        userAndUidMapping.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserEmail,
+        userAndUidMapping.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserName,
                 newUserMap);
         userAndUidMapping.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
-                + mUserID, mUserEmail);
+                + mUserID, mUserName);
 
         /* Try to update the database; if there is already a user, this will fail */
         baseRef.updateChildren(userAndUidMapping, new Firebase.CompletionListener() {
@@ -118,7 +118,7 @@ public class AddNewUserActivity extends AppCompatActivity {
                 if (firebaseError != null) {
                     /* Try just making a uid mapping */
                     baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS)
-                            .child(mUserID).setValue(mUserEmail);
+                            .child(mUserID).setValue(mUserName);
                     Log.i("FIREBASELOGIN", "Error adding user to Firebase");
                 }
                 Log.i("FIREBASELOGIN", "User added to Firebase");

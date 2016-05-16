@@ -68,7 +68,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void setConversationToView() {
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
-                conversation.getNextPlayersEmail().replace(",",".") + " is next to tell a story");
+                conversation.getNextPlayersUserName().replace(",",".") + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
@@ -136,9 +136,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         HashMap<String, Object> conversationToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
-        for (String userEmail : conversation.getUsersInConversationEmails()) {
+        for (String userName : conversation.getUserNamesInConversation()) {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+                    + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
         baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {

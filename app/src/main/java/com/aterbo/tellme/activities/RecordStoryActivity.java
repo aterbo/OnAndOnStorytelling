@@ -2,10 +2,8 @@ package com.aterbo.tellme.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -22,7 +20,6 @@ import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.Utils.Utils;
 import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.VisualizerView;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.shaded.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +30,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Handler;
 
 public class RecordStoryActivity extends AppCompatActivity {
 
@@ -95,7 +91,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastPlayersEmail().replace(",",".") + " says");
+        senderText.setText(conversation.getLastPlayersUserName().replace(",",".") + " says");
 
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
@@ -264,9 +260,9 @@ public class RecordStoryActivity extends AppCompatActivity {
         HashMap<String, Object> conversationToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
 
-        for (String userEmail : conversation.getUsersInConversationEmails()) {
+        for (String userName : conversation.getUserNamesInConversation()) {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userEmail + "/" + selectedConvoPushId, conversationToAddHashMap);
+                    + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
         convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,

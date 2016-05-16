@@ -36,8 +36,8 @@ public class ConversationListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         getUser();
-        setFirebaseListToUserEmail();
-        showUserEmailInTextView();
+        setFirebaseListToUserName();
+        showUserNameInTextView();
 
         setSupportActionBar(toolbar);
 
@@ -88,23 +88,23 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
-    private void setFirebaseListToUserEmail() {
+    private void setFirebaseListToUserName() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
         mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
-                R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserEmail.replace(".",","))) {
+                R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserName)) {
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
 
                 String title = determineTitle(conversation);
-                if (conversation.getNextPlayersEmail().replace(",",".").equals(currentUserEmail)) {
+                if (conversation.getNextPlayersUserName().equals(currentUserName)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
                             "You're up next!");
                 } else {
-                    String firstChar = conversation.getNextPlayersEmail().substring(0, 1);
+                    String firstChar = conversation.getNextPlayersUserName().substring(0, 1);
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(firstChar);
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "Next Up: " + conversation.getNextPlayersEmail().replace(",","."));
+                            "Next Up: " + conversation.getNextPlayersUserName());
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_participants)).setText(
@@ -128,8 +128,8 @@ public class ConversationListActivity extends AppCompatActivity {
         });
     }
 
-    private void showUserEmailInTextView(){
-        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserEmail);
+    private void showUserNameInTextView(){
+        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserName);
     }
 
     private void determineActivityToStart(Conversation conversation){
@@ -152,10 +152,10 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private String otherConversationParticipants(Conversation conversation){
         String participantsString = "";
-        for (String userEmail :
-                conversation.getUsersInConversationEmails()) {
-            if(!userEmail.replace(",",".").equals(currentUserEmail)) {
-                participantsString = participantsString + ", " + userEmail.replace(",",".");
+        for (String userName :
+                conversation.getUserNamesInConversation()) {
+            if(!userName.equals(currentUserName)) {
+                participantsString = participantsString + ", " + userName.replace(",",".");
             }
         }
 
@@ -179,7 +179,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserTurnToTell(Conversation conversation) {
-        if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+        if(conversation.getNextPlayersUserName().equals(currentUserName)
                 && conversation.getStoryRecordingPushId().equals("none")) {
             return true;
         } else{
@@ -188,7 +188,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserTurnToHear(Conversation conversation) {
-        if(conversation.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))
+        if(conversation.getNextPlayersUserName().equals(currentUserName)
                 && !conversation.getStoryRecordingPushId().equals("none")) {
             return true;
         } else{
@@ -197,7 +197,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserWaiting(Conversation selectedConvo) {
-        if(!selectedConvo.getNextPlayersEmail().equals(currentUserEmail.replace(".",","))) {
+        if(!selectedConvo.getNextPlayersUserName().equals(currentUserName)) {
             return true;
         } else{
             return false;
@@ -205,7 +205,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean doesUserNeedToPickTopics(Conversation selectedConvo) {
-        if(selectedConvo.getLastPlayersEmail().equals(currentUserEmail.replace(".",",")) &&
+        if(selectedConvo.getLastPlayersUserName().equals(currentUserName) &&
                 selectedConvo.getProposedPrompt1() == null) {
             return true;
         } else{
@@ -226,7 +226,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
     private void startNewConversation(){
         Intent intent = new Intent(this, StartNewConversationActivity.class);
-        intent.putExtra("currentUserEmail", currentUserEmail.replace(".",","));
+        intent.putExtra(Constants.USER_NAME_INTENT_KEY, currentUserName);
         startActivity(intent);
     }
 
