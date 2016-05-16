@@ -1,6 +1,5 @@
 package com.aterbo.tellme.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.aterbo.tellme.FBHelper;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.User;
