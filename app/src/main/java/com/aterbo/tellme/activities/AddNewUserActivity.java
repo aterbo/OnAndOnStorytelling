@@ -52,8 +52,9 @@ public class AddNewUserActivity extends AppCompatActivity {
         Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
 
         baseRef = new Firebase(Constants.FB_LOCATION);
-        addNewUserToServer(usernameInput.getText().toString(), emailInput.getText().toString(),
-                passwordInput.getText().toString());
+        addNewUserToServer(usernameInput.getText().toString().trim(),
+                emailInput.getText().toString().trim(),
+                passwordInput.getText().toString().trim());
     }
 
 
