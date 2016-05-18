@@ -9,9 +9,9 @@
         android:title="Add Convo"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/log_in_menu"
+        android:id="@+id/log_out_menu"
         android:orderInCategory="40"
-        android:title="Log In"
+        android:title="Log Out"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/add_new_user_menu"

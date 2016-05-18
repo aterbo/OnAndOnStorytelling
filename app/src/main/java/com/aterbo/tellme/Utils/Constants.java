@@ -23,5 +23,7 @@ public class Constants {
     public static final String CONVERSATION_INTENT_KEY = "conversation";
     public static final String USER_NAME_INTENT_KEY = "currentUserName";
     public static final String CONVERSATION_PUSH_ID_INTENT_KEY = "conversationPushId";
+    public static final String CURRENT_USER_NAME_KEY = "currentUser";
+    public static final String SHARED_PREFS_FILE = "preferences";
 
 }

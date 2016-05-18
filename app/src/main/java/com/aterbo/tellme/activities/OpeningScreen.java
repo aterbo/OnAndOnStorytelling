@@ -1,25 +1,22 @@
 package com.aterbo.tellme.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
-import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.Prompt;
 import com.aterbo.tellme.classes.User;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.firebase.ui.FirebaseListAdapter;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.auth.core.FirebaseLoginError;
@@ -27,7 +24,7 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
 public class OpeningScreen extends FirebaseLoginBaseActivity {
 
     private User currentUser;
-    private String currentUserEmail;
+    private String currentUserUID, currentUserName;
     private Firebase baseRef;
 
     @Override
@@ -52,10 +49,9 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
         // TODO: Handle successful login
         System.out.println("User ID: ");
         Log.i("LOGGEDIN", "Logged in to Firebase UID: " + authData.getUid());
-        currentUserEmail = authData.getProviderData().get("email").toString();
-        Log.i("LOGGEDIN", "Logged in to Firebase Email: " +  currentUserEmail);
+        currentUserUID = authData.getUid();
 
-        getUserData();
+        getUserNameFromUID();
     }
 
     @Override
@@ -87,9 +83,30 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
         baseRef = new Firebase(Constants.FB_LOCATION);
     }
 
+    private void getUserNameFromUID(){
+        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
+                + Constants.FB_LOCATION_UID_MAPPINGS + "/" + currentUserUID);
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                currentUserName = (String) snapshot.getValue();
+
+                saveUserNameToPreferences();
+                getUserData();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("Error getting user data from Firebase after login. " +
+                        "The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
     private void getUserData(){
         Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
-                + Constants.FB_LOCATION_USERS + "/" + currentUserEmail.replace(".",","));
+                + Constants.FB_LOCATION_USERS + "/" + currentUserName);
 
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -110,8 +127,23 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
 
     private void startConversationListActivity(){
         Intent intent = new Intent(this, ConversationListActivity.class);
-        intent.putExtra("currentUser", currentUser);
         startActivity(intent);
     }
 
+    public void logInButtonPressed(View view){
+        showFirebaseLoginPrompt();
+    }
+
+    private void saveUserNameToPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.CURRENT_USER_NAME_KEY, currentUserName);
+        // Commit the edits!
+        editor.commit();
+    }
+
+    public void createUserButtonPressed(View view){
+        Intent intent = new Intent(this, AddNewUserActivity.class);
+        startActivity(intent);
+    }
 }

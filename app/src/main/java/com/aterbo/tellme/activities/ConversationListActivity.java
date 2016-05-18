@@ -1,6 +1,7 @@
 package com.aterbo.tellme.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -16,15 +17,13 @@ import android.widget.TextView;
 import com.aterbo.tellme.R;
 import com.aterbo.tellme.Utils.Constants;
 import com.aterbo.tellme.classes.Conversation;
-import com.aterbo.tellme.classes.User;
 import com.firebase.client.Firebase;
 import com.firebase.ui.FirebaseListAdapter;
 
 
 public class ConversationListActivity extends AppCompatActivity {
 
-    private String currentUserEmail, currentUserName;
-    private User currentUser;
+    private String currentUserName;
     private String selectedConvoPushId;
     private Firebase baseRef;
     private FirebaseListAdapter<Conversation> mListAdapter;
@@ -35,7 +34,9 @@ public class ConversationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        getUser();
+        baseRef = new Firebase(Constants.FB_LOCATION);
+
+        getUserNameFromSharedPreferences();
         setFirebaseListToUserName();
         showUserNameInTextView();
 
@@ -44,11 +45,9 @@ public class ConversationListActivity extends AppCompatActivity {
         setFloatingActionButton();
     }
 
-    private void getUser(){
-        Intent intent  = getIntent();
-        currentUser = intent.getParcelableExtra("currentUser");
-        currentUserEmail = currentUser.getEmail();
-        currentUserName = currentUser.getUserName();
+    private void getUserNameFromSharedPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        currentUserName = settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
     }
 
     private void setFloatingActionButton() {
@@ -77,7 +76,9 @@ public class ConversationListActivity extends AppCompatActivity {
             case R.id.add_conversation_menu:
                 startNewConversation();
                 return true;
-            case R.id.log_in_menu:
+            case R.id.log_out_menu:
+                clearUserNameFromSharedPreferences();
+                logOutFromFirebase();
                 startOpeningScreenActivity();
                 return true;
             case R.id.add_new_user_menu:
@@ -226,8 +227,19 @@ public class ConversationListActivity extends AppCompatActivity {
     }
     private void startNewConversation(){
         Intent intent = new Intent(this, StartNewConversationActivity.class);
-        intent.putExtra(Constants.USER_NAME_INTENT_KEY, currentUserName);
         startActivity(intent);
+    }
+
+    private void clearUserNameFromSharedPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.CURRENT_USER_NAME_KEY, "");
+        // Commit the edits!
+        editor.commit();
+    }
+
+    private void logOutFromFirebase(){
+        baseRef.unauth();
     }
 
     private void startOpeningScreenActivity(){

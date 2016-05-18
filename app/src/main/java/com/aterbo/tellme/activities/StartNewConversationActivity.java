@@ -1,6 +1,7 @@
 package com.aterbo.tellme.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -40,8 +41,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_new_conversation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent intent = getIntent();
-        currentUserName = intent.getStringExtra(Constants.USER_NAME_INTENT_KEY);
+
+        getUserNameFromSharedPreferences();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +64,11 @@ public class StartNewConversationActivity extends AppCompatActivity {
         if (mListAdapter != null) {
             mListAdapter.cleanup();
         }
+    }
+
+    private void getUserNameFromSharedPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        currentUserName = settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
     }
 
     private void initializeScreen() {
