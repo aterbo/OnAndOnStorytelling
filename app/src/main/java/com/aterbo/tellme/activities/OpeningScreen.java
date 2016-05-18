@@ -23,7 +23,6 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
 
 public class OpeningScreen extends FirebaseLoginBaseActivity {
 
-    private User currentUser;
     private String currentUserUID, currentUserName;
     private Firebase baseRef;
 
@@ -94,26 +93,6 @@ public class OpeningScreen extends FirebaseLoginBaseActivity {
                 currentUserName = (String) snapshot.getValue();
 
                 saveUserNameToPreferences();
-                getUserData();
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("Error getting user data from Firebase after login. " +
-                        "The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-    private void getUserData(){
-        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
-                + Constants.FB_LOCATION_USERS + "/" + currentUserName);
-
-        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                currentUser = snapshot.getValue(User.class);
-
                 startConversationListActivity();
             }
 
