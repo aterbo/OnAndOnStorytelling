@@ -1,4 +1,4 @@
-package com.aterbo.tellme;
+package com.onanon.app;
 
 import org.junit.Test;
 

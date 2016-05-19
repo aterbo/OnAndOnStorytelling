@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.aterbo.tellme"
+        applicationId "com.onanon.app"
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 2

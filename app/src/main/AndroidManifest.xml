@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aterbo.tellme" >
+    package="com.onanon.app" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -18,44 +18,44 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.ConversationListActivity"
+            android:name="com.onanon.app.activities.ConversationListActivity"
             android:label="OnAnOn"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".activities.RecordStoryActivity"
+            android:name="com.onanon.app.activities.RecordStoryActivity"
             android:label="Tell a Story"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.PickTopicToRecordActivity"
+            android:name="com.onanon.app.activities.PickTopicToRecordActivity"
             android:label="Tell a Story"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.ListenToStoryActivity"
+            android:name="com.onanon.app.activities.ListenToStoryActivity"
             android:label="Hear a Story"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.ChooseTopicsToSendActivity"
+            android:name="com.onanon.app.activities.ChooseTopicsToSendActivity"
             android:label="Prompt a Story"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.StartNewConversationActivity"
+            android:name="com.onanon.app.activities.StartNewConversationActivity"
             android:label="Start a Conversation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".activities.AddNewUserActivity"
+            android:name="com.onanon.app.activities.AddNewUserActivity"
             android:label="@string/title_activity_add_new_user"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".activities.OpeningScreen"
+            android:name="com.onanon.app.activities.OpeningScreen"
             android:label="ONanON"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
