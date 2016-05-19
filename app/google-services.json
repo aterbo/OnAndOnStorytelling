@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "722073204587",
+    "firebase_url": "https://tell-me.firebaseio.com",
+    "project_id": "firebase-tell-me",
+    "storage_bucket": "firebase-tell-me.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722073204587:android:ccd2c65b590bac1b",
+        "android_client_info": {
+          "package_name": "com.onanon.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "722073204587-savlpjilqtrh7lc1gj59226s0u7f3cs5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL4rvElOqGvOpa1gDzJHF4tPma-as5G_E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
