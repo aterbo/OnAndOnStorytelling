@@ -14,18 +14,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
-import com.firebase.client.Firebase;
-import com.firebase.ui.FirebaseListAdapter;
 
 
 public class ConversationListActivity extends AppCompatActivity {
 
     private String currentUserName;
     private String selectedConvoPushId;
-    private Firebase baseRef;
+    private DatabaseReference baseRef;
     private FirebaseListAdapter<Conversation> mListAdapter;
 
     @Override
@@ -34,7 +36,7 @@ public class ConversationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_conversation_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        baseRef = new Firebase(Constants.FB_LOCATION);
+        baseRef = FirebaseDatabase.getInstance().getReference();
 
         getUserNameFromSharedPreferences();
         setFirebaseListToUserName();
@@ -239,7 +241,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void logOutFromFirebase(){
-        baseRef.unauth();
+        FirebaseAuth.getInstance().signOut();
     }
 
     private void startOpeningScreenActivity(){

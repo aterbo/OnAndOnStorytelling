@@ -9,15 +9,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,13 +33,14 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private ArrayList<Prompt> selectedPromptsList;
     private String selectedConvoPushId;
     private Conversation conversation;
+    private DatabaseReference baseRef;
     private int promptCountTracker = 0;
     private int numberOfPromptsOnServer;
     private int numberOfPromptsToGet;
     private final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     private final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
 
-    private Firebase mNumberOfPromptsRef;
+    private DatabaseReference mNumberOfPromptsRef;
     private ValueEventListener mNumberOfPromptsRefListener;
 
     @Override
@@ -46,6 +48,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_topics_to_send);
 
+        baseRef = FirebaseDatabase.getInstance().getReference();
         getConversation();
         initializeViews();
         getPromptOptionsList();
@@ -129,8 +132,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void updateConversationOnServer(){
-        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
-
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
         HashMap<String, Object> conversationToAddHashMap =
@@ -141,9 +142,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                     + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
-        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+        baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
                     Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }
@@ -172,7 +173,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void setNumberOfPromptsFBListener(){
-        mNumberOfPromptsRef = new Firebase(Constants.FB_LOCATION + "/" + Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+        mNumberOfPromptsRef = baseRef.child(Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
 
         mNumberOfPromptsRefListener = mNumberOfPromptsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -184,15 +185,15 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
     }
 
     private void getRandomPrompt(int promptIdNumber){
-        Firebase promptRef = new Firebase(Constants.FB_LOCATION + "/"
-                + Constants.FB_LOCATION_PROMPTS + "/" + promptIdNumber);
+        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_PROMPTS)
+                .child(Integer.toString(promptIdNumber));
 
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -206,7 +207,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });

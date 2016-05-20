@@ -14,15 +14,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.User;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.ui.FirebaseListAdapter;
-import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<User> mListAdapter;
     private ListView mListView;
-    private Firebase mUsersRef;
+    private DatabaseReference baseRef, mUsersRef;
     private String currentUserName;
 
     @Override
@@ -54,7 +55,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
             }
         });
 
-    mUsersRef = new Firebase(Constants.FB_LOCATION+ "/" + Constants.FB_LOCATION_USERS);
+    baseRef = FirebaseDatabase.getInstance().getReference();
+    mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
     initializeScreen();
     }
 
@@ -105,10 +107,9 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private void makeANewConversationWith(User selectedUser){
-        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
-        Firebase convoParticipantsRef = baseRef.child(Constants.FB_LOCATION_CONVO_PARTICIPANTS);
+        DatabaseReference convoParticipantsRef = baseRef.child(Constants.FB_LOCATION_CONVO_PARTICIPANTS);
 
-        Firebase newConversationRef = convoParticipantsRef.push();
+        DatabaseReference newConversationRef = convoParticipantsRef.push();
         final String newConversationPushId = newConversationRef.getKey();
         String selectedUserName = selectedUser.getUserName();
 
@@ -140,13 +141,14 @@ public class StartNewConversationActivity extends AppCompatActivity {
                     + userNames + "/" + newConversationPushId, itemToAddHashMap);
         }
 
-        baseRef.updateChildren(convoUserNames, new Firebase.CompletionListener() {
+        baseRef.updateChildren(convoUserNames, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
-                    Log.i("FIREBASECREATENEWCONVO", "Error adding convo to Firebase");
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }
-                Log.i("FIREBASECREATENEWCONVO", "Convo added to Firebase successfully");
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+
                 moveToNextActivity(conversation, newConversationPushId);
             }
         });

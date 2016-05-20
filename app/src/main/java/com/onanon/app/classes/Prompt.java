@@ -3,6 +3,11 @@ package com.onanon.app.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by ATerbo on 2/13/16.
  */
@@ -55,4 +60,13 @@ public class Prompt implements Parcelable{
             return new Prompt[size];
         }
     };
+
+    @Exclude
+    public HashMap<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("text", text);
+        result.put("tag", tag);
+
+        return result;
+    }
 }

@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,22 +10,30 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.User;
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AddNewUserActivity extends AppCompatActivity {
 
-    private Firebase baseRef;
-    private String mUserName, mUserEmail, mUserID, mUserProfilePicUrl;
+    private DatabaseReference baseRef;
+    private String mUserName, mUserEmail, mUserID, mUserProfilePicUrl, mPassword;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +50,44 @@ public class AddNewUserActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mAuth = FirebaseAuth.getInstance();
+        setUpFirebaseAuthListener();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private void setUpFirebaseAuthListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    mUserID = user.getUid();
+                    mUserProfilePicUrl = user.getPhotoUrl().toString();
+
+                    createUserInFirebaseHelper();
+                    Log.d("AuthStateListen", "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d("AuthStateListen", "onAuthStateChanged:signed_out");
+                }
+            }
+        };
     }
 
     public void addUserConfirm(View view){
@@ -49,49 +96,29 @@ public class AddNewUserActivity extends AppCompatActivity {
         final EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
         Log.i("ADDUSER", usernameInput.getText().toString() + passwordInput.getText().toString());
 
-        baseRef = new Firebase(Constants.FB_LOCATION);
-        addNewUserToServer(usernameInput.getText().toString().trim(),
-                emailInput.getText().toString().trim(),
-                passwordInput.getText().toString().trim());
+
+        mUserName = usernameInput.getText().toString().trim();
+        mUserEmail = emailInput.getText().toString().trim();
+        mPassword = passwordInput.getText().toString().trim();
+
+
+        baseRef = FirebaseDatabase.getInstance().getReference();
+        addNewUserToServer();
     }
 
 
 
-    private void addNewUserToServer(final String userName, final String email, final String password){
-        baseRef.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                System.out.println("New user added to firebase login: " + result.get("uid"));
+    private void addNewUserToServer() {
+        mAuth.createUserWithEmailAndPassword(mUserEmail, mPassword).addOnCompleteListener(this,
+            new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    Log.d("AddUser", "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                logUserIn(userName, email, (String) result.get("uid"), password);
-            }
-
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                System.out.println("Error adding new user");
-            }
-        });
-    }
-
-    private void logUserIn(final String userName, final String email, final String userId, final String password){
-        baseRef = new Firebase(Constants.FB_LOCATION);
-        baseRef.authWithPassword(email, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
-
-                mUserEmail = email.replace(".", ",");
-                mUserName = userName;
-                mUserID = userId;
-                mUserProfilePicUrl = (String) authData.getProviderData().get("profileImageURL");
-
-                createUserInFirebaseHelper();
-                Log.i("FIREBASELOGIN", "User logged in to Firebase");
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                // there was an error
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(AddNewUserActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
             }
         });
     }
@@ -101,30 +128,22 @@ public class AddNewUserActivity extends AppCompatActivity {
 
         /* Create a HashMap version of the user to add */
         User newUser = new User(mUserName, mUserEmail, mUserID, mUserProfilePicUrl);
-        HashMap<String, Object> newUserMap = (HashMap<String, Object>)
-                new ObjectMapper().convertValue(newUser, Map.class);
+        HashMap<String, Object> newUserMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
 
-        /* Add the user and UID to the update map */
-        userAndUidMapping.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserName,
+        HashMap<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserName,
                 newUserMap);
-        userAndUidMapping.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
+        childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
                 + mUserID, mUserName);
 
-        /* Try to update the database; if there is already a user, this will fail */
-        baseRef.updateChildren(userAndUidMapping, new Firebase.CompletionListener() {
+        baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (firebaseError != null) {
-                    /* Try just making a uid mapping */
-                    baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS)
-                            .child(mUserID).setValue(mUserName);
-                    Log.i("FIREBASELOGIN", "Error adding user to Firebase");
-                }
-                Log.i("FIREBASELOGIN", "User added to Firebase");
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                goBackToStartList();
             }
         });
 
-        goBackToStartList();
     }
 
     private void goBackToStartList(){

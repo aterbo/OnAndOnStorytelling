@@ -18,17 +18,18 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.VisualizerView;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.shaded.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,8 +87,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void getRecording(){
         recordingPushId = conversation.getStoryRecordingPushId();
-        Firebase recordingRef = new Firebase(Constants.FB_LOCATION + "/" +
-                Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId);
+        DatabaseReference recordingRef = FirebaseDatabase.getInstance().getReference()
+                .child(Constants.FB_LOCATION_RECORDINGS).child(recordingPushId);
 
         recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -99,8 +100,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Error", "getUser:onCancelled", databaseError.toException());
             }
         });
     }
@@ -302,7 +303,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void updateConversationAfterListening(){
-        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
@@ -317,13 +318,14 @@ public class ListenToStoryActivity extends AppCompatActivity {
         convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
                 null);
 
-        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+        baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
                     Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }
                 Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+
                 goBackToMainScreen();
             }
         });

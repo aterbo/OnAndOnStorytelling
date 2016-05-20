@@ -10,10 +10,39 @@
     tools:showIn="@layout/activity_opening_screen"
     tools:context="com.onanon.app.activities.OpeningScreen">
 
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/emailTextView"
+        android:text="Email"
+        android:textStyle="bold" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/emailTextView"
+        android:id="@+id/emailEditText"
+        android:inputType="textEmailAddress" />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/passwordTextView"
+        android:layout_below="@id/emailEditText"
+        android:text="Password"
+        android:textStyle="bold" />
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/passwordTextView"
+        android:id="@+id/passwordEditText"
+        android:inputType="textPassword" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_below="@id/passwordTextView"
         android:src="@mipmap/ic_launcher"/>
 
     <Button

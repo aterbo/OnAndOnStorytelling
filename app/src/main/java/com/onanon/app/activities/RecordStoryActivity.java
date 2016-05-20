@@ -16,13 +16,14 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.shaded.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -249,9 +250,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void updateConversationAfterRecording(){
         progressDialog = Utils.getSpinnerDialog(this);
 
-        Firebase baseRef = new Firebase(Constants.FB_LOCATION);
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
-        Firebase newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
+        DatabaseReference newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
         String recordingPushId = newRecordingRef.getKey();
         conversation.setStoryRecordingPushId(recordingPushId);
 
@@ -268,9 +269,9 @@ public class RecordStoryActivity extends AppCompatActivity {
         convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
                 encodedRecording);
 
-        baseRef.updateChildren(convoInfoToUpdate, new Firebase.CompletionListener() {
+        baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
                     Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }

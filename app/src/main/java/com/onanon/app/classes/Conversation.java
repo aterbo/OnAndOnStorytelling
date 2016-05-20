@@ -3,7 +3,11 @@ package com.onanon.app.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ATerbo on 2/12/16.
@@ -229,4 +233,21 @@ public class Conversation implements Parcelable{
             return new Conversation[size];
         }
     };
+
+    //Mapper
+    @Exclude
+    public HashMap<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userNamesInConversation", userNamesInConversation);
+        result.put("nextPlayersUserName", nextPlayersUserName);
+        result.put("lastPlayersUserName", lastPlayersUserName);
+        result.put("storyRecordingPushId", storyRecordingPushId);
+        result.put("proposedPrompt1", proposedPrompt1);
+        result.put("proposedPrompt2", proposedPrompt2);
+        result.put("proposedPrompt3", proposedPrompt3);
+        result.put("currentPrompt", currentPrompt);
+        result.put("storyRecordingDuration", storyRecordingDuration);
+
+        return result;
+    }
 }

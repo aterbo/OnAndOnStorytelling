@@ -3,6 +3,11 @@ package com.onanon.app.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by ATerbo on 2/14/16.
  */
@@ -70,4 +75,16 @@ public class User implements Parcelable{
             return new User[size];
         }
     };
+
+    //For Mapping
+    @Exclude
+    public HashMap<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userID", userID);
+        result.put("userName", userName);
+        result.put("email", email);
+        result.put("profilePhotoUrl", profilePhotoUrl);
+
+        return result;
+    }
 }
