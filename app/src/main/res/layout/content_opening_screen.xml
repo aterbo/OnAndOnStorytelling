@@ -39,17 +39,18 @@
         android:inputType="textPassword" />
 
     <ImageView
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_below="@id/passwordTextView"
+        android:layout_below="@id/passwordEditText"
         android:src="@mipmap/ic_launcher"/>
 
     <Button
         android:id="@+id/log_in_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/logo"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
         android:onClick="logInButtonPressed"
@@ -58,7 +59,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/log_in_button"
+        android:layout_below="@id/log_in_button"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
         android:onClick="createUserButtonPressed"
