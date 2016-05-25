@@ -101,9 +101,14 @@ public class AddNewUserActivity extends AppCompatActivity {
         mUserEmail = emailInput.getText().toString().trim();
         mPassword = passwordInput.getText().toString().trim();
 
-
-        baseRef = FirebaseDatabase.getInstance().getReference();
-        addNewUserToServer();
+        if (isPasswordAtLeastSixCharLong()) {
+            baseRef = FirebaseDatabase.getInstance().getReference();
+            addNewUserToServer();
+        } else {
+            Toast.makeText(AddNewUserActivity.this, "Password must be at least 6 characters.",
+                    Toast.LENGTH_SHORT).show();
+            passwordInput.setText("");
+        }
     }
 
 
@@ -121,6 +126,14 @@ public class AddNewUserActivity extends AppCompatActivity {
                     }
             }
         });
+    }
+
+    private boolean isPasswordAtLeastSixCharLong(){
+        if (mPassword.length()>=6){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void createUserInFirebaseHelper() {
