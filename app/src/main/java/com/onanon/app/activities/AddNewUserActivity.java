@@ -78,7 +78,7 @@ public class AddNewUserActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     mUserID = user.getUid();
-                    mUserProfilePicUrl = user.getPhotoUrl().toString();
+                    mUserProfilePicUrl = "xxxxxx";
 
                     createUserInFirebaseHelper();
                     Log.d("AuthStateListen", "onAuthStateChanged:signed_in:" + user.getUid());
