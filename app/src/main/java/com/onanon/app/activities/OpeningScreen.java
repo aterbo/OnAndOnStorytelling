@@ -111,6 +111,7 @@ public class OpeningScreen extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError firebaseError) {
+                progressDialog.dismiss();
                 System.out.println("Error getting user data from Firebase after login. " +
                         "The read failed: " + firebaseError.getMessage());
             }
@@ -146,6 +147,7 @@ public class OpeningScreen extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w("Signin", "signInWithEmail", task.getException());
+                            progressDialog.dismiss();
                             Toast.makeText(OpeningScreen.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
