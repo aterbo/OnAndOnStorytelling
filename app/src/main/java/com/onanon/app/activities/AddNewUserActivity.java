@@ -1,6 +1,7 @@
 package com.onanon.app.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -153,10 +154,19 @@ public class AddNewUserActivity extends AppCompatActivity {
         baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                saveUserNameToPreferences();
                 goBackToStartList();
             }
         });
 
+    }
+
+    private void saveUserNameToPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.CURRENT_USER_NAME_KEY, mUserName);
+        // Commit the edits!
+        editor.commit();
     }
 
     private void goBackToStartList(){
