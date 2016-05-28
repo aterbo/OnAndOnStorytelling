@@ -1,5 +1,6 @@
 package com.onanon.app.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.User;
 
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class AddNewUserActivity extends AppCompatActivity {
     private String mUserName, mUserEmail, mUserID, mUserProfilePicUrl, mPassword;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +106,7 @@ public class AddNewUserActivity extends AppCompatActivity {
         mPassword = passwordInput.getText().toString().trim();
 
         if (isPasswordAtLeastSixCharLong()) {
+            progressDialog = Utils.getSpinnerDialog(this);
             baseRef = FirebaseDatabase.getInstance().getReference();
             addNewUserToServer();
         } else {
@@ -124,6 +128,7 @@ public class AddNewUserActivity extends AppCompatActivity {
                     if (!task.isSuccessful()) {
                         Toast.makeText(AddNewUserActivity.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
             }
         });
@@ -170,6 +175,7 @@ public class AddNewUserActivity extends AppCompatActivity {
     }
 
     private void goBackToStartList(){
+        progressDialog.dismiss();
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
     }
