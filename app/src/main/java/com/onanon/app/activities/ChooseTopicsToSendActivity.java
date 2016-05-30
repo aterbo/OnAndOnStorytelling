@@ -71,7 +71,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void setConversationToView() {
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
-                conversation.getNextPlayersUserName().replace(",",".") + " is next to tell a story");
+                conversation.getLastPlayersUserName() + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
@@ -105,6 +105,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void updateConversation(){
+        conversation.changeNextPlayer();
         conversation.setProposedPrompt1(selectedPromptsList.get(0));
         conversation.setProposedPrompt2(selectedPromptsList.get(1));
         conversation.setProposedPrompt3(selectedPromptsList.get(2));

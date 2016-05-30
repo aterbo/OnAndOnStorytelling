@@ -126,7 +126,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         userNamesInConversation.add(selectedUserName);
 
         final Conversation conversation = new Conversation(userNamesInConversation,
-                selectedUserName, currentUserName, noCurrentPrompt, promptArrayList);
+                currentUserName, selectedUserName, noCurrentPrompt, promptArrayList);
 
         HashMap<String, Object> itemToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);

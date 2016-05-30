@@ -144,12 +144,16 @@ public class ConversationListActivity extends AppCompatActivity {
             startNextActivity(conversation, ListenToStoryActivity.class);
             Log.i("PickedAConvo!", "My turn to hear");
 
-        } else if (doesUserNeedToPickTopics(conversation)) {
+        } else if (isUserTurnToPickPrompts(conversation)) {
             startNextActivity(conversation, ChooseTopicsToSendActivity.class);
         }
-        else if (isUserWaiting(conversation)) {
+        else if (isUserWaitingForPrompts(conversation)) {
             //TODO: startWait/PingActivity();
-            Log.i("PickedAConvo!", "My turn to hear");
+            Log.i("PickedAConvo!", "Waiting for prompts");
+        }
+        else if (isUserWaitingForStory(conversation)) {
+            //TODO: startWait/PingActivity();
+            Log.i("PickedAConvo!", "Waiting for story");
         }
     }
 
@@ -172,18 +176,22 @@ public class ConversationListActivity extends AppCompatActivity {
         } else if (isUserTurnToHear(conversation)) {
             return "Hear:    " + conversation.getCurrentPrompt().getText();
 
-        } else if (doesUserNeedToPickTopics(conversation)) {
+        } else if (isUserTurnToPickPrompts(conversation)) {
             return "You need to send topics!";
 
-        } else if (isUserWaiting(conversation)) {
+        } else if (isUserWaitingForPrompts(conversation)) {
+            return "Waiting for topics.";
+
+        } else if (isUserWaitingForStory(conversation)) {
             return "Waiting for a story.";
         }
         return "Oops";
     }
 
     private boolean isUserTurnToTell(Conversation conversation) {
-        if(conversation.getNextPlayersUserName().equals(currentUserName)
-                && conversation.getStoryRecordingPushId().equals("none")) {
+        if(isCurrentUsersTurn(conversation)
+                && !isStoryRecorded(conversation)
+                && isProposedPromptSelected(conversation)) {
             return true;
         } else{
             return false;
@@ -191,25 +199,60 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserTurnToHear(Conversation conversation) {
-        if(conversation.getNextPlayersUserName().equals(currentUserName)
-                && !conversation.getStoryRecordingPushId().equals("none")) {
+        if(isCurrentUsersTurn(conversation)
+                && isStoryRecorded(conversation)
+                && isProposedPromptSelected(conversation)) {
             return true;
         } else{
             return false;
         }
     }
 
-    private boolean isUserWaiting(Conversation selectedConvo) {
-        if(!selectedConvo.getNextPlayersUserName().equals(currentUserName)) {
+    private boolean isUserWaitingForPrompts(Conversation conversation) {
+        if(!isCurrentUsersTurn(conversation)
+                && !isProposedPromptSelected(conversation)) {
             return true;
         } else{
             return false;
         }
     }
 
-    private boolean doesUserNeedToPickTopics(Conversation selectedConvo) {
-        if(selectedConvo.getLastPlayersUserName().equals(currentUserName) &&
-                selectedConvo.getProposedPrompt1() == null) {
+    private boolean isUserWaitingForStory(Conversation conversation) {
+        if(!isCurrentUsersTurn(conversation)
+                && isProposedPromptSelected(conversation)) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isCurrentUsersTurn(Conversation conversation){
+        if(conversation.getNextPlayersUserName().equals(currentUserName)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isStoryRecorded(Conversation conversation) {
+        if(!conversation.getStoryRecordingPushId().equals("none")) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isProposedPromptSelected(Conversation conversation) {
+        if(conversation.getProposedPrompt1() != null) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isUserTurnToPickPrompts(Conversation conversation) {
+        if(isCurrentUsersTurn(conversation) &&
+                !isProposedPromptSelected(conversation)) {
             return true;
         } else{
             return false;
