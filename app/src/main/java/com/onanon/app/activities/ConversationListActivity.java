@@ -111,7 +111,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_participants)).setText(
-                        "Group:  " + otherConversationParticipants(conversation));
+                        "Conversation with:  " + otherConversationParticipants(conversation));
                 ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(
                         conversation.recordingDurationAsFormattedString());
                 (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
