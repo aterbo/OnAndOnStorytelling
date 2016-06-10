@@ -127,7 +127,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
             try
             {
-                File tempFile = File.createTempFile(fileName, ".3gp", tempFileDir);
+                    File tempFile = File.createTempFile(fileName, ".3gp", tempFileDir);
                 FileOutputStream os = new FileOutputStream(tempFile, true);
                 os.write(decoded);
                 os.close();

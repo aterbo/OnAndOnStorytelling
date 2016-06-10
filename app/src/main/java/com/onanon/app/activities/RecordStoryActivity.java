@@ -166,6 +166,8 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void resetRecording(){
+        deleteRecordingFile();
+        setRecordingDetails();
         recordingStatusButton.setText("Start Recording");
         recordingDurationCounter.setVisibility(View.INVISIBLE);
         recordingDuration.setVisibility(View.GONE);
@@ -224,6 +226,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     public void sendRecordingClick(View view){
         saveRecordingToConversation();
+        deleteRecordingFile();
         conversation.clearProposedTopics();
         updateConversationAfterRecording();
     }
@@ -276,6 +279,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 }
                 Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
 
+
                 progressDialog.dismiss();
                 showToastFromStringResource(R.string.recording_sent_notice);
                 moveToNextActivity();
@@ -293,6 +297,17 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
 
         encodedRecording = Base64.encodeToString(bytes, 0);
+    }
+
+        private void deleteRecordingFile(){
+            File file = new File(outputFile);
+            boolean isDeleteSuccessful = file.delete();
+        if (isDeleteSuccessful) {
+            Log.i("Recording deleted", "Temporary recoding file deleted.");
+        } else {
+        Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
+        }
+        outputFile = null;
     }
 
     private void moveToNextActivity(){
