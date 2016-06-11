@@ -204,33 +204,47 @@ public class OpeningScreen extends AppCompatActivity {
     }
 
     public void logInButtonPressed(View view){
-        progressDialog = Utils.getSpinnerDialog(this);
+        if(isLogInInfoEntered()) {
+            progressDialog = Utils.getSpinnerDialog(this);
 
-        final EditText emailInput = (EditText) findViewById(R.id.emailEditText);
-        final EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
+            final EditText emailInput = (EditText) findViewById(R.id.emailEditText);
+            final EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
 
-        loginEmail = emailInput.getText().toString().trim();
-        loginPass = passwordInput.getText().toString().trim();
+            loginEmail = emailInput.getText().toString().trim();
+            loginPass = passwordInput.getText().toString().trim();
 
-        mAuth.signInWithEmailAndPassword(loginEmail, loginPass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("Signin", "signInWithEmail:onComplete:" + task.isSuccessful());
+            mAuth.signInWithEmailAndPassword(loginEmail, loginPass)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d("Signin", "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w("Signin", "signInWithEmail", task.getException());
-                            progressDialog.dismiss();
-                            Toast.makeText(OpeningScreen.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Log.w("Signin", "signInWithEmail", task.getException());
+                                progressDialog.dismiss();
+                                Toast.makeText(OpeningScreen.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
                         }
+                    });
+        }
+    }
 
-                    }
-                });
+    private boolean isLogInInfoEntered(){
+        EditText emailInput = (EditText) findViewById(R.id.emailEditText);
+        EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
 
+        if( emailInput.getText().toString() == null || emailInput.getText().toString().isEmpty()){
+            return false;
+        } else if (passwordInput.getText().toString() == null || passwordInput.getText().toString().isEmpty()){
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void saveUserNameToPreferences(){
