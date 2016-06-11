@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,9 +44,6 @@ public class OpeningScreen extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog progressDialog;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
-    private Button logInButton;
-    private Button createUserButton;
-    private Button allowRecordAudioButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +51,6 @@ public class OpeningScreen extends AppCompatActivity {
         setContentView(R.layout.activity_opening_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-        initializeViews();
         initializeFirebase();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -93,18 +89,21 @@ public class OpeningScreen extends AppCompatActivity {
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                Toast.makeText(OpeningScreen.this, "ONanON needs access to the microphone to record " +
-                        "your stories!",
-                        Toast.LENGTH_LONG).show();
+                showMessageOKCancel("You need to allow access to the microphone to record " +
+                        "your awesome stories!",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(OpeningScreen.this,
+                                        new String[] {Manifest.permission.RECORD_AUDIO},
+                                        MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+                            }
+                        });
             }
 
                 // No explanation needed, we can request the permission.
 
-                ActivityCompat.requestPermissions(this,
+                ActivityCompat.requestPermissions(OpeningScreen.this,
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
@@ -112,6 +111,15 @@ public class OpeningScreen extends AppCompatActivity {
                 // app-defined int constant. The callback method gets the
                 // result of the request.
         }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     @Override
@@ -129,11 +137,6 @@ public class OpeningScreen extends AppCompatActivity {
 
 
                 } else {
-                    logInButton.setClickable(false);
-                    logInButton.setAlpha(.5f);
-                    createUserButton.setClickable(false);
-                    createUserButton.setAlpha(.5f);
-                    allowRecordAudioButton.setVisibility(View.VISIBLE);
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -143,15 +146,6 @@ public class OpeningScreen extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
-    }
-
-    public void allowRecordAudioButtonPressed(View view) {
-        logInButton.setClickable(true);
-        logInButton.setAlpha(1f);
-        createUserButton.setClickable(true);
-        createUserButton.setAlpha(1f);
-        allowRecordAudioButton.setVisibility(View.GONE);
-        requestAppPermissions();
     }
 
     private void setUpFirebaseAuthListener() {
@@ -172,12 +166,6 @@ public class OpeningScreen extends AppCompatActivity {
                 }
             }
         };
-    }
-
-    private void initializeViews() {
-        logInButton = (Button) findViewById(R.id.log_in_button);
-        createUserButton = (Button) findViewById(R.id.create_user_button);
-        allowRecordAudioButton = (Button) findViewById(R.id.allow_record_audio_button);
     }
 
     private void initializeFirebase(){

@@ -57,7 +57,6 @@
         android:text="Log In"/>
 
     <Button
-        android:id="@+id/create_user_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/log_in_button"
@@ -65,16 +64,4 @@
         android:layout_margin="10dp"
         android:onClick="createUserButtonPressed"
         android:text="Create User"/>
-
-    <Button
-        android:id="@+id/allow_record_audio_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/create_user_button"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        android:layout_margin="10dp"
-        android:onClick="allowRecordAudioButtonPressed"
-        android:text="Allow App to Record Audio"/>
-
 </RelativeLayout>
