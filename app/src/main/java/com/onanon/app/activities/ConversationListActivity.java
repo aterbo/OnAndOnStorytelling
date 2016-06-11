@@ -83,9 +83,6 @@ public class ConversationListActivity extends AppCompatActivity {
                 logOutFromFirebase();
                 startOpeningScreenActivity();
                 return true;
-            case R.id.add_new_user_menu:
-                addNewUser();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
