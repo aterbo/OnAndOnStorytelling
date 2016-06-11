@@ -123,11 +123,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
         if (Utils.isExternalStorageWritable()) {
             String fileName = UUID.randomUUID().toString().replaceAll("-", "");
-            File tempFileDir = this.getCacheDir();
+            File tempFileDir = this.getFilesDir();
 
             try
             {
-                    File tempFile = File.createTempFile(fileName, ".3gp", tempFileDir);
+                File tempFile = new File(tempFileDir, fileName + ".3gp");
                 FileOutputStream os = new FileOutputStream(tempFile, true);
                 os.write(decoded);
                 os.close();
@@ -270,6 +270,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         builder.setTitle("Listen again?");
         builder.setPositiveButton("Back to Main Menu", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                deleteRecordingFile();
                 eliminateCurrentStory();
                 updateConversationAfterListening();
                 dialog.dismiss();
@@ -351,5 +352,16 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 }, Visualizer.getMaxCaptureRate() / 2, true, false);
 
         progressDialog.dismiss();
+    }
+
+    private void deleteRecordingFile(){
+        File file = new File(localTempFilePath);
+        boolean isDeleteSuccessful = file.delete();
+
+        if (isDeleteSuccessful) {
+            Log.i("Recording deleted", "Temporary recoding file deleted.");
+        } else {
+            Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
+        }
     }
 }

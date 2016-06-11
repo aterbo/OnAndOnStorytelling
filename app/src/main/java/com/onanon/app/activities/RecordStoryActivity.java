@@ -79,11 +79,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void setRecordingDetails(){
-        if (Utils.isExternalStorageWritable()) {
-            String fileName = getRandomFileName();
-            outputFile = Environment.getExternalStorageDirectory().getAbsolutePath();
-            outputFile += "/" + fileName + ".3gp";
-        }
+        String fileName = getRandomFileName();
+        outputFile = getFilesDir().getAbsolutePath();
+        outputFile += "/" + fileName + ".3gp";
     }
 
     private String getRandomFileName(){
@@ -299,9 +297,10 @@ public class RecordStoryActivity extends AppCompatActivity {
         encodedRecording = Base64.encodeToString(bytes, 0);
     }
 
-        private void deleteRecordingFile(){
-            File file = new File(outputFile);
-            boolean isDeleteSuccessful = file.delete();
+    private void deleteRecordingFile(){
+        File file = new File(outputFile);
+        boolean isDeleteSuccessful = file.delete();
+
         if (isDeleteSuccessful) {
             Log.i("Recording deleted", "Temporary recoding file deleted.");
         } else {
