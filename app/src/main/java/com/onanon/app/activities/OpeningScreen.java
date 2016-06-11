@@ -44,6 +44,7 @@ public class OpeningScreen extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog progressDialog;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    private boolean hasPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,15 +131,9 @@ public class OpeningScreen extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-
-
+                    hasPermissions = true;
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    hasPermissions = false;
                 }
                 return;
             }
@@ -199,8 +194,12 @@ public class OpeningScreen extends AppCompatActivity {
             progressDialog.dismiss();
         }
 
-        Intent intent = new Intent(this, ConversationListActivity.class);
-        startActivity(intent);
+        if (hasPermissions) {
+            Intent intent = new Intent(this, ConversationListActivity.class);
+            startActivity(intent);
+        }  else {
+            requestAppPermissions();
+        }
     }
 
     public void logInButtonPressed(View view){
