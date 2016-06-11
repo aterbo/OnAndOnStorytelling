@@ -13,6 +13,12 @@
     tools:context="com.onanon.app.activities.ConversationListActivity"
     tools:showIn="@layout/activity_conversation_list">
 
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Version 1.06"/>
+
     <TextView
         android:id="@+id/log_in_indicator"
         android:layout_width="match_parent"
