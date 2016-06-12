@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Version 1.06"/>
+        android:text="Version 1.07"/>
 
     <TextView
         android:id="@+id/log_in_indicator"
