@@ -22,10 +22,8 @@ import com.onanon.app.classes.Prompt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
@@ -54,8 +52,12 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         getConversation();
         initializeViews();
         getPromptOptionsList();
-        setConversationToView();
         conversation.clearProposedTopics();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        mNumberOfPromptsRef.removeEventListener(mNumberOfPromptsRefListener);
     }
 
     private void getConversation(){
@@ -69,15 +71,86 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         sendTopicOption2 = (Button)findViewById(R.id.send_topic_option_2);
         promptOptionsList = new ArrayList<>();
         selectedPromptsList = new ArrayList<>();
-    }
 
-    private void setConversationToView() {
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
                 conversation.getLastPlayersUserName() + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
         setNumberOfPromptsFBListener();
+    }
+
+    private void setNumberOfPromptsFBListener(){
+        mNumberOfPromptsRef = baseRef.child(Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+
+        mNumberOfPromptsRefListener = mNumberOfPromptsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Long tempNumber = (Long) snapshot.getValue();
+                numberOfPromptsOnServer = tempNumber.intValue();
+                getRandomPromptList();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void getRandomPromptList(){
+        numberOfPromptsToGet = NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND * TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT;
+
+        ArrayList<Integer> randNumList = getRandomArrayListOfIntegers(numberOfPromptsToGet);
+
+        for (int promptId : randNumList) {
+            getRandomPrompt(promptId);
+        }
+    }
+
+    private ArrayList<Integer> getRandomArrayListOfIntegers(int numberToGet){
+
+        ArrayList<Integer> list = new ArrayList<>();
+        Random random = new Random();
+
+        while (list.size() < numberToGet)
+        {
+            Integer nextRandom = random.nextInt(numberOfPromptsOnServer) + 1;
+            if(!list.contains(nextRandom)) {
+                list.add(nextRandom);
+            }
+        }
+        return list;
+    }
+
+    private void getRandomPrompt(int promptIdNumber){
+        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_PROMPTS)
+                .child(Integer.toString(promptIdNumber));
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                promptOptionsList.add(snapshot.getValue(Prompt.class));
+                numberOfPromptsToGet--;
+                if (numberOfPromptsToGet == 0) {
+                    proceed();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void proceed(){
+        findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
+        findViewById(R.id.or_section).setVisibility(View.VISIBLE);
+        findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
+        askForRoundOfPrompts();
     }
 
     private void askForRoundOfPrompts(){
@@ -164,84 +237,4 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         finish();
     }
 
-
-    private void getSixRandomPrompts(){
-        numberOfPromptsToGet = NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND * TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT;
-
-        ArrayList<Integer> randNumList = getRandomPromptIDNumbers(numberOfPromptsToGet);
-
-        for (int promptId : randNumList) {
-            getRandomPrompt(promptId);
-        }
-    }
-
-    private void setNumberOfPromptsFBListener(){
-        mNumberOfPromptsRef = baseRef.child(Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
-
-        mNumberOfPromptsRefListener = mNumberOfPromptsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                Long tempNumber = (Long) snapshot.getValue();
-                numberOfPromptsOnServer = tempNumber.intValue();
-                getSixRandomPrompts();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    private void getRandomPrompt(int promptIdNumber){
-        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_PROMPTS)
-                .child(Integer.toString(promptIdNumber));
-
-        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                promptOptionsList.add(snapshot.getValue(Prompt.class));
-                numberOfPromptsToGet--;
-                if (numberOfPromptsToGet == 0) {
-                    proceed();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    private ArrayList<Integer> getRandomPromptIDNumbers(int numberToGet){
-
-        ArrayList<Integer> list = new ArrayList<>();
-        Random random = new Random();
-
-        while (list.size() < numberToGet)
-        {
-            Integer nextRandom = random.nextInt(numberOfPromptsOnServer) + 1;
-            if(!list.contains(nextRandom)) {
-                list.add(nextRandom);
-            }
-        }
-        return list;
-    }
-
-    private void proceed(){
-        findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
-        findViewById(R.id.or_section).setVisibility(View.VISIBLE);
-        findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
-        askForRoundOfPrompts();
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-
-        mNumberOfPromptsRef.removeEventListener(mNumberOfPromptsRefListener);
-
-    }
 }
