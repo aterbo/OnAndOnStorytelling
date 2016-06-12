@@ -179,14 +179,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         sendTopicOption2.setText(promptOption2);
     }
 
-    private void updateConversation(){
-        conversation.changeNextPlayer();
-        conversation.setProposedPrompt1(selectedPromptsList.get(0));
-        conversation.setProposedPrompt2(selectedPromptsList.get(1));
-        conversation.setProposedPrompt3(selectedPromptsList.get(2));
-    }
-
-
     public void sendTopic1(View view) {
         addChosenPromptToList(promptCountTracker - 2);
         askForRoundOfPrompts();
@@ -205,6 +197,13 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
         updateConversation();
         updateConversationOnServer();
+    }
+
+    private void updateConversation(){
+        conversation.changeNextPlayer();
+        conversation.setProposedPrompt1(selectedPromptsList.get(0));
+        conversation.setProposedPrompt2(selectedPromptsList.get(1));
+        conversation.setProposedPrompt3(selectedPromptsList.get(2));
     }
 
     private void updateConversationOnServer(){
@@ -236,5 +235,4 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
 }
