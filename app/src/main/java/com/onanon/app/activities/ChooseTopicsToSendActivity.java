@@ -133,8 +133,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 System.out.println(snapshot.getValue());
                 promptOptionsList.add(snapshot.getValue(Prompt.class));
-                numberOfPromptsToGet--;
-                if (numberOfPromptsToGet == 0) {
+
+                if (promptOptionsList.size() == numberOfPromptsToGet) {
                     proceed();
                 }
             }
