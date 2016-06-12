@@ -224,8 +224,9 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         while (list.size() < numberToGet)
         {
             Integer nextRandom = random.nextInt(numberOfPromptsOnServer) + 1;
-            // As we're adding to a set, this will automatically do a containment check
-            list.add(nextRandom);
+            if(!list.contains(nextRandom)) {
+                list.add(nextRandom);
+            }
         }
         return list;
     }
