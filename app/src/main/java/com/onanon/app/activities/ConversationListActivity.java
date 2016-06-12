@@ -263,10 +263,6 @@ public class ConversationListActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void addNewUser(){
-        Intent intent = new Intent(this, AddNewUserActivity.class);
-        startActivity(intent);
-    }
     private void startNewConversation(){
         Intent intent = new Intent(this, StartNewConversationActivity.class);
         startActivity(intent);
