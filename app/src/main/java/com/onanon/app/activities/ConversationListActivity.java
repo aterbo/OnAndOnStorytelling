@@ -174,10 +174,9 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private String otherConversationParticipants(Conversation conversation){
         String participantsString = "";
-        for (String userName :
-                conversation.getUserNamesInConversation()) {
+        for (String userName : conversation.getUserNamesInConversation()) {
             if(!userName.equals(currentUserName)) {
-                participantsString = participantsString + ", " + userName.replace(",",".");
+                participantsString = participantsString + ", " + userName;
             }
         }
 
