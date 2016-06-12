@@ -1,9 +1,12 @@
 package com.onanon.app.activities;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,13 +17,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
+import com.onanon.app.classes.Prompt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ConversationListActivity extends AppCompatActivity {
@@ -124,6 +134,18 @@ public class ConversationListActivity extends AppCompatActivity {
                     selectedConvoPushId = mListAdapter.getRef(position).getKey();
                     determineActivityToStart(selectedConvo);
                 }
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Conversation selectedConvo = mListAdapter.getItem(position);
+                if (selectedConvo != null) {
+                    selectedConvoPushId = mListAdapter.getRef(position).getKey();
+                    confirmDeleteConversation(selectedConvo);
+                }
+                return true;
             }
         });
     }
@@ -254,6 +276,64 @@ public class ConversationListActivity extends AppCompatActivity {
         } else{
             return false;
         }
+    }
+
+    private void confirmDeleteConversation(final Conversation conversation){
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
+        alert.setTitle("You don't want to talk anymore?");
+        alert.setMessage("Are you sure you want to remove this conversation?");
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("Delete", "Confirm Delete");
+                deleteConversation(conversation);
+                dialog.dismiss();
+
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("Delete", "Cancel Delete");
+
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
+    private void deleteConversation(Conversation conversation){
+        HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
+
+        String storyRecordingPushId = conversation.getStoryRecordingPushId();
+        ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
+
+        mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                selectedConvoPushId, null);
+
+        for (String userNames : userNamesInConversation) {
+            mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                    + userNames + "/" + selectedConvoPushId, null);
+        }
+
+        if(!storyRecordingPushId.isEmpty() || storyRecordingPushId != null) {
+            mapOfDataToDelete.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" +
+                    storyRecordingPushId, null);
+        }
+
+        baseRef.updateChildren(mapOfDataToDelete, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error deleting conversatoin");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo deleted successfully");
+            }
+        });
     }
 
     private void startNextActivity(Conversation conversation, Class classToStart){
