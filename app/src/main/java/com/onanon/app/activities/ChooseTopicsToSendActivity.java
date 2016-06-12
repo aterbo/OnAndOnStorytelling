@@ -22,8 +22,10 @@ import com.onanon.app.classes.Prompt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
@@ -165,8 +167,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void getSixRandomPrompts(){
         numberOfPromptsToGet = NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND * TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT;
-        int[] randNumList = new int[numberOfPromptsToGet];
-        randNumList = getSixRandomPromptIDNumbers();
+
+        ArrayList<Integer> randNumList = getRandomPromptIDNumbers(numberOfPromptsToGet);
 
         for (int promptId : randNumList) {
             getRandomPrompt(promptId);
@@ -214,29 +216,18 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         });
     }
 
-    private int[] getSixRandomPromptIDNumbers(){
-        Random rand = new Random();
-        int num1, num2, num3, num4, num5, num6;
-        num1 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        do {
-            num2 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        } while (num2 == num1);
-        do {
-            num3 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        } while (num3 == num1 || num3 == num2);
-        do {
-            num4 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        } while (num4 == num1 || num4 == num2 || num4 == num3);
-        do {
-            num5 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        } while (num5 == num1 || num5 == num2 || num5 == num3 || num5 == num4);
-        do {
-            num6 = rand.nextInt((numberOfPromptsOnServer) + 1);
-        } while (num6 == num1 || num6 == num2 || num6 == num3 || num6 == num4 || num6 == num5);
+    private ArrayList<Integer> getRandomPromptIDNumbers(int numberToGet){
 
+        ArrayList<Integer> list = new ArrayList<>();
+        Random random = new Random();
 
-        int[] randNumList = {num1, num2, num3, num4, num5, num6};
-        return randNumList;
+        while (list.size() < numberToGet)
+        {
+            Integer nextRandom = random.nextInt(numberOfPromptsOnServer) + 1;
+            // As we're adding to a set, this will automatically do a containment check
+            list.add(nextRandom);
+        }
+        return list;
     }
 
     private void proceed(){
