@@ -329,9 +329,9 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
-                    Log.i("FIREBASEUpdateCONVO", "Error deleting conversatoin");
+                    Log.i("FBDeleteConvo", "Error deleting conversatoin");
                 }
-                Log.i("FIREBASEUpdateCONVO", "Convo deleted successfully");
+                Log.i("FBDeleteConvo", "Convo deleted successfully");
             }
         });
     }
