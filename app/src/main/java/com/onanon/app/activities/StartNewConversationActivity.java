@@ -117,9 +117,10 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
         Prompt noCurrentPrompt = new Prompt();
         ArrayList<Prompt> promptArrayList = new ArrayList<>();
-        promptArrayList.add(new Prompt());
-        promptArrayList.add(new Prompt());
-        promptArrayList.add(new Prompt());
+
+        for (int i = 0 ; i < 3; i++) {
+            promptArrayList.add(new Prompt());
+        }
 
         ArrayList<String> userNamesInConversation = new ArrayList<>();
         userNamesInConversation.add(currentUserName);
