@@ -73,9 +73,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
         progressDialog = Utils.getSpinnerDialog(this);
         getConversation();
         getRecording();
+        initializeViews();
         showConversationDetails();
         showPromptTextInTextView();
-        initializeViews();
         setToggleButton();
     }
 
@@ -108,10 +108,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastPlayersUserName().replace(",",".") + " answered");
-
-        TextView recordingLength = (TextView)findViewById(R.id.story_duration);
-        recordingLength.setText("StoryLength");
+        senderText.setText(conversation.getLastPlayersUserName() + " answered");
+        duration.setText(conversation.recordingDurationAsFormattedString());
     }
 
     private void getStoryUri(){
@@ -203,17 +201,20 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 seekbar.setProgress((int) timeElapsed);
                 //set time remaing
                 double timeRemaining = finalTime - timeElapsed;
-                duration.setText(String.format("%02d:%02d",
-                        TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining),
-                        TimeUnit.MILLISECONDS.toSeconds((long) timeRemaining) -
-                                TimeUnit.MINUTES.toSeconds(
-                                        TimeUnit.MILLISECONDS.toMinutes((long) timeRemaining))));
+                duration.setText(formatMillisecondsAsTimeString((long) timeRemaining));
 
-                //repeat yourself that again in 100 miliseconds
+                //repeat again in 100 miliseconds
                 durationHandler.postDelayed(this, 100);
             }
         }
     };
+
+    private String formatMillisecondsAsTimeString (long timeInMilliseconds){
+        return String.format("%02d:%02d",
+                TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds),
+                TimeUnit.MILLISECONDS.toSeconds(timeInMilliseconds) - TimeUnit.MINUTES.toSeconds(
+                        TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds)));
+    }
 
     private void pause() {
         mPlayer.pause();
