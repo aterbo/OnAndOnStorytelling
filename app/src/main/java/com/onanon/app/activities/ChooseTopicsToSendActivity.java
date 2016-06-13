@@ -60,7 +60,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         mNumberOfPromptsRef.removeEventListener(mNumberOfPromptsRefListener);
     }
 
-    private void getConversation(){
+    private void getConversation() {
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
         selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
@@ -114,8 +114,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         ArrayList<Integer> list = new ArrayList<>();
         Random random = new Random();
 
-        while (list.size() < numberToGet)
-        {
+        while (list.size() < numberToGet) {
             Integer nextRandom = random.nextInt(numberOfPromptsOnServer) + 1;
             if(!list.contains(nextRandom)) {
                 list.add(nextRandom);
