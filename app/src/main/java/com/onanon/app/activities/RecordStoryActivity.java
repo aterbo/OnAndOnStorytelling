@@ -118,33 +118,36 @@ public class RecordStoryActivity extends AppCompatActivity {
             myRecorder.setAudioChannels(1);
 
             myRecorder.prepare();
-            recordingStartTime = System.nanoTime();
             myRecorder.start();
 
-            recordingDurationCounter.setVisibility(View.VISIBLE);
-            recordingDurationCounter.setBase(SystemClock.elapsedRealtime());
-            recordingDurationCounter.start();
+            startRecordingDurationCounter();
         } catch (IllegalStateException e) {
-            // start:it is called before prepare()
-            // prepare: it is called after start() or before setOutputFormat()
             e.printStackTrace();
         } catch (IOException e) {
-            // prepare() fails
             e.printStackTrace();
         }
+        changeButtonsToRecordingOptions();
+    }
 
+    private void changeButtonsToRecordingOptions() {
         recordingStatusButton.setText("Stop Recording");
         recordingStatus.setText("Recording");
         playbackControlButton.setEnabled(false);
     }
 
+    private void startRecordingDurationCounter() {
+        recordingStartTime = System.nanoTime();
+        recordingDurationCounter.setVisibility(View.VISIBLE);
+        recordingDurationCounter.setBase(SystemClock.elapsedRealtime());
+        recordingDurationCounter.start();
+    }
+
     private void stopRecording(){
         try {
-            recordingEndTime = System.nanoTime();
             myRecorder.stop();
             myRecorder.release();
             myRecorder  = null;
-            recordingDurationCounter.stop();
+            stopRecordingDurationCounter();
         } catch (IllegalStateException e) {
             //  it is called before start()
             e.printStackTrace();
@@ -152,7 +155,15 @@ public class RecordStoryActivity extends AppCompatActivity {
             // no valid audio/video data has been received
             e.printStackTrace();
         }
+        changeButtonsToPostRecordingOptions();
+    }
 
+    private void stopRecordingDurationCounter() {
+        recordingEndTime = System.nanoTime();
+        recordingDurationCounter.stop();
+    }
+
+    private void changeButtonsToPostRecordingOptions() {
         recordingStatusButton.setText("Reset");
         recordingStatus.setText("Recording finished");
         recordingDurationCounter.setVisibility(View.GONE);
@@ -162,6 +173,26 @@ public class RecordStoryActivity extends AppCompatActivity {
         playbackControlButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
     }
+
+    private String recordingDurationAsFormattedString(long storyRecordingDuration){
+        if (storyRecordingDuration != 0) {
+            final int MINUTES_IN_AN_HOUR = 60;
+            final int SECONDS_IN_A_MINUTE = 60;
+            int totalSeconds = (int) storyRecordingDuration;
+
+            int seconds = totalSeconds % SECONDS_IN_A_MINUTE;
+            int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
+            int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+
+            if (seconds < 10){
+                return minutes + ":0" + seconds;
+            }
+            return minutes + ":" + seconds;
+
+        } else {
+            return "";
+        }
+    }Fis
 
     private void resetRecording(){
         deleteRecordingFile();
@@ -246,7 +277,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_SHORT).show();
     }
 
-
     private void updateConversationAfterRecording(){
         progressDialog = Utils.getSpinnerDialog(this);
 
@@ -310,31 +340,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void moveToNextActivity(){
-
         Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
         intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
         intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
     }
-
-    private String recordingDurationAsFormattedString(long storyRecordingDuration){
-        if (storyRecordingDuration != 0) {
-            final int MINUTES_IN_AN_HOUR = 60;
-            final int SECONDS_IN_A_MINUTE = 60;
-            int totalSeconds = (int) storyRecordingDuration;
-
-            int seconds = totalSeconds % SECONDS_IN_A_MINUTE;
-            int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
-            int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-
-            if (seconds < 10){
-                return minutes + ":0" + seconds;
-            }
-            return minutes + ":" + seconds;
-
-        } else {
-            return "";
-        }
-    }
-
 }
