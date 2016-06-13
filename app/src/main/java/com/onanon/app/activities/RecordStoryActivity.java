@@ -192,7 +192,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         } else {
             return "";
         }
-    }Fis
+    }
 
     private void resetRecording(){
         deleteRecordingFile();
