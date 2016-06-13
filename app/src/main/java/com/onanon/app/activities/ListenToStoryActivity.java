@@ -74,8 +74,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
         getConversation();
         getRecording();
         initializeViews();
-        showConversationDetails();
-        showPromptTextInTextView();
         setToggleButton();
     }
 
@@ -106,14 +104,34 @@ public class ListenToStoryActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeViews(){
+        duration = (TextView) findViewById(R.id.story_duration);
+        seekbar = (SeekBar) findViewById(R.id.seekBar);
+        seekbar.setClickable(false);
+        mVisualizerView = (VisualizerView) findViewById(R.id.visualizer);
+
+        showConversationDetails();
+    }
+
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
         senderText.setText(conversation.getLastPlayersUserName() + " answered");
         duration.setText(conversation.recordingDurationAsFormattedString());
+        ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
-    private void getStoryUri(){
-        speechUri = Uri.parse(localTempFilePath);
+    private void setToggleButton(){
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (playPauseButton.isChecked()) {
+                    play();
+                } else {
+                    pause();
+                }
+            }
+        });
     }
 
     private void convertRecordingToTempFile(){
@@ -138,15 +156,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void showPromptTextInTextView() {
-        ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
-    }
-
-    private void initializeViews(){
-        duration = (TextView) findViewById(R.id.story_duration);
-        seekbar = (SeekBar) findViewById(R.id.seekBar);
-        seekbar.setClickable(false);
-        mVisualizerView = (VisualizerView) findViewById(R.id.visualizer);
+    private void getStoryUri(){
+        speechUri = Uri.parse(localTempFilePath);
     }
 
     private void setUpMediaPlayer(){
@@ -160,18 +171,22 @@ public class ListenToStoryActivity extends AppCompatActivity {
         mVisualizer.setEnabled(true);
     }
 
-    private void setToggleButton(){
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
+    private void setupVisualizerFxAndUI() {
+        mVisualizer = new Visualizer(mPlayer.getAudioSessionId());
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+        mVisualizer.setDataCaptureListener(
+                new Visualizer.OnDataCaptureListener() {
+                    public void onWaveFormDataCapture(Visualizer visualizer,
+                                                      byte[] bytes, int samplingRate) {
+                        mVisualizerView.updateVisualizer(bytes);
+                    }
 
-            @Override
-            public void onClick(View v) {
-                if (playPauseButton.isChecked()) {
-                    play();
-                } else {
-                    pause();
-                }
-            }
-        });
+                    public void onFftDataCapture(Visualizer visualizer,
+                                                 byte[] bytes, int samplingRate) {
+                    }
+                }, Visualizer.getMaxCaptureRate() / 2, true, false);
+
+        progressDialog.dismiss();
     }
 
     private void play() {
@@ -192,14 +207,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }
     }
 
-    //handler to change seekBarTime
     private final Runnable updateSeekBarTime = new Runnable() {
         public void run() {
             if (mPlayer!=null){
                 timeElapsed = mPlayer.getCurrentPosition();
-                //set seekbar progress
                 seekbar.setProgress((int) timeElapsed);
-                //set time remaing
                 double timeRemaining = finalTime - timeElapsed;
                 duration.setText(formatMillisecondsAsTimeString((long) timeRemaining));
 
@@ -271,9 +283,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         builder.setTitle("Listen again?");
         builder.setPositiveButton("Back to Main Menu", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                deleteRecordingFile();
-                eliminateCurrentStory();
-                updateConversationAfterListening();
+                finishListeningToStory();
                 dialog.dismiss();
             }
         });
@@ -295,7 +305,23 @@ public class ListenToStoryActivity extends AppCompatActivity {
         setUpMediaPlayer();
         initializeViews();
         setToggleButton();
+    }
 
+    private void finishListeningToStory() {
+        deleteRecordingFile();
+        eliminateCurrentStory();
+        updateConversationAfterListening();
+    }
+
+    private void deleteRecordingFile(){
+        File file = new File(localTempFilePath);
+        boolean isDeleteSuccessful = file.delete();
+
+        if (isDeleteSuccessful) {
+            Log.i("Recording deleted", "Temporary recoding file deleted.");
+        } else {
+            Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
+        }
     }
 
     private void eliminateCurrentStory(){
@@ -336,33 +362,5 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void goBackToMainScreen(){
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
-    }
-    private void setupVisualizerFxAndUI() {
-        mVisualizer = new Visualizer(mPlayer.getAudioSessionId());
-        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-        mVisualizer.setDataCaptureListener(
-                new Visualizer.OnDataCaptureListener() {
-                    public void onWaveFormDataCapture(Visualizer visualizer,
-                                                      byte[] bytes, int samplingRate) {
-                        mVisualizerView.updateVisualizer(bytes);
-                    }
-
-                    public void onFftDataCapture(Visualizer visualizer,
-                                                 byte[] bytes, int samplingRate) {
-                    }
-                }, Visualizer.getMaxCaptureRate() / 2, true, false);
-
-        progressDialog.dismiss();
-    }
-
-    private void deleteRecordingFile(){
-        File file = new File(localTempFilePath);
-        boolean isDeleteSuccessful = file.delete();
-
-        if (isDeleteSuccessful) {
-            Log.i("Recording deleted", "Temporary recoding file deleted.");
-        } else {
-            Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
-        }
     }
 }

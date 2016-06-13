@@ -315,7 +315,7 @@ public class ConversationListActivity extends AppCompatActivity {
                     + userNames + "/" + selectedConvoPushId, null);
         }
 
-        if(!storyRecordingPushId.isEmpty() || storyRecordingPushId != null) {
+        if(!storyRecordingPushId.isEmpty() || storyRecordingPushId != null || !storyRecordingPushId.equals("none")) {
             mapOfDataToDelete.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" +
                     storyRecordingPushId, null);
         }
