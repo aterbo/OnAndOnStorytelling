@@ -91,7 +91,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 encodedRecording = dataSnapshot.getValue(String.class);
                 convertRecordingToTempFile();
-                getStoryUri();
+                speechUri = Uri.parse(localTempFilePath);
                 setUpMediaPlayer();
             }
 
@@ -153,10 +153,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void getStoryUri(){
-        speechUri = Uri.parse(localTempFilePath);
     }
 
     private void setUpMediaPlayer(){
