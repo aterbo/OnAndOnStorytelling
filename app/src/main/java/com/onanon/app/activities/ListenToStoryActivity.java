@@ -68,12 +68,10 @@ public class ListenToStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
-        playPauseButton = (ToggleButton) findViewById(R.id.media_play);
-        playPauseButton.setClickable(false);
-        progressDialog = Utils.getSpinnerDialog(this);
         getConversation();
         getRecording();
         initializeViews();
+        showConversationDetails();
         setToggleButton();
     }
 
@@ -105,12 +103,13 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void initializeViews(){
+        playPauseButton = (ToggleButton) findViewById(R.id.media_play);
+        playPauseButton.setClickable(false);
+        progressDialog = Utils.getSpinnerDialog(this);
         duration = (TextView) findViewById(R.id.story_duration);
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setClickable(false);
         mVisualizerView = (VisualizerView) findViewById(R.id.visualizer);
-
-        showConversationDetails();
     }
 
     private void showConversationDetails(){
