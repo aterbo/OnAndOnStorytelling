@@ -232,39 +232,33 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     public void shortForward(View view){
-        forward(shortSkipTime);
+        skip(+shortSkipTime);
     }
 
     public void longForward(View view){
-        forward(longSkipTime);
+        skip(+longSkipTime);
     }
 
     public void shortRewind(View view){
-        rewind(shortSkipTime);
+        skip(-shortSkipTime);
     }
 
     public void longRewind(View view){
-        rewind(longSkipTime);
+        skip(-longSkipTime);
     }
 
-    private void forward(int forwardSkipTime) {
-        if ((timeElapsed + forwardSkipTime) <= finalTime) {
-            timeElapsed = timeElapsed + forwardSkipTime;
-            mPlayer.seekTo((int) timeElapsed);
-        } else if (timeElapsed + forwardSkipTime > finalTime) {
+    private void skip(int skipTime) {
+        double timeSkippedTo = timeElapsed + skipTime;
+
+        if ((timeSkippedTo >=0) && (timeSkippedTo <= finalTime)) {
+            timeElapsed = timeSkippedTo;
+        } else if (timeSkippedTo > finalTime) {
             timeElapsed = finalTime;
-            mPlayer.seekTo((int) timeElapsed);
-        }
-    }
-
-    private void rewind(int backwardSkipTime) {
-        if ((timeElapsed - backwardSkipTime) >= 0) {
-            timeElapsed = timeElapsed - backwardSkipTime;
-            mPlayer.seekTo((int) timeElapsed);
-        } else if ((timeElapsed - backwardSkipTime) < 0) {
+        } else if (timeSkippedTo < 0) {
             timeElapsed = 0;
-            mPlayer.seekTo((int) timeElapsed);
         }
+
+        mPlayer.seekTo((int) timeElapsed);
     }
 
     private void stopPlayback() {
