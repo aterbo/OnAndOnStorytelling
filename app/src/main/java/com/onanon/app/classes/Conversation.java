@@ -138,6 +138,15 @@ public class Conversation implements Parcelable{
                 proposedPrompt3.getTag();
     }
 
+    public ArrayList<Prompt> getProposedPromptsAsList() {
+        ArrayList<Prompt> proposedPromptsList = new ArrayList<>();
+        proposedPromptsList.add(proposedPrompt1);
+        proposedPromptsList.add(proposedPrompt2);
+        proposedPromptsList.add(proposedPrompt3);
+
+        return proposedPromptsList;
+    }
+
     public void changeNextPlayer(){
         makeLastPlayerCurrentNextPlayer();
         int counter = 0;
