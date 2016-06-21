@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.onanon.app" >
+    package="com.onanon.app">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,54 +10,48 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="com.onanon.app.activities.ConversationListActivity"
+            android:name=".activities.ConversationListActivity"
             android:label="OnAnOn"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.onanon.app.activities.RecordStoryActivity"
+            android:name=".activities.RecordStoryActivity"
             android:label="Tell a Story"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.onanon.app.activities.PickTopicToRecordActivity"
+            android:name=".activities.PickTopicToRecordActivity"
             android:label="Tell a Story"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.onanon.app.activities.ListenToStoryActivity"
+            android:name=".activities.ListenToStoryActivity"
             android:label="Hear a Story"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.onanon.app.activities.ChooseTopicsToSendActivity"
+            android:name=".activities.ChooseTopicsToSendActivity"
             android:label="Prompt a Story"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.onanon.app.activities.StartNewConversationActivity"
+            android:name=".activities.StartNewConversationActivity"
             android:label="Start a Conversation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.onanon.app.activities.AddNewUserActivity"
+            android:name=".activities.AddNewUserActivity"
             android:label="@string/title_activity_add_new_user"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.onanon.app.activities.OpeningScreen"
+            android:name=".activities.OpeningScreen"
             android:label="ONanON"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.SplashScreen"></activity>
     </application>
 
 </manifest>
