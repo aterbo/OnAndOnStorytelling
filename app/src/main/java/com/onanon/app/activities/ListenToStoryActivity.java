@@ -250,7 +250,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void forward(int forwardSkipTime) {
         if ((timeElapsed + forwardSkipTime) <= finalTime) {
             timeElapsed = timeElapsed + forwardSkipTime;
-
+            mPlayer.seekTo((int) timeElapsed);
+        } else if (timeElapsed + forwardSkipTime > finalTime) {
+            timeElapsed = finalTime;
             mPlayer.seekTo((int) timeElapsed);
         }
     }
@@ -258,7 +260,9 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void rewind(int backwardSkipTime) {
         if ((timeElapsed - backwardSkipTime) >= 0) {
             timeElapsed = timeElapsed - backwardSkipTime;
-
+            mPlayer.seekTo((int) timeElapsed);
+        } else if ((timeElapsed - backwardSkipTime) < 0) {
+            timeElapsed = 0;
             mPlayer.seekTo((int) timeElapsed);
         }
     }
