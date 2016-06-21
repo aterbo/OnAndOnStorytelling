@@ -54,9 +54,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     private void getPrompts(){
-        promptOptionsList.add(conversation.getProposedPrompt1());
-        promptOptionsList.add(conversation.getProposedPrompt2());
-        promptOptionsList.add(conversation.getProposedPrompt3());
+        promptOptionsList = conversation.getProposedPromptsAsList();
     }
 
     private void setPromptsToButtons(){
