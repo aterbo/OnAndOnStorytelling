@@ -55,6 +55,7 @@ public class AddNewUserActivity extends AppCompatActivity {
             }
         });
 
+        getEnteredData();
         mAuth = FirebaseAuth.getInstance();
         setUpFirebaseAuthListener();
     }
@@ -70,6 +71,20 @@ public class AddNewUserActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private void getEnteredData() {
+        Intent intent = getIntent();
+        String loginEmail = intent.getStringExtra("userEmail");
+        if (!loginEmail.isEmpty()){
+            final EditText emailInput = (EditText) findViewById(R.id.emailEditText);
+            emailInput.setText(loginEmail);
+        }
+        String loginPass = intent.getStringExtra("userPass");
+        if (!loginPass.isEmpty()){
+            final EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
+            passwordInput.setText(loginPass);
         }
     }
 
