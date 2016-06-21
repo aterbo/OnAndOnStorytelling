@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 
-public class OpeningScreen extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     private String currentUserUID, currentUserName;
     private String loginEmail, loginPass;
@@ -83,7 +82,7 @@ public class OpeningScreen extends AppCompatActivity {
 
     private void requestAppPermissions(){
         // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(OpeningScreen.this, Manifest.permission.RECORD_AUDIO)
+        if (ContextCompat.checkSelfPermission(LogInActivity.this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -94,7 +93,7 @@ public class OpeningScreen extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(OpeningScreen.this,
+                                ActivityCompat.requestPermissions(LogInActivity.this,
                                         new String[] {Manifest.permission.RECORD_AUDIO},
                                         MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
                             }
@@ -103,7 +102,7 @@ public class OpeningScreen extends AppCompatActivity {
 
                 // No explanation needed, we can request the permission.
 
-                ActivityCompat.requestPermissions(OpeningScreen.this,
+                ActivityCompat.requestPermissions(LogInActivity.this,
                         new String[]{Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
 
@@ -221,7 +220,7 @@ public class OpeningScreen extends AppCompatActivity {
                             if (!task.isSuccessful()) {
                                 Log.w("Signin", "signInWithEmail", task.getException());
                                 progressDialog.dismiss();
-                                Toast.makeText(OpeningScreen.this, "Authentication failed.",
+                                Toast.makeText(LogInActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
                             }
 

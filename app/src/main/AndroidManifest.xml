@@ -42,11 +42,11 @@
             android:label="@string/title_activity_add_new_user"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".activities.OpeningScreen"
+            android:name=".activities.LogInActivity"
             android:label="ONanON"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

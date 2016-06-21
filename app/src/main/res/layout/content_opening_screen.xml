@@ -9,7 +9,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
     tools:showIn="@layout/activity_opening_screen"
-    tools:context="com.onanon.app.activities.OpeningScreen">
+    tools:context="com.onanon.app.activities.LogInActivity">
 
     <TextView
         android:layout_height="wrap_content"

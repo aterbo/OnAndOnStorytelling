@@ -12,7 +12,7 @@ import android.os.Bundle;
 
 import com.onanon.app.R;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreenActivity extends AppCompatActivity {
 
 
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -66,7 +66,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void showPermissionsRequestDialog(){
-        ActivityCompat.requestPermissions(SplashScreen.this,
+        ActivityCompat.requestPermissions(SplashScreenActivity.this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
     }
@@ -89,7 +89,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void moveOnToNextActivity(){
-        Intent intent = new Intent(this, OpeningScreen.class);
+        Intent intent = new Intent(this, LogInActivity.class);
         startActivity(intent);
     }
 

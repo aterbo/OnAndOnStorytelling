@@ -356,7 +356,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void startOpeningScreenActivity(){
-        Intent intent = new Intent(this, OpeningScreen.class);
+        Intent intent = new Intent(this, LogInActivity.class);
         startActivity(intent);
     }
 
