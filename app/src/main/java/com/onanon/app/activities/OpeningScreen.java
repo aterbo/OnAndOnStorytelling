@@ -252,7 +252,15 @@ public class OpeningScreen extends AppCompatActivity {
     }
 
     public void createUserButtonPressed(View view){
+        final EditText emailInput = (EditText) findViewById(R.id.emailEditText);
+        final EditText passwordInput = (EditText) findViewById(R.id.passwordEditText);
+
+        loginEmail = emailInput.getText().toString().trim();
+        loginPass = passwordInput.getText().toString().trim();
+
         Intent intent = new Intent(this, AddNewUserActivity.class);
+        intent.putExtra("userEmail", loginEmail);
+        intent.putExtra("userPass", loginPass);
         startActivity(intent);
     }
 }
