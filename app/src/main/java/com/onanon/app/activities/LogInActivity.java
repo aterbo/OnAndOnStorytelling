@@ -42,7 +42,6 @@ public class LogInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog progressDialog;
-    private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class LogInActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        requestAppPermissions();
     }
 
     @Override
@@ -77,65 +75,6 @@ public class LogInActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    private void requestAppPermissions(){
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(LogInActivity.this, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
-
-                showMessageOKCancel("You need to allow access to the microphone to record " +
-                        "your awesome stories!",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(LogInActivity.this,
-                                        new String[] {Manifest.permission.RECORD_AUDIO},
-                                        MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-                            }
-                        });
-            }
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(LogInActivity.this,
-                        new String[]{Manifest.permission.RECORD_AUDIO},
-                        MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-        }
-    }
-
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_RECORD_AUDIO: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -190,12 +129,8 @@ public class LogInActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(this, ConversationListActivity.class);
-            startActivity(intent);
-        }  else {
-            requestAppPermissions();
-        }
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        startActivity(intent);
     }
 
     public void logInButtonPressed(View view){
