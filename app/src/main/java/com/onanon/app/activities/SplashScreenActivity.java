@@ -9,7 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.onanon.app.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -27,9 +29,28 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         if (isPermissionsGranted()) {
-            moveOnToNextActivity();
+            checkIfLoggedIn();
         } else {
             requestAppPermissions();
+        }
+    }
+
+    private void checkIfLoggedIn(){
+        if (isUserLoggedIn()) {
+            moveToConversationListActivity();
+        } else {
+            moveToUserLogInActivity();
+        }
+    }
+
+    private boolean isUserLoggedIn(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            Log.i("isLoggedIn", "User is logged in.");
+            return true;
+        } else {
+            Log.i("isLoggedIn", "User is not logged in.");
+            return false;
         }
     }
 
@@ -79,7 +100,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    moveOnToNextActivity();
+                    moveToUserLogInActivity();
                 } else {
                     requestAppPermissions();
                 }
@@ -88,8 +109,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void moveOnToNextActivity(){
+    private void moveToUserLogInActivity(){
+        Log.i("isLoggedIn", "Move to Log In.");
         Intent intent = new Intent(this, LogInActivity.class);
+        startActivity(intent);
+    }
+
+
+    private void moveToConversationListActivity(){
+        Log.i("isLoggedIn", "Move to Convo List.");
+        Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
     }
 
