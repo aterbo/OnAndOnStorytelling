@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.onanon.app.R;
@@ -46,10 +45,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     private boolean isUserLoggedIn(){
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            Log.i("isLoggedIn", "User is logged in.");
             return true;
         } else {
-            Log.i("isLoggedIn", "User is not logged in.");
             return false;
         }
     }
@@ -110,14 +107,12 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void moveToUserLogInActivity(){
-        Log.i("isLoggedIn", "Move to Log In.");
         Intent intent = new Intent(this, LogInActivity.class);
         startActivity(intent);
     }
 
 
     private void moveToConversationListActivity(){
-        Log.i("isLoggedIn", "Move to Convo List.");
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
     }
