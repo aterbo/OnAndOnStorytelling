@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,8 +14,7 @@
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="10"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:src="@mipmap/ic_launcher"/>
 
     <Button
@@ -23,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_weight="1"
+        android:layout_below="@id/logo"
         android:layout_gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:clickable="false"
         android:onClick="logInButtonPressed"
         android:text="Log In"/>
@@ -35,11 +34,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_weight="1"
+        android:layout_below="@id/log_in_button"
         android:layout_gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:clickable="false"
         android:onClick="createUserButtonPressed"
         android:text="Create User"/>
 
-</LinearLayout>
+</RelativeLayout>

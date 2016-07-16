@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -11,38 +11,52 @@
     tools:showIn="@layout/activity_add_new_user"
     tools:context="com.onanon.app.activities.AddNewUserActivity">
 
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_launcher"/>
+
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/userNameTextView"
         android:text="User Name"
+        android:layout_above="@+id/userNameEditText"
         android:textStyle="bold" />
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/userNameEditText"
+        android:id="@id/userNameEditText"
+        android:layout_above="@+id/emailTextView"
         android:inputType="text" />
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:id="@+id/emailTextView"
+        android:id="@id/emailTextView"
+        android:layout_above="@+id/emailEditText"
         android:text="Email"
         android:textStyle="bold" />
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/emailEditText"
+        android:id="@id/emailEditText"
+        android:layout_above="@+id/passwordTextView"
         android:inputType="textEmailAddress" />
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:id="@+id/passwordTextView"
+        android:id="@id/passwordTextView"
         android:text="Password"
+        android:layout_above="@+id/passwordEditText"
         android:textStyle="bold" />
     <EditText
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/passwordEditText"
+        android:id="@id/passwordEditText"
+        android:layout_above="@id/logo"
         android:inputType="textPassword" />
     <TextView
         android:layout_height="wrap_content"
@@ -54,6 +68,8 @@
         android:id="@+id/submitButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="Submit"
+        android:layout_below="@id/logo"
         android:onClick="addUserConfirm"/>
-</LinearLayout>
+</RelativeLayout>
