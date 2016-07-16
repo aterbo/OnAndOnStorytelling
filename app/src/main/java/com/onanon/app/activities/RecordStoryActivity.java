@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -16,9 +18,14 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
@@ -28,6 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -254,10 +263,51 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     public void sendRecordingClick(View view){
-        saveRecordingToConversation();
-        deleteRecordingFile();
-        conversation.clearProposedTopics();
-        updateConversationAfterRecording();
+        saveRecordingToFirebaseStorage();
+    }
+
+    private void saveRecordingToFirebaseStorage(){
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
+        StorageReference audioRecordingsRef = storageRef.child("audioStories");
+        StorageReference currentConversationRef = audioRecordingsRef.child(selectedConvoPushId);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssZ");
+        String strDate = sdf.format(c.getTime());
+
+        String fileNameOnServer = strDate + ".3gp";
+        StorageReference recordingStorageRef = currentConversationRef.child(fileNameOnServer);
+
+
+        Uri file = Uri.fromFile(new File(outputFile));
+
+        UploadTask uploadTask = recordingStorageRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.i("StorageUpload", "Error uploading file to storage.");
+                saveRecordingToConversation();
+                deleteRecordingFile();
+                conversation.clearProposedTopics();
+                updateConversationAfterRecording();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Log.i("StorageUpload", "File uploaded to storage.");
+                saveRecordingToConversation();
+                deleteRecordingFile();
+                conversation.clearProposedTopics();
+                updateConversationAfterRecording();
+            }
+        });
     }
 
     private void saveRecordingToConversation(){
