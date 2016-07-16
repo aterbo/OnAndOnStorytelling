@@ -10,6 +10,7 @@ import android.media.audiofx.Visualizer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -19,11 +20,16 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
@@ -33,6 +39,7 @@ import com.onanon.app.classes.VisualizerView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -69,7 +76,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_listen_to_story);
 
         getConversation();
-        getRecording();
+        getRecordingFromFirebaseStorage();
         initializeViews();
         showConversationDetails();
         setToggleButton();
@@ -81,23 +88,42 @@ public class ListenToStoryActivity extends AppCompatActivity {
         selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
-    private void getRecording(){
-        recordingPushId = conversation.getStoryRecordingPushId();
-        DatabaseReference recordingRef = FirebaseDatabase.getInstance().getReference()
-                .child(Constants.FB_LOCATION_RECORDINGS).child(recordingPushId);
+    private void getRecordingFromFirebaseStorage(){
+        String FBStorageFilePath = conversation.getStoryRecordingPushId();
 
-        recordingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+
+        StorageReference sRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
+        StorageReference storageRef = sRef.child(FBStorageFilePath);
+
+
+        File tempFile;
+
+        if (Utils.isExternalStorageWritable()) {
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+            File tempFileDir = this.getFilesDir();
+            tempFile = new File(tempFileDir, fileName + ".3gp");
+            localTempFilePath = tempFile.getPath();
+        } else {
+            try{
+            tempFile = File.createTempFile("recordings", "3gp");
+            } catch (IOException exception){
+                tempFile = new File("ERROR");
+            }
+        }
+
+        storageRef.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                encodedRecording = dataSnapshot.getValue(String.class);
-                convertRecordingToTempFile();
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                // Local temp file has been created
                 speechUri = Uri.parse(localTempFilePath);
                 setUpMediaPlayer();
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("Error", "getUser:onCancelled", databaseError.toException());
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
             }
         });
     }

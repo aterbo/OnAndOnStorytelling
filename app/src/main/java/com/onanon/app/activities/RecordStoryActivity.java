@@ -283,6 +283,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         conversation.setStoryRecordingPushId(recordingStorageRef.getPath());
 
+        Log.i("StorageUpload", "String ref: " + recordingStorageRef.getPath());
+
 
         Uri file = Uri.fromFile(new File(outputFile));
 
@@ -327,10 +329,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         progressDialog = Utils.getSpinnerDialog(this);
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
-
-        DatabaseReference newRecordingRef = baseRef.child(Constants.FB_LOCATION_RECORDINGS).push();
-        String recordingPushId = newRecordingRef.getKey();
-        conversation.setStoryRecordingPushId(recordingPushId);
 
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
