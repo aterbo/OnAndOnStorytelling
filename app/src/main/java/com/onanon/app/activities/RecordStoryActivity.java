@@ -263,6 +263,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     public void sendRecordingClick(View view){
+        setRecordingTime();
         saveRecordingToFirebaseStorage();
     }
 
@@ -280,6 +281,8 @@ public class RecordStoryActivity extends AppCompatActivity {
         String fileNameOnServer = strDate + ".3gp";
         StorageReference recordingStorageRef = currentConversationRef.child(fileNameOnServer);
 
+        conversation.setStoryRecordingPushId(recordingStorageRef.getPath());
+
 
         Uri file = Uri.fromFile(new File(outputFile));
 
@@ -291,7 +294,6 @@ public class RecordStoryActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
                 Log.i("StorageUpload", "Error uploading file to storage.");
-                saveRecordingToConversation();
                 deleteRecordingFile();
                 conversation.clearProposedTopics();
                 updateConversationAfterRecording();
@@ -302,17 +304,11 @@ public class RecordStoryActivity extends AppCompatActivity {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
                 Log.i("StorageUpload", "File uploaded to storage.");
-                saveRecordingToConversation();
                 deleteRecordingFile();
                 conversation.clearProposedTopics();
                 updateConversationAfterRecording();
             }
         });
-    }
-
-    private void saveRecordingToConversation(){
-        convertAudioFileToString();
-        setRecordingTime();
     }
 
     private void setRecordingTime(){
@@ -346,9 +342,6 @@ public class RecordStoryActivity extends AppCompatActivity {
                     + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
-        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
-                encodedRecording);
-
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
@@ -363,18 +356,6 @@ public class RecordStoryActivity extends AppCompatActivity {
                 moveToNextActivity();
             }
         });
-    }
-
-    private void convertAudioFileToString(){
-        File file = new File(outputFile);
-        byte[] bytes = new byte[(int) file.length()];
-        try {
-            new FileInputStream(file).read(bytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        encodedRecording = Base64.encodeToString(bytes, 0);
     }
 
     private void deleteRecordingFile(){
