@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +17,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ui.email.SignInActivity;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
@@ -33,6 +41,7 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private String currentUserName;
     private String selectedConvoPushId;
+    private String currentUserUID;
     private DatabaseReference baseRef;
     private FirebaseListAdapter<Conversation> mListAdapter;
 
@@ -43,19 +52,69 @@ public class ConversationListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         baseRef = FirebaseDatabase.getInstance().getReference();
-
-        getUserNameFromSharedPreferences();
-        setFirebaseListToUserName();
-        showUserNameInTextView();
-
         setSupportActionBar(toolbar);
 
         setFloatingActionButton();
+        getUserName();
     }
 
-    private void getUserNameFromSharedPreferences(){
+    private void getUserName(){
+        String sharedPrefUserName = getUserNameFromSharedPreferences();
+        if (!sharedPrefUserName.isEmpty()) {
+            currentUserName = sharedPrefUserName;
+
+            setFirebaseListToUserName();
+            showUserNameInTextView();
+        } else {
+            getUserFromFirebase();
+        }
+    }
+
+    private void getUserFromFirebase() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            currentUserUID = user.getUid();
+            getUserNameFromUID();
+        } else {
+            currentUserName = "Error";
+            showUserNameInTextView();
+        }
+    }
+
+    private void getUserNameFromUID(){
+        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                currentUserName = (String) snapshot.getValue();
+
+                saveUserNameToPreferences();
+
+                setFirebaseListToUserName();
+                showUserNameInTextView();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("Error getting user data from Firebase after login. " +
+                        "The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void saveUserNameToPreferences(){
         SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
-        currentUserName = settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.CURRENT_USER_NAME_KEY, currentUserName);
+        // Commit the edits!
+        editor.commit();
+    }
+
+    private String getUserNameFromSharedPreferences(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        return settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
     }
 
     private void setFloatingActionButton() {
@@ -87,7 +146,6 @@ public class ConversationListActivity extends AppCompatActivity {
             case R.id.log_out_menu:
                 clearUserNameFromSharedPreferences();
                 logOutFromFirebase();
-                startOpeningScreenActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -352,12 +410,20 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void logOutFromFirebase(){
-        FirebaseAuth.getInstance().signOut();
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // user is now signed out
+                        startSplashScreenActivity();
+                    }
+                });
     }
 
-    private void startOpeningScreenActivity(){
-        Intent intent = new Intent(this, LogInActivity.class);
+    private void startSplashScreenActivity(){
+        Intent intent = new Intent(this, SplashScreenActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override

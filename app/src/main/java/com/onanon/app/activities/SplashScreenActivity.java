@@ -3,20 +3,37 @@ package com.onanon.app.activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
+import com.onanon.app.Utils.Constants;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
 
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    private static final int RC_SIGN_IN = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,17 +51,22 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
     private void checkIfLoggedIn(){
         if (isUserLoggedIn()) {
             moveToConversationListActivity();
         } else {
-            moveToUserLogInActivity();
+            showButtons();
         }
     }
 
     private boolean isUserLoggedIn(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
             return true;
         } else {
             return false;
@@ -97,7 +119,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    moveToUserLogInActivity();
+                    checkIfLoggedIn();
                 } else {
                     requestAppPermissions();
                 }
@@ -106,15 +128,62 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void moveToUserLogInActivity(){
-        Intent intent = new Intent(this, LogInActivity.class);
-        startActivity(intent);
+    private void showButtons(){
+        Button logInButton = (Button) findViewById(R.id.log_in_button);
+        Button createUserButton = (Button) findViewById(R.id.create_user_button);
+        logInButton.setVisibility(View.VISIBLE);
+        createUserButton.setVisibility(View.VISIBLE);
+        logInButton.setClickable(true);
+        createUserButton.setClickable(true);
     }
 
+    public void logInButtonPressed(View view){
+        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            handleSignInResponse(resultCode, data);
+            return;
+        }
+
+
+        Toast.makeText(SplashScreenActivity.this, "Unknown Response.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @MainThread
+    private void handleSignInResponse(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            moveToConversationListActivity();
+            return;
+        }
+
+        if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(SplashScreenActivity.this, "Sign in cancelled.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(SplashScreenActivity.this, "Unknown sign in response.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void createUserButtonPressed(View view){
+        Intent intent = new Intent(this, AddNewUserActivity.class);
+        intent.putExtra("userEmail", "");
+        intent.putExtra("userPass", "");
+        startActivity(intent);
+    }
 
     private void moveToConversationListActivity(){
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void showPermissionsExplainationDialog(String message,
