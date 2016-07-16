@@ -40,6 +40,7 @@
         <activity
             android:name=".activities.AddNewUserActivity"
             android:label="@string/title_activity_add_new_user"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>
