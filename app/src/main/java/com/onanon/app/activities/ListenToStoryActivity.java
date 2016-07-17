@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -22,11 +21,9 @@ import android.widget.ToggleButton;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,7 +35,6 @@ import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.VisualizerView;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,9 +59,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Uri speechUri;
     private String selectedConvoPushId;
     private String localTempFilePath;
-    private String encodedRecording;
-    private String recordingPushId;
     private ProgressDialog progressDialog;
+    private StorageReference audioFileStorageRef;
 
     private VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
@@ -95,8 +90,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
 
         StorageReference sRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
-        StorageReference storageRef = sRef.child(FBStorageFilePath);
-
+        audioFileStorageRef = sRef.child(FBStorageFilePath);
 
         File tempFile;
 
@@ -113,7 +107,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             }
         }
 
-        storageRef.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        audioFileStorageRef.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 // Local temp file has been created
@@ -157,28 +151,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void convertRecordingToTempFile(){
-        byte[] decoded = Base64.decode(encodedRecording, 0);
-
-        if (Utils.isExternalStorageWritable()) {
-            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
-            File tempFileDir = this.getFilesDir();
-
-            try
-            {
-                File tempFile = new File(tempFileDir, fileName + ".3gp");
-                FileOutputStream os = new FileOutputStream(tempFile, true);
-                os.write(decoded);
-                os.close();
-                localTempFilePath = tempFile.getPath();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void setUpMediaPlayer(){
@@ -327,12 +299,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void finishListeningToStory() {
-        deleteRecordingFile();
-        eliminateCurrentStory();
-        updateConversationAfterListening();
+        deleteLocalStoryAudioFile();
+        deleteFBStorageStoryAudioFile();
     }
 
-    private void deleteRecordingFile(){
+    private void deleteLocalStoryAudioFile(){
         File file = new File(localTempFilePath);
         boolean isDeleteSuccessful = file.delete();
 
@@ -341,6 +312,26 @@ public class ListenToStoryActivity extends AppCompatActivity {
         } else {
             Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
         }
+    }
+
+    private void deleteFBStorageStoryAudioFile(){
+        audioFileStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.i("Recording deleted", "FB Storage recoding file deleted.");
+
+                eliminateCurrentStory();
+                updateConversationAfterListening();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.i("Recording deleted", "ERROR - FB Storage recoding file NOT deleted.");
+
+                eliminateCurrentStory();
+                updateConversationAfterListening();
+            }
+        });
     }
 
     private void eliminateCurrentStory(){
@@ -361,9 +352,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
-
-        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" + recordingPushId,
-                null);
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
