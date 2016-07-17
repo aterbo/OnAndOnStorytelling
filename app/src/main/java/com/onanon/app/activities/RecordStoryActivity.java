@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -18,6 +19,8 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.lassana.recorder.AudioRecorder;
+import com.github.lassana.recorder.AudioRecorderBuilder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseError;
@@ -43,18 +46,20 @@ import java.util.UUID;
 
 public class RecordStoryActivity extends AppCompatActivity {
 
-    private MediaRecorder myRecorder;
+    private AudioRecorder myRecorder;
     private MediaPlayer myPlayer;
     private Conversation conversation;
     private Chronometer recordingDurationCounter;
     private String outputFile = null;
+    private String afterPauseString;
+    private File recordingFile;
     private Button playbackControlButton;
     private Button recordingStatusButton;
+    private Button resetControlButton;
     private Button finishAndSendButton;
     private TextView recordingStatus;
     private TextView recordingDuration;
     private String selectedConvoPushId;
-    private String encodedRecording;
     private long recordingStartTime;
     private long recordingEndTime;
     private ProgressDialog progressDialog;
@@ -68,6 +73,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         getConversation();
         setRecordingDetails();
         showConversationDetails();
+        buildRecorder();
 
     }
 
@@ -77,6 +83,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDurationCounter = (Chronometer) findViewById(R.id.recording_time_counter);
         playbackControlButton = (Button)findViewById(R.id.playback_control_button);
         recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
+        resetControlButton = (Button)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackControlButton.setEnabled(false);
     }
@@ -87,10 +94,18 @@ public class RecordStoryActivity extends AppCompatActivity {
         selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
+    private void buildRecorder() {
+        myRecorder = AudioRecorderBuilder.with(this)
+                .fileName(outputFile)
+                .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
+                .loggable()
+                .build();
+    }
+
     private void setRecordingDetails(){
         String fileName = getRandomFileName();
         outputFile = getFilesDir().getAbsolutePath();
-        outputFile += "/" + fileName + ".3gp";
+        outputFile += "/" + fileName + ".mp4";
     }
 
     private String getRandomFileName(){
@@ -112,30 +127,29 @@ public class RecordStoryActivity extends AppCompatActivity {
         } else if (recordingStatus.equals("Stop Recording")){
             stopRecording();
 
-        } else if (recordingStatus.equals("Reset")){
-            resetRecording();
+        } else if (recordingStatus.equals("Continue Recording")){
+            startRecording();
         }
     }
 
+
     private void startRecording(){
-        try {
-            myRecorder = new MediaRecorder();
-            myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB); //Optimized for speech coding
-            myRecorder.setOutputFile(outputFile);
-            myRecorder.setAudioChannels(1);
+        myRecorder.start(new AudioRecorder.OnStartListener() {
+            @Override
+            public void onStarted() {
+                // started
+                startRecordingDurationCounter();
+                changeButtonsToRecordingOptions();
+            }
 
-            myRecorder.prepare();
-            myRecorder.start();
+            @Override
+            public void onException(Exception e) {
+                // error
+                Log.i("AudioRecorder", "ERROR With continuous audio recorder!");
+            }
+        });
 
-            startRecordingDurationCounter();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        changeButtonsToRecordingOptions();
+
     }
 
     private void changeButtonsToRecordingOptions() {
@@ -152,19 +166,23 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void stopRecording(){
-        try {
-            myRecorder.stop();
-            myRecorder.release();
-            myRecorder  = null;
-            stopRecordingDurationCounter();
-        } catch (IllegalStateException e) {
-            //  it is called before start()
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            // no valid audio/video data has been received
-            e.printStackTrace();
-        }
-        changeButtonsToPostRecordingOptions();
+
+        myRecorder.pause(new AudioRecorder.OnPauseListener() {
+            @Override
+            public void onPaused(String activeRecordFileName) {
+
+                afterPauseString = activeRecordFileName;
+                Log.i("PausedRecording", outputFile);
+                Log.i("PausedRecording", activeRecordFileName);
+                stopRecordingDurationCounter();
+                changeButtonsToPostRecordingOptions();
+            }
+
+            @Override
+            public void onException(Exception e) {
+                // error
+            }
+        });
     }
 
     private void stopRecordingDurationCounter() {
@@ -173,14 +191,20 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void changeButtonsToPostRecordingOptions() {
-        recordingStatusButton.setText("Reset");
-        recordingStatus.setText("Recording finished");
+        recordingStatusButton.setText("Continue Recording");
+        recordingStatus.setText("Recording Pause");
+        resetControlButton.setEnabled(true);
+
         recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.VISIBLE);
         recordingDuration.setText("Story Length: " +
                 recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
         playbackControlButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
+    }
+
+    private void resumeRecording() {
+
     }
 
     private String recordingDurationAsFormattedString(long storyRecordingDuration){
@@ -227,7 +251,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void startPlayback() {
         try{
             myPlayer = new MediaPlayer();
-            myPlayer.setDataSource(outputFile);
+                myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
             myPlayer.start();
             myPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -278,7 +302,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssZ");
         String strDate = sdf.format(c.getTime());
 
-        String fileNameOnServer = strDate + ".3gp";
+        String fileNameOnServer = strDate + ".mp4";
         StorageReference recordingStorageRef = currentConversationRef.child(fileNameOnServer);
 
         conversation.setStoryRecordingPushId(recordingStorageRef.getPath());

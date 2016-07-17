@@ -57,8 +57,8 @@
 
     <ImageView
         android:id="@+id/playImage"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:src="@android:drawable/presence_audio_online" />
@@ -67,7 +67,7 @@
         android:id="@+id/recording_status_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -77,7 +77,7 @@
         android:id="@+id/recording_control_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:text="Start Recording"
         android:onClick="recordingControlClick"
         android:layout_weight="1" />
@@ -86,17 +86,27 @@
         android:id="@+id/playback_control_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:enabled="false"
         android:text="Play Recording"
         android:onClick="playbackControlClick"
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/finish_and_send_button"
+        android:id="@+id/reset_control_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:enabled="false"
+        android:text="Reset Recording"
+        android:onClick="resetRecording"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/finish_and_send_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:enabled="false"
         android:text="Send Recording"
         android:onClick="sendRecordingClick"
