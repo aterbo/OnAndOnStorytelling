@@ -97,11 +97,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
         if (Utils.isExternalStorageWritable()) {
             String fileName = UUID.randomUUID().toString().replaceAll("-", "");
             File tempFileDir = this.getFilesDir();
-            tempFile = new File(tempFileDir, fileName + ".3gp");
+            tempFile = new File(tempFileDir, fileName + ".mp4");
             localTempFilePath = tempFile.getPath();
         } else {
             try{
-            tempFile = File.createTempFile("recordings", "3gp");
+            tempFile = File.createTempFile("recordings", "mp4");
             } catch (IOException exception){
                 tempFile = new File("ERROR");
             }
