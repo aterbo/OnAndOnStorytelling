@@ -8,6 +8,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -95,18 +96,30 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void buildRecorder() {
-        myRecorder = AudioRecorderBuilder.with(this)
-                .fileName(outputFile)
-                .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
-                .loggable()
-                .build();
+
     }
 
     private void setRecordingDetails(){
         String fileName = getRandomFileName();
-        outputFile = getFilesDir().getAbsolutePath();
+        outputFile = this.getFilesDir().getPath();
         outputFile += "/" + fileName + ".mp4";
+
+        File file = new File(outputFile);
+
+        if (file.exists()) {
+            file.delete();
+        }
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     private String getRandomFileName(){
         return UUID.randomUUID().toString().replaceAll("-", "");
@@ -126,7 +139,6 @@ public class RecordStoryActivity extends AppCompatActivity {
             startRecording();
         } else if (recordingStatus.equals("Stop Recording")){
             stopRecording();
-
         } else if (recordingStatus.equals("Continue Recording")){
             startRecording();
         }
@@ -134,6 +146,12 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     private void startRecording(){
+        myRecorder = AudioRecorderBuilder.with(this)
+                .fileName(outputFile)
+                .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
+                .loggable()
+                .build();
+
         myRecorder.start(new AudioRecorder.OnStartListener() {
             @Override
             public void onStarted() {
@@ -156,6 +174,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingStatusButton.setText("Stop Recording");
         recordingStatus.setText("Recording");
         playbackControlButton.setEnabled(false);
+        resetControlButton.setEnabled(false);
     }
 
     private void startRecordingDurationCounter() {
@@ -166,23 +185,29 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void stopRecording(){
+        stopRecordingDurationCounter();
 
-        myRecorder.pause(new AudioRecorder.OnPauseListener() {
+        // Wait a half second to stop recording
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onPaused(String activeRecordFileName) {
+            public void run() {
+                myRecorder.pause(new AudioRecorder.OnPauseListener() {
+                    @Override
+                    public void onPaused(String activeRecordFileName) {
+                        Log.i("PausedRecording", outputFile);
+                        Log.i("PausedRecording", activeRecordFileName);
 
-                afterPauseString = activeRecordFileName;
-                Log.i("PausedRecording", outputFile);
-                Log.i("PausedRecording", activeRecordFileName);
-                stopRecordingDurationCounter();
-                changeButtonsToPostRecordingOptions();
-            }
+                        changeButtonsToPostRecordingOptions();
+                    }
 
-            @Override
-            public void onException(Exception e) {
-                // error
+                    @Override
+                    public void onException(Exception e) {
+                        // error
+                    }
+                });
             }
-        });
+        }, 1000);
     }
 
     private void stopRecordingDurationCounter() {
@@ -227,7 +252,8 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
     }
 
-    private void resetRecording(){
+    public void resetRecording(View view){
+        //myRecorder.cancel();
         deleteRecordingFile();
         setRecordingDetails();
         recordingStatusButton.setText("Start Recording");
@@ -235,6 +261,8 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDuration.setVisibility(View.GONE);
         recordingStatus.setText("");
         playbackControlButton.setEnabled(false);
+        resetControlButton.setEnabled(false);
+        finishAndSendButton.setEnabled(false);
     }
 
     public void playbackControlClick(View view){
@@ -249,9 +277,12 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void startPlayback() {
+        File file = new File(outputFile);
+        if (file.exists()) {
+
         try{
             myPlayer = new MediaPlayer();
-                myPlayer.setDataSource(outputFile);
+            myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
             myPlayer.start();
             myPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -262,12 +293,16 @@ public class RecordStoryActivity extends AppCompatActivity {
             });
 
             recordingStatus.setText("Playing");
-
+            playbackControlButton.setText("Stop Playback");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        playbackControlButton.setText("Stop Playback");
+        Log.i("FilePlayback", "File Exists, attempting to play");
+        } else {
+            Log.i("FilePlayback", "File does not exist!");
+        }
+
     }
 
     private void stopPlayback() {
