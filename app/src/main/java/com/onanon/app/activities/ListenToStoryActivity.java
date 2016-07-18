@@ -295,7 +295,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
         seekbar.setProgress(0);
         setUpMediaPlayer();
         initializeViews();
+        showConversationDetails();
         setToggleButton();
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 
     private void finishListeningToStory() {
