@@ -1,5 +1,6 @@
 package com.onanon.app.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,17 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.User;
@@ -28,22 +33,38 @@ import com.onanon.app.classes.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class StartNewConversationActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<User> mListAdapter;
     private ListView mListView;
-    private DatabaseReference baseRef, mUsersRef;
+    private DatabaseReference baseRef, mUsersRef, mNumberOfPromptsRef;
     private String currentUserName;
+
+    private ArrayList<Prompt> promptOptionsList;
+    private int promptCountTracker = 0;
+    private int numberOfPromptsOnServer;
+    private int numberOfPromptsToGet;
+    private ProgressDialog progressDialog;
+
+    private ValueEventListener mNumberOfPromptsRefListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_start_new_conversation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressDialog = Utils.getSpinnerDialog(this);
 
+        baseRef = FirebaseDatabase.getInstance().getReference();
+        mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
+
+        promptOptionsList = new ArrayList<>();
         getUserNameFromSharedPreferences();
+        getPromptOptionsList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,9 +76,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
             }
         });
 
-    baseRef = FirebaseDatabase.getInstance().getReference();
-    mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
-    initializeScreen();
+        initializeScreen();
     }
 
     @Override
@@ -65,6 +84,10 @@ public class StartNewConversationActivity extends AppCompatActivity {
         super.onDestroy();
         if (mListAdapter != null) {
             mListAdapter.cleanup();
+        }
+
+        if (mNumberOfPromptsRefListener != null) {
+            mNumberOfPromptsRef.removeEventListener(mNumberOfPromptsRefListener);
         }
     }
 
@@ -116,11 +139,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         HashMap<String, Object> convoUserNames = new HashMap<String, Object>();
 
         Prompt noCurrentPrompt = new Prompt();
-        ArrayList<Prompt> promptArrayList = new ArrayList<>();
-
-        for (int i = 0 ; i < 3; i++) {
-            promptArrayList.add(new Prompt());
-        }
+        ArrayList<Prompt> promptArrayList = promptOptionsList;
 
         ArrayList<String> userNamesInConversation = new ArrayList<>();
         userNamesInConversation.add(currentUserName);
@@ -155,9 +174,77 @@ public class StartNewConversationActivity extends AppCompatActivity {
         });
     }
 
+    private void getPromptOptionsList(){
+        setNumberOfPromptsFBListener();
+    }
+
+    private void setNumberOfPromptsFBListener(){
+        mNumberOfPromptsRef = baseRef.child(Constants.FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS);
+
+        mNumberOfPromptsRefListener = mNumberOfPromptsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                Long tempNumber = (Long) snapshot.getValue();
+                numberOfPromptsOnServer = tempNumber.intValue();
+                getRandomPromptList();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void getRandomPromptList(){
+        numberOfPromptsToGet = 3;
+
+        ArrayList<Integer> randNumList = getRandomArrayListOfIntegers(numberOfPromptsToGet);
+
+        for (int promptId : randNumList) {
+            getRandomPrompt(promptId);
+        }
+    }
+
+    private ArrayList<Integer> getRandomArrayListOfIntegers(int numberToGet){
+
+        ArrayList<Integer> list = new ArrayList<>();
+        Random random = new Random();
+
+        while (list.size() < numberToGet) {
+            Integer nextRandom = random.nextInt(numberOfPromptsOnServer + 1);
+            if(!list.contains(nextRandom)) {
+                list.add(nextRandom);
+            }
+        }
+        return list;
+    }
+
+    private void getRandomPrompt(int promptIdNumber){
+        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_PROMPTS)
+                .child(Integer.toString(promptIdNumber));
+
+        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println(snapshot.getValue());
+                promptOptionsList.add(snapshot.getValue(Prompt.class));
+
+                if (promptOptionsList.size() == numberOfPromptsToGet) {
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
 
     private void moveToNextActivity(Conversation conversation, String selectedConvoPushId){
-        Intent intent = new Intent(this, ChooseTopicsToSendActivity.class);
+        Intent intent = new Intent(this, PickTopicToRecordActivity.class);
         intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
         intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
