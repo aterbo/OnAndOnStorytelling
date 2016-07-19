@@ -52,8 +52,6 @@ public class RecordStoryActivity extends AppCompatActivity {
     private Conversation conversation;
     private Chronometer recordingDurationCounter;
     private String outputFile = null;
-    private String afterPauseString;
-    private File recordingFile;
     private Button playbackControlButton;
     private Button recordingStatusButton;
     private Button resetControlButton;
@@ -63,6 +61,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private String selectedConvoPushId;
     private long recordingStartTime;
     private long recordingEndTime;
+    private long cumulativeRecordingTime;
     private ProgressDialog progressDialog;
 
     @Override
@@ -70,6 +69,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_story);
 
+        cumulativeRecordingTime = 0;
         initializeViews();
         getConversation();
         setRecordingDetails();
@@ -146,6 +146,9 @@ public class RecordStoryActivity extends AppCompatActivity {
 
 
     private void startRecording(){
+
+        recordingDuration.setVisibility(View.GONE);
+
         myRecorder = AudioRecorderBuilder.with(this)
                 .fileName(outputFile)
                 .config(AudioRecorder.MediaRecorderConfig.DEFAULT)
@@ -180,7 +183,8 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void startRecordingDurationCounter() {
         recordingStartTime = System.nanoTime();
         recordingDurationCounter.setVisibility(View.VISIBLE);
-        recordingDurationCounter.setBase(SystemClock.elapsedRealtime());
+        recordingDurationCounter.setBase(SystemClock.elapsedRealtime() - cumulativeRecordingTime*1000);
+        recordingDurationCounter.setText(recordingDurationAsFormattedString(cumulativeRecordingTime));
         recordingDurationCounter.start();
     }
 
@@ -198,6 +202,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                         Log.i("PausedRecording", outputFile);
                         Log.i("PausedRecording", activeRecordFileName);
 
+                        addUpTotalRecordingTime();
                         changeButtonsToPostRecordingOptions();
                     }
 
@@ -215,15 +220,23 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDurationCounter.stop();
     }
 
+    private void addUpTotalRecordingTime() {
+        long recordingDurationOfLastSegment = getRecordingTimeInSeconds();
+        cumulativeRecordingTime = cumulativeRecordingTime + recordingDurationOfLastSegment;
+    }
+
+    private long getRecordingTimeInSeconds(){
+        return ((recordingEndTime - recordingStartTime)/1000000000);
+    }
+
     private void changeButtonsToPostRecordingOptions() {
         recordingStatusButton.setText("Continue Recording");
         recordingStatus.setText("Recording Pause");
         resetControlButton.setEnabled(true);
-
         recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.VISIBLE);
         recordingDuration.setText("Story Length: " +
-                recordingDurationAsFormattedString(getRecordingTimeInSeconds()));
+                recordingDurationAsFormattedString(cumulativeRecordingTime));
         playbackControlButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
     }
@@ -254,6 +267,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     public void resetRecording(View view){
         //myRecorder.cancel();
+        cumulativeRecordingTime = 0;
         deleteRecordingFile();
         setRecordingDetails();
         recordingStatusButton.setText("Start Recording");
@@ -326,6 +340,10 @@ public class RecordStoryActivity extends AppCompatActivity {
         saveRecordingToFirebaseStorage();
     }
 
+    private void setRecordingTime() {
+        conversation.setStoryRecordingDuration(cumulativeRecordingTime);
+    }
+
     private void saveRecordingToFirebaseStorage(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -372,13 +390,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         });
     }
 
-    private void setRecordingTime(){
-        conversation.setStoryRecordingDuration(getRecordingTimeInSeconds());
-    }
-
-    private long getRecordingTimeInSeconds(){
-        return ((recordingEndTime - recordingStartTime)/1000000000);
-    }
 
     private void showToastFromStringResource(int stringResourceId) {
         Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_SHORT).show();
