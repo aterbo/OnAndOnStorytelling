@@ -279,7 +279,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private boolean isUserTurnToSendPrompts(Conversation conversation) {
         if(isCurrentUserLastToTell(conversation)
-                && !isStoryRecorded(conversation)
                 && !isProposedPromptSelected(conversation)) {
             return true;
         } else{
