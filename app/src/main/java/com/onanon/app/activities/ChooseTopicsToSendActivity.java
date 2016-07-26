@@ -199,7 +199,6 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     }
 
     private void updateConversation(){
-        conversation.changeNextPlayer();
         conversation.setProposedPrompt1(selectedPromptsList.get(0));
         conversation.setProposedPrompt2(selectedPromptsList.get(1));
         conversation.setProposedPrompt3(selectedPromptsList.get(2));

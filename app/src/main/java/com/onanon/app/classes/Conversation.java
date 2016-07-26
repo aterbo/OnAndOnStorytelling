@@ -235,7 +235,8 @@ public class Conversation implements Parcelable{
     }
 
     public void changeNextPlayer(){
-        int currentUserIndex = userNamesInConversation.indexOf(lastUserNameToTell);
+        lastUserNameToTell = nextUserNameToTell;
+        int currentUserIndex = userNamesInConversation.indexOf(nextUserNameToTell);
 
         if (currentUserIndex+1 > userNamesInConversation.size()){
             nextUserNameToTell = userNamesInConversation.get(0);
