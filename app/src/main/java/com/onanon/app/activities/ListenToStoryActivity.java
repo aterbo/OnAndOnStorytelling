@@ -313,7 +313,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void finishListeningToStory() {
         conversation.markUserAsHasHeardStory(currentUserName);
         deleteLocalStoryAudioFile();
-        deleteFBStorageStoryAudioFile();
+        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
+            deleteFBStorageStoryAudioFile();
+        } else {
+            updateConversationAfterListening();
+        }
     }
 
     private void deleteLocalStoryAudioFile(){
