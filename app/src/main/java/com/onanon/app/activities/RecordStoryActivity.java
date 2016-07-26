@@ -2,17 +2,13 @@ package com.onanon.app.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.media.AudioRecord;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +33,6 @@ import com.onanon.app.classes.Conversation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -127,7 +122,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastPlayersUserName().replace(",",".") + " says");
+        senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " says");
 
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
@@ -358,7 +353,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         String fileNameOnServer = strDate + ".mp4";
         StorageReference recordingStorageRef = currentConversationRef.child(fileNameOnServer);
 
-        conversation.setStoryRecordingPushId(recordingStorageRef.getPath());
+        conversation.setFbStorageFilePathToRecording(recordingStorageRef.getPath());
 
         Log.i("StorageUpload", "String ref: " + recordingStorageRef.getPath());
 

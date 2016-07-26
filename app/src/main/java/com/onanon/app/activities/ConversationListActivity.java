@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ui.email.SignInActivity;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -160,15 +159,15 @@ public class ConversationListActivity extends AppCompatActivity {
             protected void populateView(View v, Conversation conversation, int position) {
 
                 String title = determineTitle(conversation);
-                if (conversation.getNextPlayersUserName().equals(currentUserName)) {
+                if (conversation.getNextUserNameToTell().equals(currentUserName)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
                             "You're up next!");
                 } else {
-                    String firstChar = conversation.getNextPlayersUserName().substring(0, 1);
+                    String firstChar = conversation.getNextUserNameToTell().substring(0, 1);
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(firstChar);
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "Next Up: " + conversation.getNextPlayersUserName());
+                            "Next Up: " + conversation.getNextUserNameToTell());
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_participants)).setText(
@@ -299,7 +298,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isCurrentUsersTurn(Conversation conversation){
-        if(conversation.getNextPlayersUserName().equals(currentUserName)){
+        if(conversation.getNextUserNameToTell().equals(currentUserName)){
             return true;
         } else{
             return false;
@@ -307,7 +306,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isStoryRecorded(Conversation conversation) {
-        if(!conversation.getStoryRecordingPushId().equals("none")) {
+        if(!conversation.getFbStorageFilePathToRecording().equals("none")) {
             return true;
         } else{
             return false;
@@ -362,7 +361,7 @@ public class ConversationListActivity extends AppCompatActivity {
     private void deleteConversation(Conversation conversation){
         HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
 
-        String storyRecordingPushId = conversation.getStoryRecordingPushId();
+        String storyRecordingPushId = conversation.getFbStorageFilePathToRecording();
         ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
 
         mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +

@@ -84,7 +84,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getRecordingFromFirebaseStorage(){
-        String FBStorageFilePath = conversation.getStoryRecordingPushId();
+        String FBStorageFilePath = conversation.getFbStorageFilePathToRecording();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -134,7 +134,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastPlayersUserName() + " answered");
+        senderText.setText(conversation.getLastUserNameToTell() + " answered");
         duration.setText(conversation.recordingDurationAsFormattedString());
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
@@ -339,7 +339,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void eliminateCurrentStory(){
-        conversation.setStoryRecordingPushId("none");
+        conversation.setFbStorageFilePathToRecording("none");
         conversation.setCurrentPrompt(new Prompt("null", "null"));
         conversation.setStoryRecordingDuration(0);
     }

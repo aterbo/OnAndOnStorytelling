@@ -2,49 +2,151 @@ package com.onanon.app.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by ATerbo on 2/12/16.
  */
 public class Conversation implements Parcelable{
 
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Conversation> CREATOR = new Parcelable.Creator<Conversation>() {
+        @Override
+        public Conversation createFromParcel(Parcel in) {
+            return new Conversation(in);
+        }
+
+        @Override
+        public Conversation[] newArray(int size) {
+            return new Conversation[size];
+        }
+    };
+
     private ArrayList<String> userNamesInConversation;
-    private String nextPlayersUserName;
-    private String lastPlayersUserName;
-    private String storyRecordingPushId;
+    private ArrayList<String> userNamesHaveHeardStory;
+    private ArrayList<String> userNamesHaveNotHeardStory;
+    private String nextUserNameToTell;
+    private String lastUserNameToTell;
+    private String fbStorageFilePathToRecording;
     private Prompt proposedPrompt1;
     private Prompt proposedPrompt2;
     private Prompt proposedPrompt3;
     private Prompt currentPrompt;
     private long storyRecordingDuration;
+    private long dateLastStoryRecorded;
+    private long dateLastActionOccurred;
 
     public Conversation() { }
 
-    public Conversation(ArrayList<String> userNamesInConversation, String nextPlayersUserName,
+    public Conversation(ArrayList<String> userNamesInConversation,
+                        ArrayList<String> userNamesHaveHeardStory,
+                        ArrayList<String> userNamesHaveNotHeardStory,
+                        String nextUserNameToTell, String lastUserNameToTell,
+                        ArrayList<Prompt> proposedPrompts,
+                        Prompt currentPrompt) {
+        this.userNamesInConversation = userNamesInConversation;
+        this.userNamesHaveHeardStory = userNamesHaveHeardStory;
+        this.userNamesHaveNotHeardStory = userNamesHaveNotHeardStory;
+        this.nextUserNameToTell = nextUserNameToTell;
+        this.lastUserNameToTell = lastUserNameToTell;
+        this.fbStorageFilePathToRecording = "";
+        this.proposedPrompt1 = proposedPrompts.get(0);
+        this.proposedPrompt2 = proposedPrompts.get(1);
+        this.proposedPrompt3 = proposedPrompts.get(2);
+        this.currentPrompt = currentPrompt;
+        this.storyRecordingDuration = 0;
+        this.dateLastStoryRecorded = 0;
+        this.dateLastActionOccurred = System.currentTimeMillis();
+    }
+
+    public Conversation(ArrayList<String> userNamesInConversation, String nextToTellUserName,
                         String lastPlayersUserNames, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.userNamesInConversation = userNamesInConversation;
-        this.nextPlayersUserName = nextPlayersUserName;
-        this.lastPlayersUserName = lastPlayersUserNames;
+        this.nextUserNameToTell = nextToTellUserName;
+        this.lastUserNameToTell = lastPlayersUserNames;
         this.currentPrompt = currentPrompt;
         this.proposedPrompt1 = proposedPrompts.get(0);
         this.proposedPrompt2 = proposedPrompts.get(1);
         this.proposedPrompt3 = proposedPrompts.get(2);
-        storyRecordingPushId = "none";
+        fbStorageFilePathToRecording = "none";
         storyRecordingDuration = 0;
     }
 
-    public Prompt getProposedPrompt3() {
-        return proposedPrompt3;
+    //Parcelabler.com
+    protected Conversation(Parcel in) {
+        if (in.readByte() == 0x01) {
+            userNamesInConversation = new ArrayList<String>();
+            in.readList(userNamesInConversation, String.class.getClassLoader());
+        } else {
+            userNamesInConversation = null;
+        }
+        if (in.readByte() == 0x01) {
+            userNamesHaveHeardStory = new ArrayList<String>();
+            in.readList(userNamesHaveHeardStory, String.class.getClassLoader());
+        } else {
+            userNamesHaveHeardStory = null;
+        }
+        if (in.readByte() == 0x01) {
+            userNamesHaveNotHeardStory = new ArrayList<String>();
+            in.readList(userNamesHaveNotHeardStory, String.class.getClassLoader());
+        } else {
+            userNamesHaveNotHeardStory = null;
+        }
+        nextUserNameToTell = in.readString();
+        lastUserNameToTell = in.readString();
+        fbStorageFilePathToRecording = in.readString();
+        proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        storyRecordingDuration = in.readLong();
+        dateLastStoryRecorded = in.readLong();
+        dateLastActionOccurred = in.readLong();
     }
 
-    public void setProposedPrompt3(Prompt proposedPrompt3) {
-        this.proposedPrompt3 = proposedPrompt3;
+    public ArrayList<String> getUserNamesInConversation() {
+        return userNamesInConversation;
+    }
+
+    public void setUserNamesInConversation(ArrayList<String> userNamesInConversation) {
+        this.userNamesInConversation = userNamesInConversation;
+    }
+
+    public ArrayList<String> getUserNamesHaveHeardStory() {
+        return userNamesHaveHeardStory;
+    }
+
+    public void setUserNamesHaveHeardStory(ArrayList<String> userNamesHaveHeardStory) {
+        this.userNamesHaveHeardStory = userNamesHaveHeardStory;
+    }
+
+    public ArrayList<String> getUserNamesHaveNotHeardStory() {
+        return userNamesHaveNotHeardStory;
+    }
+
+    public void setUserNamesHaveNotHeardStory(ArrayList<String> userNamesHaveNotHeardStory) {
+        this.userNamesHaveNotHeardStory = userNamesHaveNotHeardStory;
+    }
+
+    public long getDateLastStoryRecorded() {
+        return dateLastStoryRecorded;
+    }
+
+    public void setDateLastStoryRecorded(long dateLastStoryRecorded) {
+        this.dateLastStoryRecorded = dateLastStoryRecorded;
+    }
+
+    public long getDateLastActionOccurred() {
+        return dateLastActionOccurred;
+    }
+
+    public void setDateLastActionOccurred(long dateLastActionOccurred) {
+        this.dateLastActionOccurred = dateLastActionOccurred;
     }
 
     public Prompt getProposedPrompt1() {
@@ -63,28 +165,28 @@ public class Conversation implements Parcelable{
         this.proposedPrompt2 = proposedPrompt2;
     }
 
-    public ArrayList<String> getUserNamesInConversation() {
-        return userNamesInConversation;
+    public Prompt getProposedPrompt3() {
+        return proposedPrompt3;
     }
 
-    public void setUserNamesInConversation(ArrayList<String> userNamesInConversation) {
-        this.userNamesInConversation = userNamesInConversation;
+    public void setProposedPrompt3(Prompt proposedPrompt3) {
+        this.proposedPrompt3 = proposedPrompt3;
     }
 
-    public String getNextPlayersUserName() {
-        return nextPlayersUserName;
+    public String getNextUserNameToTell() {
+        return nextUserNameToTell;
     }
 
-    public void setNextPlayersUserName(String nextPlayersUserName) {
-        this.nextPlayersUserName = nextPlayersUserName;
+    public void setNextUserNameToTell(String nextUserNameToTell) {
+        this.nextUserNameToTell = nextUserNameToTell;
     }
 
-    public String getLastPlayersUserName() {
-        return lastPlayersUserName;
+    public String getLastUserNameToTell() {
+        return lastUserNameToTell;
     }
 
-    public void setLastPlayersUserName(String lastPlayersUserName){
-        this.lastPlayersUserName = lastPlayersUserName;
+    public void setLastUserNameToTell(String lastUserNameToTell){
+        this.lastUserNameToTell = lastUserNameToTell;
     }
 
     public String getUserNames(int userIndex){
@@ -116,12 +218,12 @@ public class Conversation implements Parcelable{
         this.currentPrompt = currentPrompt;
     }
 
-    public String getStoryRecordingPushId(){
-        return storyRecordingPushId;
+    public String getFbStorageFilePathToRecording(){
+        return fbStorageFilePathToRecording;
     }
 
-    public void setStoryRecordingPushId(String storyRecordingPushId){
-        this.storyRecordingPushId = storyRecordingPushId;
+    public void setFbStorageFilePathToRecording(String fbStorageFilePathToRecording){
+        this.fbStorageFilePathToRecording = fbStorageFilePathToRecording;
     }
 
     public long getStoryRecordingDuration() {
@@ -148,19 +250,13 @@ public class Conversation implements Parcelable{
     }
 
     public void changeNextPlayer(){
-        makeLastPlayerCurrentNextPlayer();
-        int counter = 0;
-        String holderUserName;
+        int currentUserIndex = userNamesInConversation.indexOf(lastUserNameToTell);
 
-        do {
-            holderUserName = userNamesInConversation.get(counter);
-            counter = counter + 1;
-        } while(holderUserName.equals(nextPlayersUserName));
-        nextPlayersUserName = holderUserName;
-    }
-
-    private void makeLastPlayerCurrentNextPlayer(){
-        lastPlayersUserName = nextPlayersUserName;
+        if (currentUserIndex+1 > userNamesInConversation.size()){
+            nextUserNameToTell = userNamesInConversation.get(0);
+        } else if (currentUserIndex +1 <= userNamesInConversation.size()) {
+            nextUserNameToTell = userNamesInConversation.get(currentUserIndex+1);
+        }
     }
 
     public void clearProposedTopics(){
@@ -189,24 +285,6 @@ public class Conversation implements Parcelable{
         }
     }
 
-    //Parcelabler.com
-    protected Conversation(Parcel in) {
-        if (in.readByte() == 0x01) {
-            userNamesInConversation = new ArrayList<String>();
-            in.readList(userNamesInConversation, String.class.getClassLoader());
-        } else {
-            userNamesInConversation = null;
-        }
-        nextPlayersUserName = in.readString();
-        lastPlayersUserName = in.readString();
-        storyRecordingPushId = in.readString();
-        proposedPrompt1 = (Prompt) in.readValue(Prompt.class.getClassLoader());
-        proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
-        proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
-        currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
-        storyRecordingDuration = in.readLong();
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -220,42 +298,47 @@ public class Conversation implements Parcelable{
             dest.writeByte((byte) (0x01));
             dest.writeList(userNamesInConversation);
         }
-        dest.writeString(nextPlayersUserName);
-        dest.writeString(lastPlayersUserName);
-        dest.writeString(storyRecordingPushId);
+        if (userNamesHaveHeardStory == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(userNamesHaveHeardStory);
+        }
+        if (userNamesHaveNotHeardStory == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(userNamesHaveNotHeardStory);
+        }
+        dest.writeString(nextUserNameToTell);
+        dest.writeString(lastUserNameToTell);
+        dest.writeString(fbStorageFilePathToRecording);
         dest.writeValue(proposedPrompt1);
         dest.writeValue(proposedPrompt2);
         dest.writeValue(proposedPrompt3);
         dest.writeValue(currentPrompt);
         dest.writeLong(storyRecordingDuration);
+        dest.writeLong(dateLastStoryRecorded);
+        dest.writeLong(dateLastActionOccurred);
     }
-
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Conversation> CREATOR = new Parcelable.Creator<Conversation>() {
-        @Override
-        public Conversation createFromParcel(Parcel in) {
-            return new Conversation(in);
-        }
-
-        @Override
-        public Conversation[] newArray(int size) {
-            return new Conversation[size];
-        }
-    };
 
     //Mapper
     @Exclude
     public HashMap<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("userNamesInConversation", userNamesInConversation);
-        result.put("nextPlayersUserName", nextPlayersUserName);
-        result.put("lastPlayersUserName", lastPlayersUserName);
-        result.put("storyRecordingPushId", storyRecordingPushId);
+        result.put("userNamesHaveHeardStory", userNamesHaveHeardStory);
+        result.put("userNamesHaveNotHeardStory", userNamesHaveNotHeardStory);
+        result.put("nextUserNameToTell", nextUserNameToTell);
+        result.put("lastUserNameToTell", lastUserNameToTell);
+        result.put("fbStorageFilePathToRecording", fbStorageFilePathToRecording);
         result.put("proposedPrompt1", proposedPrompt1);
         result.put("proposedPrompt2", proposedPrompt2);
         result.put("proposedPrompt3", proposedPrompt3);
         result.put("currentPrompt", currentPrompt);
         result.put("storyRecordingDuration", storyRecordingDuration);
+        result.put("dateLastStoryRecorded", dateLastStoryRecorded);
+        result.put("dateLastActionOccurredChanged", dateLastActionOccurred);
 
         return result;
     }
