@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AddUserToConversation"
+            android:name=".activities.AddUserToConversationActivity"
             android:label="@string/title_activity_add_user_to_conversation"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

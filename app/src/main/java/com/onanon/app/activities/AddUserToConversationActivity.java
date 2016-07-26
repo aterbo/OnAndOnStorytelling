@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddUserToConversation extends AppCompatActivity {
+public class AddUserToConversationActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<User> mListAdapter;
     private ListView mListView;

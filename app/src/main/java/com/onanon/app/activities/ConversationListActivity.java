@@ -196,7 +196,8 @@ public class ConversationListActivity extends AppCompatActivity {
                 Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
                     selectedConvoPushId = mListAdapter.getRef(position).getKey();
-                    confirmDeleteConversation(selectedConvo);
+                    //confirmDeleteConversation(selectedConvo);
+                    confirmAddUserToConversation(selectedConvo);
                 }
                 return true;
             }
@@ -427,6 +428,35 @@ public class ConversationListActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void confirmAddUserToConversation(final Conversation conversation) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
+        alert.setTitle("Add another participant?");
+        alert.setMessage("Would you like to add someone else to this conversation?");
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("AddUser", "Confirm Add User");
+                startNextActivity(conversation, AddUserToConversationActivity.class);
+                dialog.dismiss();
+
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("Add User", "Cancel Add User");
+
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
 
     private void startNextActivity(Conversation conversation, Class classToStart){
         Intent intent = new Intent(this, classToStart);
