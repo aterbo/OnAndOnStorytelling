@@ -237,12 +237,34 @@ public class Conversation implements Parcelable{
     public void changeNextPlayer(){
         lastUserNameToTell = nextUserNameToTell;
         int currentUserIndex = userNamesInConversation.indexOf(nextUserNameToTell);
+        int userListSize = userNamesInConversation.size();
 
-        if (currentUserIndex+1 > userNamesInConversation.size()){
+        if (currentUserIndex+1 >= userListSize){
             nextUserNameToTell = userNamesInConversation.get(0);
-        } else if (currentUserIndex +1 <= userNamesInConversation.size()) {
+        } else if (currentUserIndex + 1 < userListSize) {
             nextUserNameToTell = userNamesInConversation.get(currentUserIndex+1);
         }
+    }
+
+    public void setAllUsersAsHaveNotListenedButLastToTell(){
+        userNamesHaveHeardStory = new ArrayList<>();
+        userNamesHaveHeardStory.add("none");
+        userNamesHaveNotHeardStory = new ArrayList<>();
+        for(String userNames : userNamesInConversation) {
+            if (!userNames.equals(lastUserNameToTell)) {
+                userNamesHaveNotHeardStory.add(userNames);
+            }
+        }
+    }
+
+    public void markUserAsHasHeardStory(String currentUserName) {
+        userNamesHaveNotHeardStory.remove(currentUserName);
+        if (userNamesHaveNotHeardStory.isEmpty()){
+            userNamesHaveNotHeardStory.add("none");
+        }
+
+        userNamesHaveHeardStory.add(currentUserName);
+        userNamesHaveHeardStory.remove("none");
     }
 
     public void clearProposedTopics(){

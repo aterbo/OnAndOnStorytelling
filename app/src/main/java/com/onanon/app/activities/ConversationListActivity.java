@@ -315,7 +315,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private boolean isUserWaitingForOthersToHear(Conversation conversation) {
         if(isStoryRecorded(conversation)
-                && hasCurrentUserHeardStory(conversation)
                 && !haveAllUsersHeardStory(conversation)) {
             return true;
         } else{

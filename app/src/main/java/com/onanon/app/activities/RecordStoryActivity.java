@@ -393,6 +393,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void updateConversationAfterRecording(){
         progressDialog = Utils.getSpinnerDialog(this);
         conversation.changeNextPlayer();
+        conversation.setAllUsersAsHaveNotListenedButLastToTell();
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 

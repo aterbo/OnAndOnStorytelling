@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ListenToStoryActivity extends AppCompatActivity {
 
+    private String currentUserName;
     private MediaPlayer mPlayer;
     private TextView duration;
     private Conversation conversation;
@@ -70,11 +72,17 @@ public class ListenToStoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_to_story);
 
+        getUserName();
         getConversation();
         getRecordingFromFirebaseStorage();
         initializeViews();
         showConversationDetails();
         setToggleButton();
+    }
+
+    private void getUserName(){
+        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
+        currentUserName =  settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
     }
 
     private void getConversation(){
@@ -303,6 +311,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void finishListeningToStory() {
+        conversation.markUserAsHasHeardStory(currentUserName);
         deleteLocalStoryAudioFile();
         deleteFBStorageStoryAudioFile();
     }
