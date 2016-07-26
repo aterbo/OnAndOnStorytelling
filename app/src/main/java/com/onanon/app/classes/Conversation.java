@@ -43,30 +43,13 @@ public class Conversation implements Parcelable{
 
     public Conversation() { }
 
-    public Conversation(ArrayList<String> userNamesInConversation,
-                        ArrayList<String> userNamesHaveHeardStory,
-                        ArrayList<String> userNamesHaveNotHeardStory,
-                        String nextUserNameToTell, String lastUserNameToTell,
-                        ArrayList<Prompt> proposedPrompts,
-                        Prompt currentPrompt) {
-        this.userNamesInConversation = userNamesInConversation;
-        this.userNamesHaveHeardStory = userNamesHaveHeardStory;
-        this.userNamesHaveNotHeardStory = userNamesHaveNotHeardStory;
-        this.nextUserNameToTell = nextUserNameToTell;
-        this.lastUserNameToTell = lastUserNameToTell;
-        this.fbStorageFilePathToRecording = "";
-        this.proposedPrompt1 = proposedPrompts.get(0);
-        this.proposedPrompt2 = proposedPrompts.get(1);
-        this.proposedPrompt3 = proposedPrompts.get(2);
-        this.currentPrompt = currentPrompt;
-        this.storyRecordingDuration = 0;
-        this.dateLastStoryRecorded = 0;
-        this.dateLastActionOccurred = System.currentTimeMillis();
-    }
-
     public Conversation(ArrayList<String> userNamesInConversation, String nextToTellUserName,
                         String lastPlayersUserNames, Prompt currentPrompt, ArrayList<Prompt> proposedPrompts){
         this.userNamesInConversation = userNamesInConversation;
+        this.userNamesHaveHeardStory = new ArrayList<>();
+        userNamesHaveHeardStory.add("none");
+        this.userNamesHaveNotHeardStory = new ArrayList<>();
+        userNamesHaveNotHeardStory.add("none");
         this.nextUserNameToTell = nextToTellUserName;
         this.lastUserNameToTell = lastPlayersUserNames;
         this.currentPrompt = currentPrompt;
@@ -75,6 +58,8 @@ public class Conversation implements Parcelable{
         this.proposedPrompt3 = proposedPrompts.get(2);
         fbStorageFilePathToRecording = "none";
         storyRecordingDuration = 0;
+        this.dateLastStoryRecorded = 0;
+        this.dateLastActionOccurred = System.currentTimeMillis();
     }
 
     //Parcelabler.com

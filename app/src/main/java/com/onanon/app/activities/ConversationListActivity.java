@@ -216,7 +216,7 @@ public class ConversationListActivity extends AppCompatActivity {
             startNextActivity(conversation, ListenToStoryActivity.class);
             Log.i("PickedAConvo!", "My turn to hear");
 
-        } else if (isUserTurnToPickPrompts(conversation)) {
+        } else if (isUserTurnToSendPrompts(conversation)) {
             startNextActivity(conversation, ChooseTopicsToSendActivity.class);
         }
         else if (isUserWaitingForPrompts(conversation)) {
@@ -226,6 +226,10 @@ public class ConversationListActivity extends AppCompatActivity {
         else if (isUserWaitingForStory(conversation)) {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "Waiting for story");
+        }
+        else if (isUserWaitingForOthersToHear(conversation)) {
+            //TODO: startWait/PingActivity();
+            Log.i("PickedAConvo!", "Waiting for others to hear story");
         }
     }
 
@@ -244,23 +248,27 @@ public class ConversationListActivity extends AppCompatActivity {
         if (isUserTurnToTell(conversation)) {
             return "Tell:    " + conversation.proposedPromptsTagAsString();
 
+        } else if (isUserTurnToSendPrompts(conversation)) {
+            return "You need to send topics!";
+
         } else if (isUserTurnToHear(conversation)) {
             return "Hear:    " + conversation.getCurrentPrompt().getText();
-
-        } else if (isUserTurnToPickPrompts(conversation)) {
-            return "You need to send topics!";
 
         } else if (isUserWaitingForPrompts(conversation)) {
             return "Waiting for topics.";
 
         } else if (isUserWaitingForStory(conversation)) {
             return "Waiting for a story.";
+
+        } else if (isUserWaitingForOthersToHear(conversation)) {
+            return "Waiting for everyone else to listen.";
         }
         return "Oops";
     }
 
     private boolean isUserTurnToTell(Conversation conversation) {
-        if(isCurrentUsersTurn(conversation)
+        if(isCurrentUserNextToTell(conversation)
+                && haveAllUsersHeardStory(conversation)
                 && !isStoryRecorded(conversation)
                 && isProposedPromptSelected(conversation)) {
             return true;
@@ -269,10 +277,19 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isUserTurnToSendPrompts(Conversation conversation) {
+        if(isCurrentUserLastToTell(conversation)
+                && !isStoryRecorded(conversation)
+                && !isProposedPromptSelected(conversation)) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     private boolean isUserTurnToHear(Conversation conversation) {
-        if(isCurrentUsersTurn(conversation)
-                && isStoryRecorded(conversation)
-                && isProposedPromptSelected(conversation)) {
+        if(isStoryRecorded(conversation)
+                && hasCurrentUserHeardStory(conversation)) {
             return true;
         } else{
             return false;
@@ -280,7 +297,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserWaitingForPrompts(Conversation conversation) {
-        if(!isCurrentUsersTurn(conversation)
+        if(isCurrentUserNextToTell(conversation)
                 && !isProposedPromptSelected(conversation)) {
             return true;
         } else{
@@ -289,16 +306,50 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean isUserWaitingForStory(Conversation conversation) {
-        if(!isCurrentUsersTurn(conversation)
-                && isProposedPromptSelected(conversation)) {
+        if(!isCurrentUserNextToTell(conversation)
+                && !isStoryRecorded(conversation)) {
             return true;
         } else{
             return false;
         }
     }
 
-    private boolean isCurrentUsersTurn(Conversation conversation){
+    private boolean isUserWaitingForOthersToHear(Conversation conversation) {
+        if(isStoryRecorded(conversation)
+                && hasCurrentUserHeardStory(conversation)
+                && !haveAllUsersHeardStory(conversation)) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isCurrentUserNextToTell(Conversation conversation){
         if(conversation.getNextUserNameToTell().equals(currentUserName)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean isCurrentUserLastToTell(Conversation conversation){
+        if(conversation.getLastUserNameToTell().equals(currentUserName)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean haveAllUsersHeardStory(Conversation conversation) {
+        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean hasCurrentUserHeardStory(Conversation conversation) {
+        if (conversation.getUserNamesHaveNotHeardStory().contains(currentUserName)) {
             return true;
         } else{
             return false;
@@ -315,15 +366,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private boolean isProposedPromptSelected(Conversation conversation) {
         if(conversation.getProposedPrompt1() != null) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserTurnToPickPrompts(Conversation conversation) {
-        if(isCurrentUsersTurn(conversation) &&
-                !isProposedPromptSelected(conversation)) {
             return true;
         } else{
             return false;
