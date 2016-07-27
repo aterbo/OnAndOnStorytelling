@@ -196,7 +196,7 @@ public class ConversationListActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
-                    if (selectedConvo.getUserNamesInConversation().size() >= 5) {
+                    if (selectedConvo.getUserNamesInConversation().size() >= 4) {
                         Toast.makeText(getApplicationContext(),
                                 "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
                     } else {
