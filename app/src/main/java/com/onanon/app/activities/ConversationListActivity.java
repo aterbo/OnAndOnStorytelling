@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -195,9 +196,14 @@ public class ConversationListActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
-                    selectedConvoPushId = mListAdapter.getRef(position).getKey();
-                    //confirmDeleteConversation(selectedConvo);
-                    confirmAddUserToConversation(selectedConvo);
+                    if (selectedConvo.getUserNamesInConversation().size() >= 4) {
+                        Toast.makeText(getApplicationContext(),
+                                "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        selectedConvoPushId = mListAdapter.getRef(position).getKey();
+                        //confirmDeleteConversation(selectedConvo);
+                        confirmAddUserToConversation(selectedConvo);
+                    }
                 }
                 return true;
             }
