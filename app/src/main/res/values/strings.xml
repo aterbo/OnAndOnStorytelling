@@ -42,4 +42,18 @@
 
     <string name="slide_4_title">Share Familiarly</string>
     <string name="slide_4_desc">Talk one on one or in small groups of friends.</string>
+
+    <array name="slide_title_array">
+        <item>@string/slide_1_title</item>
+        <item>@string/slide_2_title</item>
+        <item>@string/slide_3_title</item>
+        <item>@string/slide_4_title</item>
+    </array>
+
+    <array name="slide_description_array">
+        <item>@string/slide_1_desc</item>
+        <item>@string/slide_2_desc</item>
+        <item>@string/slide_3_desc</item>
+        <item>@string/slide_4_desc</item>
+    </array>
 </resources>
