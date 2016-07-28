@@ -194,17 +194,42 @@ public class ConversationListActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Conversation selectedConvo = mListAdapter.getItem(position);
+                final Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
                     if (selectedConvo.getUserNamesInConversation().size() >= 4) {
                         Toast.makeText(getApplicationContext(),
                                 "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
                     } else {
+
                         selectedConvoPushId = mListAdapter.getRef(position).getKey();
-                        //confirmDeleteConversation(selectedConvo);
-                        confirmAddUserToConversation(selectedConvo);
+
+                        CharSequence photoOptions[] = new CharSequence[]{
+                                "Add someone to the conversation.",
+                                "Leave this conversation.",
+                                getResources().getString(R.string.cancel)
+                        };
+
+                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ConversationListActivity.this);
+                        builder.setTitle("Change group");
+                        builder.setIcon(R.drawable.alberticon);
+                        builder.setItems(photoOptions, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        startNextActivity(selectedConvo, AddUserToConversationActivity.class);
+                                        break;
+                                    case 1:
+                                        confirmDeleteConversation(selectedConvo);
+                                        break;
+                                    case 2:
+                                        break;
+                                }
+                            }
+                        });
+                        builder.show();
+                        }
                     }
-                }
                 return true;
             }
         });
@@ -433,34 +458,6 @@ public class ConversationListActivity extends AppCompatActivity {
                 Log.i("FBDeleteConvo", "Convo deleted successfully");
             }
         });
-    }
-
-    private void confirmAddUserToConversation(final Conversation conversation) {
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
-        alert.setTitle("Add another participant?");
-        alert.setMessage("Would you like to add someone else to this conversation?");
-        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.i("AddUser", "Confirm Add User");
-                startNextActivity(conversation, AddUserToConversationActivity.class);
-                dialog.dismiss();
-
-            }
-        });
-        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.i("Add User", "Cancel Add User");
-
-                dialog.dismiss();
-            }
-        });
-
-        alert.show();
     }
 
 
