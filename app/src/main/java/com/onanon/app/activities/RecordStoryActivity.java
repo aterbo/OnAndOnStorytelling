@@ -67,7 +67,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         cumulativeRecordingTime = 0;
         initializeViews();
         getConversation();
-        setRecordingDetails();
+        createRecordingFile();
         showConversationDetails();
         buildRecorder();
 
@@ -94,17 +94,21 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     }
 
-    private void setRecordingDetails(){
-        String fileName = getRandomFileName();
-        outputFile = this.getFilesDir().getPath();
-        outputFile += "/" + fileName + ".mp4";
+    private void createRecordingFile(){
+        File file = getFileForRecording();
 
-        File file = new File(outputFile);
+        deleteOldFile(file);
 
+        createNewFile(file);
+    }
+
+    private void deleteOldFile(File file) {
         if (file.exists()) {
             file.delete();
         }
+    }
 
+    private void createNewFile(File file) {
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -115,14 +119,29 @@ public class RecordStoryActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
+    private File getFileForRecording() {
+        File tempFile;
 
-    private String getRandomFileName(){
-        return UUID.randomUUID().toString().replaceAll("-", "");
+        if (Utils.isExternalStorageWritable()) {
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+            File tempFileDir = this.getFilesDir();
+            tempFile = new File(tempFileDir, fileName + ".mp4");
+        } else {
+            try{
+                tempFile = File.createTempFile("recordings", "mp4");
+            } catch (IOException exception){
+                tempFile = new File("ERROR");
+            }
+        }
+        outputFile = tempFile.getPath();
+
+        return tempFile;
     }
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " says");
+        senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " asks");
 
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
@@ -130,12 +149,11 @@ public class RecordStoryActivity extends AppCompatActivity {
     public void recordingControlClick(View view){
         String recordingStatus = recordingStatusButton.getText().toString();
 
-        if (recordingStatus.equals("Start Recording")){
+        if (recordingStatus.equals("Start Recording") ||
+                recordingStatus.equals("Continue Recording")){
             startRecording();
         } else if (recordingStatus.equals("Stop Recording")){
             stopRecording();
-        } else if (recordingStatus.equals("Continue Recording")){
-            startRecording();
         }
     }
 
@@ -164,8 +182,6 @@ public class RecordStoryActivity extends AppCompatActivity {
                 Log.i("AudioRecorder", "ERROR With continuous audio recorder!");
             }
         });
-
-
     }
 
     private void changeButtonsToRecordingOptions() {
@@ -236,10 +252,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         finishAndSendButton.setEnabled(true);
     }
 
-    private void resumeRecording() {
-
-    }
-
     private String recordingDurationAsFormattedString(long storyRecordingDuration){
         if (storyRecordingDuration != 0) {
             final int MINUTES_IN_AN_HOUR = 60;
@@ -264,7 +276,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         //myRecorder.cancel();
         cumulativeRecordingTime = 0;
         deleteRecordingFile();
-        setRecordingDetails();
+        createRecordingFile();
         recordingStatusButton.setText("Start Recording");
         recordingDurationCounter.setVisibility(View.INVISIBLE);
         recordingDuration.setVisibility(View.GONE);
@@ -331,6 +343,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     public void sendRecordingClick(View view){
+        progressDialog = Utils.getSpinnerDialog(this);
         setRecordingTime();
         saveRecordingToFirebaseStorage();
     }
@@ -346,11 +359,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         StorageReference audioRecordingsRef = storageRef.child("audioStories");
         StorageReference currentConversationRef = audioRecordingsRef.child(selectedConvoPushId);
 
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssZ");
-        String strDate = sdf.format(c.getTime());
-
-        String fileNameOnServer = strDate + ".mp4";
+        String fileNameOnServer = Utils.getDateTimeAsString() + ".mp4";
         StorageReference recordingStorageRef = currentConversationRef.child(fileNameOnServer);
 
         conversation.setFbStorageFilePathToRecording(recordingStorageRef.getPath());
@@ -385,13 +394,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         });
     }
 
-
-    private void showToastFromStringResource(int stringResourceId) {
-        Toast.makeText(this, getResources().getString(stringResourceId), Toast.LENGTH_SHORT).show();
-    }
-
     private void updateConversationAfterRecording(){
-        progressDialog = Utils.getSpinnerDialog(this);
         conversation.changeNextPlayer();
         conversation.setAllUsersAsHaveNotListenedButLastToTell();
 
@@ -413,11 +416,10 @@ public class RecordStoryActivity extends AppCompatActivity {
                 if (firebaseError != null) {
                     Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }
-                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
-
+                Log.i("FIREBASEUpdateCONVO", "Convo updated to Firebase successfully");
 
                 progressDialog.dismiss();
-                showToastFromStringResource(R.string.recording_sent_notice);
+                Toast.makeText(RecordStoryActivity.this, R.string.recording_sent_notice, Toast.LENGTH_SHORT);
                 moveToNextActivity();
             }
         });

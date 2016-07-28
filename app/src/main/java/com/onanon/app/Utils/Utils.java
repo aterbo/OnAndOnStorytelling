@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Environment;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by ATerbo on 3/13/16.
  */
@@ -26,5 +29,15 @@ public class Utils {
         progressDialog.show();
 
         return progressDialog;
+    }
+
+    public static String getDateTimeAsString() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmssZ");
+        return sdf.format(c.getTime());
+    }
+
+    public static long getSystemTimeAsLong() {
+        return System.currentTimeMillis();
     }
 }
