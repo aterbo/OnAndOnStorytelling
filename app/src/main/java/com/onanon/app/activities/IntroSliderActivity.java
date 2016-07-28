@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
@@ -17,10 +18,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.onanon.app.PrefManager;
 import com.onanon.app.R;
 
 public class IntroSliderActivity extends AppCompatActivity {
@@ -29,8 +28,11 @@ public class IntroSliderActivity extends AppCompatActivity {
     private MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
-    private int[] background_color_references, graphic_references, title_references, description_references;
+    private int[] background_color_references;
+    private TypedArray graphic_references;
+    private String[] title_references, description_references;
     private Button btnSkip, btnNext;
+    private int numberOfSlides;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,37 +69,24 @@ public class IntroSliderActivity extends AppCompatActivity {
 
     private void createLayouts(){
 
-        graphic_references = new int[] {
-                R.drawable.alberticon,
-                R.mipmap.ic_launcher,
-                R.drawable.alberticon,
-                R.mipmap.ic_launcher};
+        graphic_references = getResources().obtainTypedArray(R.array.slide_graphic_array);
 
-        title_references = new int[] {
-                R.string.slide_1_title,
-                R.string.slide_2_title,
-                R.string.slide_3_title,
-                R.string.slide_4_title};
+        title_references = getResources().getStringArray(R.array.slide_title_array);
+        description_references = getResources().getStringArray(R.array.slide_description_array);
+        background_color_references = getResources().getIntArray(R.array.slide_background_colors);
 
-        description_references = new int[] {
-                R.string.slide_1_desc,
-                R.string.slide_2_desc,
-                R.string.slide_3_desc,
-                R.string.slide_4_desc};
-
-        background_color_references = new int[]{
-                R.color.colorAccent,
-                R.color.colorPrimary,
-                R.color.colorPrimaryDark,
-                R.color.colorAccent};
+        if (graphic_references.length() == title_references.length &&
+                graphic_references.length() == description_references.length &&
+                description_references.length == background_color_references.length) {
+            numberOfSlides = graphic_references.length();
+        }
     }
 
     public void nextButtonClicked(View view) {
-
         // checking for last page
         // if last page home screen will be launched
         int current = getItem(+1);
-        if (current < background_color_references.length) {
+        if (current < numberOfSlides) {
             // move to next screen
             viewPager.setCurrentItem(current);
         } else {
@@ -110,7 +99,7 @@ public class IntroSliderActivity extends AppCompatActivity {
     }
 
     private void addBottomDots(int currentPage) {
-        dots = new TextView[background_color_references.length];
+        dots = new TextView[numberOfSlides];
 
         dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
@@ -131,6 +120,7 @@ public class IntroSliderActivity extends AppCompatActivity {
 
     private void closeIntroSlides() {
         startActivity(new Intent(IntroSliderActivity.this, SplashScreenActivity.class));
+        graphic_references.recycle();
         finish();
     }
 
@@ -142,7 +132,7 @@ public class IntroSliderActivity extends AppCompatActivity {
             addBottomDots(position);
 
             // changing the next button text 'NEXT' / 'GOT IT'
-            if (position == background_color_references.length - 1) {
+            if (position == numberOfSlides - 1) {
                 // last page. make button text to GOT IT
                 btnNext.setText(getString(R.string.start));
                 btnSkip.setVisibility(View.GONE);
@@ -189,8 +179,8 @@ public class IntroSliderActivity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View view = layoutInflater.inflate(R.layout.welcome_slide_template, container, false);
-            view.findViewById(R.id.intro_slide_background).setBackgroundResource(background_color_references[position]);
-            ((ImageView) view.findViewById(R.id.intro_slide_graphic)).setImageResource(graphic_references[position]);
+            view.findViewById(R.id.intro_slide_background).setBackgroundColor(background_color_references[position]);
+            ((ImageView) view.findViewById(R.id.intro_slide_graphic)).setImageResource(graphic_references.getResourceId(position, 0));
             ((TextView) view.findViewById(R.id.intro_slide_title)).setText(title_references[position]);
             ((TextView) view.findViewById(R.id.intro_slide_description)).setText(description_references[position]);
             container.addView(view);
@@ -200,7 +190,7 @@ public class IntroSliderActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return background_color_references.length;
+            return numberOfSlides;
         }
 
         @Override

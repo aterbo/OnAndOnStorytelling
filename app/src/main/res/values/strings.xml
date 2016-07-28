@@ -31,29 +31,20 @@
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
 
-    <string name="slide_1_title">Welcome to Onanon!</string>
-    <string name="slide_1_desc">Talk. Listen.</string>
-
-    <string name="slide_2_title">Start Conversations</string>
-    <string name="slide_2_desc">Use Onanon to drive storytelling and conversations with friends and family.</string>
-
-    <string name="slide_3_title">Record Your Story</string>
-    <string name="slide_3_desc">Onanon records you telling your story in your voice, the way you would in real life.</string>
-
-    <string name="slide_4_title">Share Familiarly</string>
-    <string name="slide_4_desc">Talk one on one or in small groups of friends.</string>
-
     <array name="slide_title_array">
-        <item>@string/slide_1_title</item>
-        <item>@string/slide_2_title</item>
-        <item>@string/slide_3_title</item>
-        <item>@string/slide_4_title</item>
+        <item>Welcome to Onanon!</item>
+        <item>Start Conversations</item>
+        <item>Record Your Story</item>
+        <item>Share Familiarly</item>
+        <item>Help Us Improve</item>
     </array>
 
     <array name="slide_description_array">
-        <item>@string/slide_1_desc</item>
-        <item>@string/slide_2_desc</item>
-        <item>@string/slide_3_desc</item>
-        <item>@string/slide_4_desc</item>
+        <item>Talk. Listen.</item>
+        <item>Use Onanon to drive storytelling and conversations with friends and family.</item>
+        <item>Onanon records you telling your story in your voice, the way you would in real life.</item>
+        <item>Talk one on one or in small groups of friends.</item>
+        <item>This is our alpha version. Please expect some bugs. We\'d love your feedback and suggestions!</item>
     </array>
+
 </resources>

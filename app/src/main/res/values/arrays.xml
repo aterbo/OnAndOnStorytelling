@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="slide_background_colors">
+        <item>@color/bg_screen1</item>
+        <item>@color/bg_screen2</item>
+        <item>@color/bg_screen3</item>
+        <item>@color/bg_screen4</item>
+        <item>@color/bg_screen1</item>
+    </array>
+
+    <integer-array name="slide_graphic_array">
+        <item>@drawable/alberticon</item>
+        <item>@drawable/ic_twitter</item>
+        <item>@drawable/ic_facebook</item>
+        <item>@drawable/ic_google</item>
+        <item>@drawable/alberticon</item>
+    </integer-array>
+
+</resources>

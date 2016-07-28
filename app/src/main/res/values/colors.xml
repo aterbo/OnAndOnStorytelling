@@ -12,11 +12,4 @@
     <color name="bg_screen3">#3395ff</color>
     <color name="bg_screen4">#c873f4</color>
 
-    <array name="slide_background_colors">
-        <item>@color/bg_screen1</item>
-        <item>@color/bg_screen2</item>
-        <item>@color/bg_screen3</item>
-        <item>@color/bg_screen4</item>
-    </array>
-
 </resources>
