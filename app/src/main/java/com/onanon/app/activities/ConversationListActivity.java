@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
@@ -196,11 +200,6 @@ public class ConversationListActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
-                    if (selectedConvo.getUserNamesInConversation().size() >= 4) {
-                        Toast.makeText(getApplicationContext(),
-                                "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
-                    } else {
-
                         selectedConvoPushId = mListAdapter.getRef(position).getKey();
 
                         CharSequence photoOptions[] = new CharSequence[]{
@@ -217,7 +216,12 @@ public class ConversationListActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        startNextActivity(selectedConvo, AddUserToConversationActivity.class);
+                                        if (selectedConvo.getUserNamesInConversation().size() >= 4) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            startNextActivity(selectedConvo, AddUserToConversationActivity.class);
+                                        }
                                         break;
                                     case 1:
                                         confirmDeleteConversation(selectedConvo);
@@ -228,7 +232,6 @@ public class ConversationListActivity extends AppCompatActivity {
                             }
                         });
                         builder.show();
-                        }
                     }
                 return true;
             }
@@ -406,7 +409,7 @@ public class ConversationListActivity extends AppCompatActivity {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
         alert.setTitle("You don't want to talk anymore?");
-        alert.setMessage("Are you sure you want to remove this conversation?");
+        alert.setMessage("Are you sure you want to leave this conversation?");
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
             @Override
@@ -431,9 +434,44 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void deleteConversation(Conversation conversation){
+        String fbStorageFilePathToRecording = conversation.getFbStorageFilePathToRecording();
+
+        if (!fbStorageFilePathToRecording.equals("none")) {
+            removeRecordingAndConvo(conversation);
+        } else {
+            removeConvoOnly(conversation);
+        }
+    }
+
+    private void removeRecordingAndConvo(final Conversation conversation){
+        String FBStorageFilePath = conversation.getFbStorageFilePathToRecording();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+
+        StorageReference sRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
+        StorageReference audioFileStorageRef = sRef.child(FBStorageFilePath);
+
+        audioFileStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.i("Recording deleted", "FB Storage recoding file deleted.");
+
+                removeConvoOnly(conversation);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.i("Recording deleted", "ERROR - FB Storage recoding file NOT deleted.");
+
+                removeConvoOnly(conversation);
+            }
+        });
+    }
+
+    private void removeConvoOnly(Conversation conversation) {
         HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
 
-        String storyRecordingPushId = conversation.getFbStorageFilePathToRecording();
         ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
 
         mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
@@ -442,11 +480,6 @@ public class ConversationListActivity extends AppCompatActivity {
         for (String userNames : userNamesInConversation) {
             mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userNames + "/" + selectedConvoPushId, null);
-        }
-
-        if(!storyRecordingPushId.isEmpty() || storyRecordingPushId != null || !storyRecordingPushId.equals("none")) {
-            mapOfDataToDelete.put("/" + Constants.FB_LOCATION_RECORDINGS + "/" +
-                    storyRecordingPushId, null);
         }
 
         baseRef.updateChildren(mapOfDataToDelete, new DatabaseReference.CompletionListener() {
