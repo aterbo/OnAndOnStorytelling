@@ -130,8 +130,6 @@ public class IntroSliderActivity extends AppCompatActivity {
     }
 
     private void closeIntroSlides() {
-        PrefManager prefManager = new PrefManager(this);
-        prefManager.setFirstTimeLaunch(false);
         startActivity(new Intent(IntroSliderActivity.this, SplashScreenActivity.class));
         finish();
     }

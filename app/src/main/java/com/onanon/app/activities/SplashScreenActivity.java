@@ -63,6 +63,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void runIntroSlidesIfNeeded() {
         PrefManager prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
+            prefManager.setFirstTimeLaunch(false);
+
             startActivity(new Intent(SplashScreenActivity.this, IntroSliderActivity.class));
             finish();
         }
