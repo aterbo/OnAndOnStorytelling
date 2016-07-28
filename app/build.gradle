@@ -33,6 +33,7 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.2.1'
     compile 'com.google.firebase:firebase-database:9.2.1'
     compile 'com.google.firebase:firebase-auth:9.2.1'
+    compile 'com.google.firebase:firebase-messaging:9.2.1'
     compile 'com.google.firebase:firebase-storage:9.2.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.3'
     compile "com.googlecode.mp4parser:isoparser:1.0.2"
