@@ -175,8 +175,6 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     public void createUserButtonPressed(View view){
         Intent intent = new Intent(this, AddNewUserActivity.class);
-        intent.putExtra("userEmail", "");
-        intent.putExtra("userPass", "");
         startActivity(intent);
     }
 
