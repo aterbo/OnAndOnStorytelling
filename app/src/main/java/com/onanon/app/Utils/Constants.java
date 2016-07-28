@@ -9,9 +9,8 @@ public class Constants {
      * Constants related to locations in Firebase, such as the name of the node
      * where user lists are stored (ie "userLists")
      */
-    public static final String FB_LOCATION = "https://tell-me.firebaseio.com";
+
     public static final String FB_LOCATION_USERS = "users";
-    public static final String FB_LOCATION_RECORDINGS = "recordings";
     public static final String FB_LOCATION_USER_CONVOS = "userConvos";
     public static final String FB_LOCATION_CONVO_PARTICIPANTS = "convoParticipants";
     public static final String FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS = "numberOfPrompts";
@@ -26,4 +25,10 @@ public class Constants {
     public static final String CURRENT_USER_NAME_KEY = "currentUser";
     public static final String SHARED_PREFS_FILE = "preferences";
 
+    /**
+     * Constants for skipping media players forward and backward.
+     */
+
+    public static final int shortSkipTime = 5000;
+    public static  final int longSkipTime = 30000;
 }

@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,8 +54,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private Conversation conversation;
     private double timeElapsed = 0;
     private double finalTime = 0;
-    private final int shortSkipTime = 5000;
-    private final int longSkipTime = 30000;
     private final Handler durationHandler = new Handler();
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
@@ -92,28 +91,12 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getRecordingFromFirebaseStorage(){
+        File tempFile = getFileForAudioDownloadDestination();
+
         String FBStorageFilePath = conversation.getFbStorageFilePathToRecording();
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
-
         StorageReference sRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
         audioFileStorageRef = sRef.child(FBStorageFilePath);
-
-        File tempFile;
-
-        if (Utils.isExternalStorageWritable()) {
-            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
-            File tempFileDir = this.getFilesDir();
-            tempFile = new File(tempFileDir, fileName + ".mp4");
-            localTempFilePath = tempFile.getPath();
-        } else {
-            try{
-            tempFile = File.createTempFile("recordings", "mp4");
-            } catch (IOException exception){
-                tempFile = new File("ERROR");
-            }
-        }
 
         audioFileStorageRef.getFile(tempFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
@@ -125,10 +108,32 @@ public class ListenToStoryActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
+
+                Toast.makeText(getApplicationContext(), "Error downloading audio file!", Toast.LENGTH_SHORT);
             }
         });
     }
+
+    @NonNull
+    private File getFileForAudioDownloadDestination() {
+        File tempFile;
+
+        if (Utils.isExternalStorageWritable()) {
+            String fileName = UUID.randomUUID().toString().replaceAll("-", "");
+            File tempFileDir = this.getFilesDir();
+            tempFile = new File(tempFileDir, fileName + ".mp4");
+        } else {
+            try{
+            tempFile = File.createTempFile("recordings", "mp4");
+            } catch (IOException exception){
+                tempFile = new File("ERROR");
+            }
+        }
+        localTempFilePath = tempFile.getPath();
+
+        return tempFile;
+    }
+
 
     private void initializeViews(){
         playPauseButton = (ToggleButton) findViewById(R.id.media_play);
@@ -197,6 +202,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     mVisualizer.setEnabled(false);
+                    stopPlayback();
                     askIfUserWantsToListenAgain();
                 }
             });
@@ -234,19 +240,19 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     public void shortForward(View view){
-        skip(+shortSkipTime);
+        skip(+Constants.shortSkipTime);
     }
 
     public void longForward(View view){
-        skip(+longSkipTime);
+        skip(+Constants.longSkipTime);
     }
 
     public void shortRewind(View view){
-        skip(-shortSkipTime);
+        skip(-Constants.shortSkipTime);
     }
 
     public void longRewind(View view){
-        skip(-longSkipTime);
+        skip(-Constants.longSkipTime);
     }
 
     private void skip(int skipTime) {
@@ -276,8 +282,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void askIfUserWantsToListenAgain() {
-        stopPlayback();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Listen again?");
         builder.setPositiveButton("Back to Main Menu", new DialogInterface.OnClickListener() {
@@ -311,12 +315,21 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void finishListeningToStory() {
-        conversation.markUserAsHasHeardStory(currentUserName);
         deleteLocalStoryAudioFile();
-        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
+
+        conversation.markUserAsHasHeardStory(currentUserName);
+        if (haveAllUsersHeardStory()){
             deleteFBStorageStoryAudioFile();
         } else {
             updateConversationAfterListening();
+        }
+    }
+
+    private boolean haveAllUsersHeardStory(){
+        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -337,7 +350,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 Log.i("Recording deleted", "FB Storage recoding file deleted.");
 
-                eliminateCurrentStory();
+                deleteConversationReferencesToFile();
                 updateConversationAfterListening();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -345,13 +358,13 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 Log.i("Recording deleted", "ERROR - FB Storage recoding file NOT deleted.");
 
-                eliminateCurrentStory();
+                deleteConversationReferencesToFile();
                 updateConversationAfterListening();
             }
         });
     }
 
-    private void eliminateCurrentStory(){
+    private void deleteConversationReferencesToFile(){
         conversation.setFbStorageFilePathToRecording("none");
         conversation.setCurrentPrompt(new Prompt("null", "null"));
         conversation.setStoryRecordingDuration(0);
