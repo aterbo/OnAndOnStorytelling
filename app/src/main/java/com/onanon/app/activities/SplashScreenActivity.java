@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onanon.app.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 
@@ -44,6 +45,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        runIntroSlidesIfNeeded();
+
         if (isPermissionsGranted()) {
             checkIfLoggedIn();
         } else {
@@ -54,6 +58,14 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    private void runIntroSlidesIfNeeded() {
+        PrefManager prefManager = new PrefManager(this);
+        if (prefManager.isFirstTimeLaunch()) {
+            startActivity(new Intent(SplashScreenActivity.this, IntroSliderActivity.class));
+            finish();
+        }
     }
 
     private void checkIfLoggedIn(){

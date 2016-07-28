@@ -13,4 +13,9 @@
         android:orderInCategory="40"
         android:title="Log Out"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/see_intro_slides_menu"
+        android:orderInCategory="40"
+        android:title="Help"
+        app:showAsAction="ifRoom" />
 </menu>

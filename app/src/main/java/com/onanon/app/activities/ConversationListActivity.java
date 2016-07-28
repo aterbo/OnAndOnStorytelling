@@ -151,6 +151,9 @@ public class ConversationListActivity extends AppCompatActivity {
                 clearUserNameFromSharedPreferences();
                 logOutFromFirebase();
                 return true;
+            case R.id.see_intro_slides_menu:
+                startActivity(new Intent(this, IntroSliderActivity.class));
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
