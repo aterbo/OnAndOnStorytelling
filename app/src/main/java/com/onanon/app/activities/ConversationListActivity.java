@@ -162,16 +162,23 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void setFirebaseListToUserName() {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
+
+        listView.setEmptyView(findViewById(android.R.id.empty));
+
         mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
                 R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserName)) {
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
 
                 String title = determineTitle(conversation);
-                if (conversation.getNextUserNameToTell().equals(currentUserName)) {
+                if (isUserTurnToTell(conversation)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "You're up next!");
+                            "You have a story to tell!");
+                } else if (isUserTurnToSendPrompts(conversation)) {
+                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
+                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
+                            "You have to send some prompts!");
                 } else {
                     String firstChar = conversation.getNextUserNameToTell().substring(0, 1);
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(firstChar);
