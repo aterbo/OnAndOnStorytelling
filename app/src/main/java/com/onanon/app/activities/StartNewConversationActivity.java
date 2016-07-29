@@ -213,7 +213,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         Random random = new Random();
 
         while (list.size() < numberToGet) {
-            Integer nextRandom = random.nextInt(numberOfPromptsOnServer + 1);
+            Integer nextRandom = random.nextInt(numberOfPromptsOnServer);
             if(!list.contains(nextRandom)) {
                 list.add(nextRandom);
             }
