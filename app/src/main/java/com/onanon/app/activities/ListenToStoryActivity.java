@@ -399,5 +399,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void goBackToMainScreen(){
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+        finish();
     }
 }

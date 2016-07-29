@@ -171,6 +171,7 @@ public class AddUserToConversationActivity extends AppCompatActivity {
     private void goBackToConversationList(){
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+        finish();
     }
 }
 

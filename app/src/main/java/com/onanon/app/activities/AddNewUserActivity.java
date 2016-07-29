@@ -176,5 +176,6 @@ public class AddNewUserActivity extends AppCompatActivity {
         progressDialog.dismiss();
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+        finish();
     }
 }

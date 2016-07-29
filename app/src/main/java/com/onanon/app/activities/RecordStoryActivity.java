@@ -442,5 +442,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
         intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
+        finish();
     }
 }
