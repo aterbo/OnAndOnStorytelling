@@ -152,8 +152,9 @@ public class ConversationListActivity extends AppCompatActivity {
                 logOutFromFirebase();
                 return true;
             case R.id.see_intro_slides_menu:
-                startActivity(new Intent(this, IntroSliderActivity.class));
-                finish();
+                Intent intent = new Intent(ConversationListActivity.this, IntroSliderActivity.class);
+                intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.CONVO_LIST);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onanon.app.R;
+import com.onanon.app.Utils.Constants;
 
 public class IntroSliderActivity extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class IntroSliderActivity extends AppCompatActivity {
     private String[] title_references, description_references;
     private Button btnSkip, btnNext;
     private int numberOfSlides;
+    private int sourceActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,8 @@ public class IntroSliderActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_intro_slider);
+
+        determineSourceActivity();
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layout_dots);
@@ -65,6 +70,11 @@ public class IntroSliderActivity extends AppCompatActivity {
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+    }
+
+    private void determineSourceActivity(){
+        Intent intent = getIntent();
+        sourceActivity = intent.getIntExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, 0);
     }
 
     private void createLayouts(){
@@ -119,8 +129,18 @@ public class IntroSliderActivity extends AppCompatActivity {
     }
 
     private void closeIntroSlides() {
-        startActivity(new Intent(IntroSliderActivity.this, SplashScreenActivity.class));
+        Intent intent;
+
+        if (sourceActivity == Constants.SPLASH_SCREEN) {
+            intent = new Intent(IntroSliderActivity.this, SplashScreenActivity.class);
+        } else if (sourceActivity == Constants.CONVO_LIST) {
+            intent = new Intent(IntroSliderActivity.this, ConversationListActivity.class);
+        } else {
+            Log.i("IntroSlider", "Issue with determining sending activity");
+            intent = new Intent(IntroSliderActivity.this, SplashScreenActivity.class);
+        }
         graphic_references.recycle();
+        startActivity(intent);
         finish();
     }
 

@@ -65,7 +65,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         if (prefManager.isFirstTimeLaunch()) {
             prefManager.setFirstTimeLaunch(false);
 
-            startActivity(new Intent(SplashScreenActivity.this, IntroSliderActivity.class));
+            Intent intent = new Intent(SplashScreenActivity.this, IntroSliderActivity.class);
+            intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.SPLASH_SCREEN);
+            startActivity(intent);
             finish();
         }
     }
