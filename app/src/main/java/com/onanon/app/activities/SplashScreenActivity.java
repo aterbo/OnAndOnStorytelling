@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
-import com.onanon.app.PrefManager;
+import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 

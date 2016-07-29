@@ -1,4 +1,4 @@
-package com.onanon.app;
+package com.onanon.app.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
