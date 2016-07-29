@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.onanon.app.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
@@ -165,11 +166,8 @@ public class AddNewUserActivity extends AppCompatActivity {
     }
 
     private void saveUserNameToPreferences(){
-        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(Constants.CURRENT_USER_NAME_KEY, mUserName);
-        // Commit the edits!
-        editor.commit();
+        PrefManager prefManager = new PrefManager(this);
+        prefManager.setUserNameToPreferences(mUserName);
     }
 
     private void goBackToStartList(){

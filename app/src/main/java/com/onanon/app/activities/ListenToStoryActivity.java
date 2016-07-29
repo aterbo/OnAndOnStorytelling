@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.onanon.app.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
@@ -80,8 +81,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void getUserName(){
-        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
-        currentUserName =  settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
+        PrefManager prefManager = new PrefManager(this);
+        currentUserName = prefManager.getUserNameFromSharedPreferences();
     }
 
     private void getConversation(){

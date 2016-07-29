@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onanon.app.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
@@ -92,8 +93,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
     }
 
     private void getUserNameFromSharedPreferences(){
-        SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFS_FILE, MODE_PRIVATE);
-        currentUserName = settings.getString(Constants.CURRENT_USER_NAME_KEY, "");
+        PrefManager prefManager = new PrefManager(this);
+        currentUserName = prefManager.getUserNameFromSharedPreferences();
     }
 
     private void initializeScreen() {
