@@ -17,11 +17,9 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_create_user">Create a New User</string>
+        completions."</string>
+
     <string name="title_activity_start_new_conversation">Start a New Conversation</string>
-    <string name="title_activity_pick_user">Choose a User</string>
     <string name="title_activity_add_new_user">Add a New User</string>
     <string name="title_activity_opening_screen">ONanON</string>
     <string name="title_activity_add_user_to_conversation">Add Someone</string>
