@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +40,7 @@ import com.onanon.app.classes.Conversation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class ConversationListActivity extends AppCompatActivity {
@@ -433,6 +435,23 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void deleteConversation(Conversation conversation){
+
+        if(isConversationIsOnlyTwoPeople(conversation)) {
+            removeEntireConversation(conversation);
+        } else {
+            removeCurrentUserFromConversation(conversation);
+        }
+    }
+
+    private boolean isConversationIsOnlyTwoPeople(Conversation conversation) {
+        if (conversation.getUserNamesInConversation().size() == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void removeEntireConversation(Conversation conversation) {
         String fbStorageFilePathToRecording = conversation.getFbStorageFilePathToRecording();
 
         if (!fbStorageFilePathToRecording.equals("none")) {
@@ -492,6 +511,47 @@ public class ConversationListActivity extends AppCompatActivity {
         });
     }
 
+    private void removeCurrentUserFromConversation(Conversation conversation) {
+        HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
+
+        conversation.getUserNamesInConversation().remove(currentUserName);
+        conversation.getUserNamesHaveNotHeardStory().remove(currentUserName);
+        conversation.getUserNamesHaveHeardStory().remove(currentUserName);
+
+        if(conversation.getNextUserNameToTell() == currentUserName) {
+            String holderUserName = conversation.getLastUserNameToTell();
+            conversation.changeNextPlayer();
+            conversation.setLastUserNameToTell(holderUserName);
+        }
+
+        ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
+
+        mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
+                selectedConvoPushId + "/" + currentUserName, null);
+
+        mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                + currentUserName + "/" + selectedConvoPushId, null);
+
+
+        HashMap<String, Object> itemToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+
+        for (String userNames : userNamesInConversation) {
+            mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                    + userNames + "/" + selectedConvoPushId, itemToAddHashMap);
+        }
+
+
+        baseRef.updateChildren(mapOfDataToDelete, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FBDeleteConvo", "Error removing user from conversatoin");
+                }
+                Log.i("FBDeleteConvo", "User removed from convo successfully");
+            }
+        });
+    }
 
     private void startNextActivity(Conversation conversation, Class classToStart){
         Intent intent = new Intent(this, classToStart);
