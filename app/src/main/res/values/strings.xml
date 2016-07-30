@@ -19,12 +19,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_create_user">CreateUserActivity</string>
-    <string name="title_activity_start_new_conversation">startNewConversation</string>
-    <string name="title_activity_pick_user">PickUserActivity</string>
-    <string name="title_activity_add_new_user">AddNewUserActivity</string>
-    <string name="title_activity_opening_screen">OpeningScreen</string>
-    <string name="title_activity_add_user_to_conversation">AddUserToConversation</string>
+    <string name="title_activity_create_user">Create a New User</string>
+    <string name="title_activity_start_new_conversation">Start a New Conversation</string>
+    <string name="title_activity_pick_user">Choose a User</string>
+    <string name="title_activity_add_new_user">Add a New User</string>
+    <string name="title_activity_opening_screen">ONanON</string>
+    <string name="title_activity_add_user_to_conversation">Add Someone</string>
 
 
     <string name="next">NEXT</string>
@@ -44,7 +44,7 @@
         <item>Talk. Listen.</item>
         <item>Use Onanon to drive storytelling and conversations with friends and family.</item>
         <item>Onanon records you telling your story in your voice, the way you would in real life.</item>
-        <item>Talk one on one or in small groups of friends.</item>
+        <item>Talk one on one or in small groups of friends or family.</item>
         <item>This is our alpha version. Please expect some bugs. We\'d love your feedback and suggestions!</item>
     </array>
 
