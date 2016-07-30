@@ -17,7 +17,8 @@
         android:id="@+id/log_in_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"/>
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"/>
 
     <ListView
         android:id="@+id/conversation_list"
