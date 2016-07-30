@@ -30,7 +30,7 @@
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
     <string name="start">GOT IT</string>
-    <string name="no_messages">You have no conversations. Click + below to start one!</string>
+    <string name="no_messages">You have no conversations. Start one by clicking + below!</string>
 
     <array name="slide_title_array">
         <item>Welcome to Onanon!</item>
