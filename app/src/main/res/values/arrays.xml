@@ -2,7 +2,7 @@
 <resources>
 
     <array name="slide_background_colors">
-        <item>@color/bg_screen1</item>
+        <item>@color/bg_screen3</item>
         <item>@color/bg_screen2</item>
         <item>@color/bg_screen3</item>
         <item>@color/bg_screen4</item>

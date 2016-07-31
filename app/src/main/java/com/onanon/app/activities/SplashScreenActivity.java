@@ -1,6 +1,7 @@
 package com.onanon.app.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,21 +11,50 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.classes.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
 
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int RC_SIGN_IN = 100;
+    private String mUserName, mUserEmail, mUserID, mUserProfilePicUrl;
+    private DatabaseReference baseRef;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            handleSignInResponse(resultCode, data);
+            return;
+        }
+
+        Toast.makeText(SplashScreenActivity.this, "Unknown Response.",
+                Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +94,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void checkIfLoggedIn(){
         if (isUserLoggedIn()) {
-            moveToConversationListActivity();
+            ensureLogInProfileExistsOnServer();
         } else {
             showButtons();
         }
@@ -144,28 +174,16 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public void logInButtonPressed(View view){
-        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                        .build(),
-                RC_SIGN_IN);
+        Intent intent = AuthUI.getInstance().createSignInIntentBuilder().build();
+        startActivityForResult(intent, RC_SIGN_IN);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            handleSignInResponse(resultCode, data);
-            return;
-        }
 
-
-        Toast.makeText(SplashScreenActivity.this, "Unknown Response.",
-                Toast.LENGTH_SHORT).show();
-    }
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            moveToConversationListActivity();
+            ensureLogInProfileExistsOnServer();
             return;
         }
 
@@ -182,6 +200,95 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void createUserButtonPressed(View view){
         Intent intent = new Intent(this, AddNewUserActivity.class);
         startActivity(intent);
+    }
+
+    private void ensureLogInProfileExistsOnServer() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        mUserID = currentUser.getUid();
+
+        baseRef = FirebaseDatabase.getInstance().getReference();
+
+        baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(mUserID).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(existsUserProfile(dataSnapshot)) {
+                            mUserName = (String) dataSnapshot.getValue();
+                            setUserNameToPrefManager();
+                            moveToConversationListActivity();
+                        } else {
+                            mUserEmail = currentUser.getEmail();
+                            getUserNameForNewProfile();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w("SplashScreen", "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+
+    private boolean existsUserProfile(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void setUserNameToPrefManager() {
+        PrefManager prefManager = new PrefManager(this);
+        prefManager.setUserNameToPreferences(mUserName);
+    }
+
+    private void getUserNameForNewProfile() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Welcome to ONanON!");
+        // I'm using fragment here so I'm using getView() to provide ViewGroup
+        // but you can provide here any other instance of ViewGroup from your Fragment / Activity
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
+                (ViewGroup) findViewById(android.R.id.content), false);
+        // Set up the input
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+        builder.setView(viewInflated);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                mUserName = input.getText().toString();
+                createUserInFirebaseHelper();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void createUserInFirebaseHelper() {
+
+        mUserProfilePicUrl = "XXXXXX";
+        /* Create a HashMap version of the user to add */
+        User newUser = new User(mUserName, mUserEmail, mUserID, mUserProfilePicUrl);
+        HashMap<String, Object> newUserMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
+
+        HashMap<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + mUserName,
+                newUserMap);
+        childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
+                + mUserID, mUserName);
+
+        baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                setUserNameToPrefManager();
+                moveToConversationListActivity();
+            }
+        });
+
     }
 
     private void moveToConversationListActivity(){
