@@ -9,10 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +40,7 @@ import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.classes.Conversation;
+import com.onanon.app.classes.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +55,7 @@ public class ConversationListActivity extends AppCompatActivity {
     private DatabaseReference baseRef;
     private FirebaseListAdapter<Conversation> mListAdapter;
     private PrefManager prefManager;
+    private String mUserEmail, mUserProfilePicUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,7 @@ public class ConversationListActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             currentUserUID = user.getUid();
+            mUserEmail = user.getEmail();
             getUserNameFromUID();
         } else {
             currentUserName = "Error";
@@ -94,13 +100,18 @@ public class ConversationListActivity extends AppCompatActivity {
         promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                System.out.println(snapshot.getValue());
-                currentUserName = (String) snapshot.getValue();
+                if (existsUserProfile(snapshot)) {
+                    System.out.println(snapshot.getValue());
 
-                prefManager.setUserNameToPreferences(currentUserName);
+                    currentUserName = (String) snapshot.getValue();
 
-                setFirebaseListToUserName();
-                showUserNameInTextView();
+                    prefManager.setUserNameToPreferences(currentUserName);
+
+                    setFirebaseListToUserName();
+                    showUserNameInTextView();
+                } else {
+                    getUserNameForNewProfile();
+                }
             }
 
             @Override
@@ -546,7 +557,7 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
                 if (firebaseError != null) {
-                    Log.i("FBDeleteConvo", "Error removing user from conversatoin");
+                    Log.i("FBDeleteConvo", "Error removing user from conversation");
                 }
                 Log.i("FBDeleteConvo", "User removed from convo successfully");
             }
@@ -580,6 +591,67 @@ public class ConversationListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SplashScreenActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private boolean existsUserProfile(DataSnapshot dataSnapshot) {
+        if (dataSnapshot.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void setUserNameToPrefManager() {
+        prefManager.setUserNameToPreferences(currentUserName);
+    }
+
+    private void getUserNameForNewProfile() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Welcome to ONanON!");
+        // I'm using fragment here so I'm using getView() to provide ViewGroup
+        // but you can provide here any other instance of ViewGroup from your Fragment / Activity
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
+                (ViewGroup) findViewById(android.R.id.content), false);
+        // Set up the input
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+        builder.setView(viewInflated);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                currentUserName = input.getText().toString();
+                createUserInFirebaseHelper();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void createUserInFirebaseHelper() {
+
+        mUserProfilePicUrl = "XXXXXX";
+        /* Create a HashMap version of the user to add */
+        User newUser = new User(currentUserName, mUserEmail, currentUserUID, mUserProfilePicUrl);
+        HashMap<String, Object> newUserMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
+
+        HashMap<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + currentUserName,
+                newUserMap);
+        childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
+                + currentUserUID, currentUserName);
+
+        baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                setUserNameToPrefManager();
+                setFirebaseListToUserName();
+                showUserNameInTextView();
+            }
+        });
+
     }
 
     @Override
