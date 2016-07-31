@@ -166,11 +166,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void showButtons(){
         Button logInButton = (Button) findViewById(R.id.log_in_button);
-        Button createUserButton = (Button) findViewById(R.id.create_user_button);
         logInButton.setVisibility(View.VISIBLE);
-        createUserButton.setVisibility(View.VISIBLE);
         logInButton.setClickable(true);
-        createUserButton.setClickable(true);
     }
 
     public void logInButtonPressed(View view){
