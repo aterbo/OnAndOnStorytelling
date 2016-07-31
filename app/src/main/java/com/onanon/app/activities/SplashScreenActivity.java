@@ -197,11 +197,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void createUserButtonPressed(View view){
-        Intent intent = new Intent(this, AddNewUserActivity.class);
-        startActivity(intent);
-    }
-
     private void ensureLogInProfileExistsOnServer() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = mAuth.getCurrentUser();

@@ -37,11 +37,6 @@
             android:label="Start a Conversation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.AddNewUserActivity"
-            android:label="@string/title_activity_add_new_user"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SplashScreenActivity"
             android:label="ONanON"
             android:screenOrientation="portrait">
