@@ -95,9 +95,9 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void getUserNameFromUID(){
-        DatabaseReference promptRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+        DatabaseReference uIDRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
 
-        promptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        uIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsUserProfile(snapshot)) {
@@ -622,11 +622,33 @@ public class ConversationListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 currentUserName = input.getText().toString();
-                createUserInFirebaseHelper();
+                checkIfUserNameIsUnique();
             }
         });
 
         builder.show();
+    }
+
+    private void checkIfUserNameIsUnique() {
+        DatabaseReference uIDRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+
+        uIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (existsUserProfile(snapshot)) {
+                    Toast.makeText(ConversationListActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
+                    getUserNameForNewProfile();
+                } else {
+                    createUserInFirebaseHelper();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("Error getting user data from Firebase after login. " +
+                        "The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void createUserInFirebaseHelper() {
