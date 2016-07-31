@@ -594,7 +594,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private boolean existsUserProfile(DataSnapshot dataSnapshot) {
-        if (dataSnapshot.exists()) {
+        if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
             return true;
         } else {
             return false;
@@ -630,9 +630,9 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void checkIfUserNameIsUnique() {
-        DatabaseReference uIDRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+        DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USERS).child(currentUserName);
 
-        uIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsUserProfile(snapshot)) {
