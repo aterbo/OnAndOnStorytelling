@@ -97,22 +97,21 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void getUserNameFromUID(){
-        DatabaseReference uIDRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+        DatabaseReference uIdRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
 
-        uIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        uIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsUserProfile(snapshot)) {
                     System.out.println(snapshot.getValue());
 
                     currentUserName = (String) snapshot.getValue();
-
                     prefManager.setUserNameToPreferences(currentUserName);
 
                     setFirebaseListToUserName();
                     showUserNameInTextView();
                 } else {
-                    getUserNameForNewProfile();
+                    setUpNewFBUserEntry();
                 }
             }
 
@@ -496,7 +495,7 @@ public class ConversationListActivity extends AppCompatActivity {
         prefManager.setUserNameToPreferences(currentUserName);
     }
 
-    private void getUserNameForNewProfile() {
+    private void setUpNewFBUserEntry() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Welcome to ONanON!");
         // I'm using fragment here so I'm using getView() to provide ViewGroup
@@ -528,7 +527,7 @@ public class ConversationListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsUserProfile(snapshot)) {
                     Toast.makeText(ConversationListActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
-                    getUserNameForNewProfile();
+                    setUpNewFBUserEntry();
                 } else {
                     createUserInFirebaseHelper();
                 }
