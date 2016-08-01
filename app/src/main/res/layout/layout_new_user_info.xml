@@ -4,17 +4,22 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:padding="15dp">
 
-<android.support.design.widget.TextInputLayout
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thanks for joining ONanON. Please enter the user name you wish to use below."/>
+
+    <android.support.design.widget.TextInputLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <EditText
-        android:id="@+id/input"
+        android:id="@+id/user_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="User Name"
         android:imeOptions="actionDone"
         android:inputType="textCapWords" />
 
-</android.support.design.widget.TextInputLayout>
+    </android.support.design.widget.TextInputLayout>
 </FrameLayout>

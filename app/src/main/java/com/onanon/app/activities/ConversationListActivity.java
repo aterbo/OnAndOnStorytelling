@@ -498,12 +498,12 @@ public class ConversationListActivity extends AppCompatActivity {
     private void setUpNewFBUserEntry() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Welcome to ONanON!");
-        // I'm using fragment here so I'm using getView() to provide ViewGroup
-        // but you can provide here any other instance of ViewGroup from your Fragment / Activity
+
         View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
                 (ViewGroup) findViewById(android.R.id.content), false);
-        // Set up the input
-        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+
+        final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
+        userNameInput.setHint("User Name");
         builder.setView(viewInflated);
 
         // Set up the buttons
@@ -511,7 +511,7 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                currentUserName = input.getText().toString();
+                currentUserName = userNameInput.getText().toString();
                 checkIfUserNameIsUnique();
             }
         });
