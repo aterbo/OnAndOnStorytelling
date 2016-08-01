@@ -91,7 +91,9 @@ public class AddUserToConversationActivity extends AppCompatActivity {
             @Override
             protected void populateView(View v, User model, int position) {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
+                if (model.getEmail() != null && !model.getEmail().isEmpty()) {
+                    ((TextView) v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
+                }
             }
         };
         mListView.setAdapter(mListAdapter);
