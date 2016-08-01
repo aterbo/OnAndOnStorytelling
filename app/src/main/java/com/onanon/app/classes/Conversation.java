@@ -2,13 +2,9 @@ package com.onanon.app.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.SystemClock;
-import android.util.Log;
 
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.IgnoreExtraProperties;
 import com.onanon.app.Utils.Constants;
-import com.onanon.app.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

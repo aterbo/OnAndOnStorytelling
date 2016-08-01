@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by ATerbo on 2/14/16.
