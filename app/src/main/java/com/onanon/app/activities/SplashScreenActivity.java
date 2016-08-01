@@ -59,27 +59,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.onanon.app",
-                    PackageManager.GET_SIGNATURES);
-            Log.d("KeyHash:", "Step1");
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.d("KeyHash:", "Error1");
-
-        } catch (NoSuchAlgorithmException e) {
-            Log.d("KeyHash:", "Error2");
-        }
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        Log.d("KeyHash2", FacebookSdk.getApplicationSignature(this));
-
         runIntroSlidesIfNeeded();
 
         if (isPermissionsGranted()) {
