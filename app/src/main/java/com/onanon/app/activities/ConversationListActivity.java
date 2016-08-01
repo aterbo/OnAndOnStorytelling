@@ -171,12 +171,12 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
 
-                String title = determineTitle(conversation);
-                if (isUserTurnToTell(conversation)) {
+                String title = conversation.determineTitle(currentUserName);
+                if (conversation.isUserTurnToTell(currentUserName)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
                             "You have a story to tell!");
-                } else if (isUserTurnToSendPrompts(conversation)) {
+                } else if (conversation.isUserTurnToSendPrompts(currentUserName)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
                             "You have to send some prompts!");
@@ -188,7 +188,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 }
                 ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
                 ((TextView) v.findViewById(R.id.conversation_participants)).setText(
-                        "Conversation with:  " + otherConversationParticipants(conversation));
+                        "Conversation with:  " + conversation.otherConversationParticipants(currentUserName));
                 ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(
                         conversation.recordingDurationAsFormattedString());
                 (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
@@ -255,167 +255,31 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void determineActivityToStart(Conversation conversation){
-        if (isUserTurnToTell(conversation)) {
+        if (conversation.isUserTurnToTell(currentUserName)) {
             Log.i("PickedAConvo!", "My turn to tell");
             startNextActivity(conversation, PickTopicToRecordActivity.class);
 
-        } else if (isUserTurnToHear(conversation)) {
+        } else if (conversation.isUserTurnToHear(currentUserName)) {
             startNextActivity(conversation, ListenToStoryActivity.class);
             Log.i("PickedAConvo!", "My turn to hear");
 
-        } else if (isUserTurnToSendPrompts(conversation)) {
+        } else if (conversation.isUserTurnToSendPrompts(currentUserName)) {
             startNextActivity(conversation, ChooseTopicsToSendActivity.class);
         }
-        else if (isUserWaitingForPrompts(conversation)) {
+        else if (conversation.isUserWaitingForPrompts(currentUserName)) {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "Waiting for prompts");
         }
-        else if (isUserWaitingForStory(conversation)) {
+        else if (conversation.isUserWaitingForStory(currentUserName)) {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "Waiting for story");
         }
-        else if (isUserWaitingForOthersToHear(conversation)) {
+        else if (conversation.isUserWaitingForOthersToHear()) {
             //TODO: startWait/PingActivity();
             Log.i("PickedAConvo!", "Waiting for others to hear story");
         }
     }
 
-    private String otherConversationParticipants(Conversation conversation){
-        String participantsString = "";
-        for (String userName : conversation.getUserNamesInConversation()) {
-            if(!userName.equals(currentUserName)) {
-                participantsString = participantsString + ", " + userName;
-            }
-        }
-
-        return participantsString.substring(2, participantsString.length());
-    }
-
-    private String determineTitle(Conversation conversation){
-        if (isUserTurnToTell(conversation)) {
-            return "Tell:    " + conversation.proposedPromptsTagAsString();
-
-        } else if (isUserTurnToSendPrompts(conversation)) {
-            return "You need to send topics!";
-
-        } else if (isUserTurnToHear(conversation)) {
-            return "Hear:    " + conversation.getCurrentPrompt().getText();
-
-        } else if (isUserWaitingForPrompts(conversation)) {
-            return "Waiting for topics.";
-
-        } else if (isUserWaitingForStory(conversation)) {
-            return "Waiting for a story.";
-
-        } else if (isUserWaitingForOthersToHear(conversation)) {
-            return "Waiting for everyone else to listen.";
-        }
-        return "Oops";
-    }
-
-    private boolean isUserTurnToTell(Conversation conversation) {
-        if(isCurrentUserNextToTell(conversation)
-                && haveAllUsersHeardStory(conversation)
-                && !isStoryRecorded(conversation)
-                && isProposedPromptSelected(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserTurnToSendPrompts(Conversation conversation) {
-        if(isCurrentUserLastToTell(conversation)
-                && !isProposedPromptSelected(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserTurnToHear(Conversation conversation) {
-        if(isStoryRecorded(conversation)
-                && hasCurrentUserHeardStory(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserWaitingForPrompts(Conversation conversation) {
-        if(isCurrentUserNextToTell(conversation)
-                && !isProposedPromptSelected(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserWaitingForStory(Conversation conversation) {
-        if(!isCurrentUserNextToTell(conversation)
-                && !isStoryRecorded(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isUserWaitingForOthersToHear(Conversation conversation) {
-        if(isStoryRecorded(conversation)
-                && !haveAllUsersHeardStory(conversation)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isCurrentUserNextToTell(Conversation conversation){
-        if(conversation.getNextUserNameToTell().equals(currentUserName)){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isCurrentUserLastToTell(Conversation conversation){
-        if(conversation.getLastUserNameToTell().equals(currentUserName)){
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean haveAllUsersHeardStory(Conversation conversation) {
-        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean hasCurrentUserHeardStory(Conversation conversation) {
-        if (conversation.getUserNamesHaveNotHeardStory().contains(currentUserName)) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isStoryRecorded(Conversation conversation) {
-        if(!conversation.getFbStorageFilePathToRecording().equals("none")) {
-            return true;
-        } else{
-            return false;
-        }
-    }
-
-    private boolean isProposedPromptSelected(Conversation conversation) {
-        if(conversation.getProposedPrompt1() != null) {
-            return true;
-        } else{
-            return false;
-        }
-    }
 
     private void confirmDeleteConversation(final Conversation conversation){
 
@@ -447,18 +311,10 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void deleteConversation(Conversation conversation){
 
-        if(isConversationIsOnlyTwoPeople(conversation)) {
+        if(conversation.isOnlyTwoPeople()) {
             removeEntireConversation(conversation);
         } else {
             removeCurrentUserFromConversation(conversation);
-        }
-    }
-
-    private boolean isConversationIsOnlyTwoPeople(Conversation conversation) {
-        if (conversation.getUserNamesInConversation().size() == 2) {
-            return true;
-        } else {
-            return false;
         }
     }
 

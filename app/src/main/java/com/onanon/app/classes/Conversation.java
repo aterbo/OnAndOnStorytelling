@@ -293,6 +293,151 @@ public class Conversation implements Parcelable{
         }
     }
 
+    public String otherConversationParticipants(String currentUserName){
+        String participantsString = "";
+        for (String userName : userNamesInConversation) {
+            if(!userName.equals(currentUserName)) {
+                participantsString = participantsString + ", " + userName;
+            }
+        }
+
+        return participantsString.substring(2, participantsString.length());
+    }
+
+    public String determineTitle(String currentUserName){
+        if (isUserTurnToTell(currentUserName)) {
+            return "Tell:    " + proposedPromptsTagAsString();
+
+        } else if (isUserTurnToSendPrompts(currentUserName)) {
+            return "You need to send topics!";
+
+        } else if (isUserTurnToHear(currentUserName)) {
+            return "Hear:    " + currentPrompt.getText();
+
+        } else if (isUserWaitingForPrompts(currentUserName)) {
+            return "Waiting for topics.";
+
+        } else if (isUserWaitingForStory(currentUserName)) {
+            return "Waiting for a story.";
+
+        } else if (isUserWaitingForOthersToHear()) {
+            return "Waiting for everyone else to listen.";
+        }
+        return "Oops";
+    }
+
+    public boolean isUserTurnToTell(String currentUserName) {
+        if(isCurrentUserNextToTell(currentUserName)
+                && haveAllUsersHeardStory()
+                && !isStoryRecorded()
+                && isProposedPromptSelected()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isUserTurnToSendPrompts(String currentUserName) {
+        if(isCurrentUserLastToTell(currentUserName)
+                && !isProposedPromptSelected()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isUserTurnToHear(String currentUserName) {
+        if(isStoryRecorded()
+                && hasCurrentUserHeardStory(currentUserName)) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isUserWaitingForPrompts(String currentUserName) {
+        if(isCurrentUserNextToTell(currentUserName)
+                && !isProposedPromptSelected()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isUserWaitingForStory(String currentUserName) {
+        if(!isCurrentUserNextToTell(currentUserName)
+                && !isStoryRecorded()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isUserWaitingForOthersToHear() {
+        if(isStoryRecorded()
+                && !haveAllUsersHeardStory()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isCurrentUserNextToTell(String currentUserName){
+        if(getNextUserNameToTell().equals(currentUserName)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isCurrentUserLastToTell(String currentUserName){
+        if(getLastUserNameToTell().equals(currentUserName)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean haveAllUsersHeardStory() {
+        if (userNamesHaveHeardStory.contains("none")) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean hasCurrentUserHeardStory(String currentUserName) {
+        if (getUserNamesHaveNotHeardStory().contains(currentUserName)) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isStoryRecorded() {
+        if(!fbStorageFilePathToRecording.equals("none")) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isProposedPromptSelected() {
+        if(proposedPrompt1 != null) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isOnlyTwoPeople() {
+        if (userNamesInConversation.size() == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
