@@ -223,7 +223,7 @@ public class ConversationListActivity extends AppCompatActivity {
                                         }
                                         break;
                                     case 1:
-                                        confirmDeleteConversation(selectedConvo);
+                                        confirmLeaveConversation(selectedConvo);
                                         break;
                                     case 2:
                                         break;
@@ -328,27 +328,23 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
 
-    private void confirmDeleteConversation(final Conversation conversation){
-
+    private void confirmLeaveConversation(final Conversation conversation){
         AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
         alert.setTitle("You don't want to talk anymore?");
         alert.setMessage("Are you sure you want to leave this conversation?");
-        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("Delete", "Confirm Delete");
                 deleteConversation(conversation);
                 dialog.dismiss();
 
             }
         });
-        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.i("Delete", "Cancel Delete");
-
                 dialog.dismiss();
             }
         });
@@ -357,7 +353,6 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void deleteConversation(Conversation conversation){
-
         if(conversation.isOnlyTwoPeople()) {
             removeEntireConversation(conversation);
         } else {
@@ -426,20 +421,11 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void removeCurrentUserFromConversation(Conversation conversation) {
-        HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
-
-        conversation.getUserNamesInConversation().remove(currentUserName);
-        conversation.getUserNamesHaveNotHeardStory().remove(currentUserName);
-        conversation.getUserNamesHaveHeardStory().remove(currentUserName);
-
-        if(conversation.getNextUserNameToTell() == currentUserName) {
-            String holderUserName = conversation.getLastUserNameToTell();
-            conversation.changeNextPlayer();
-            conversation.setLastUserNameToTell(holderUserName);
-        }
+        conversation.removeUserFromConversation(currentUserName);
 
         ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
 
+        HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
         mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
                 selectedConvoPushId + "/" + currentUserName, null);
 

@@ -178,7 +178,7 @@ public class Conversation implements Parcelable {
         this.lastUserNameToTell = lastUserNameToTell;
     }
 
-    public String getUserNames(int userIndex){
+    public String getUserName(int userIndex){
         return userNamesInConversation.get(userIndex);
     }
 
@@ -197,6 +197,19 @@ public class Conversation implements Parcelable {
         }
 
         return userNames;
+    }
+
+
+    public void removeUserFromConversation(String userNameToRemove) {
+        userNamesInConversation.remove(userNameToRemove);
+        userNamesHaveNotHeardStory.remove(userNameToRemove);
+        userNamesHaveHeardStory.remove(userNameToRemove);
+
+        if(nextUserNameToTell == userNameToRemove) {
+            String holderUserName = lastUserNameToTell;
+            changeNextPlayer();
+            lastUserNameToTell = holderUserName;
+        }
     }
 
     public Prompt getCurrentPrompt(){
