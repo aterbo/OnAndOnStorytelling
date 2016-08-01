@@ -18,9 +18,9 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
-import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.User;
 
