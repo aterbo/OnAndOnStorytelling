@@ -504,6 +504,7 @@ public class ConversationListActivity extends AppCompatActivity {
 
         final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
         userNameInput.setHint("User Name");
+        builder.setCancelable(false);
         builder.setView(viewInflated);
 
         // Set up the buttons

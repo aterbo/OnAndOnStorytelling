@@ -4,14 +4,10 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:padding="15dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Thanks for joining ONanON. Please enter the user name you wish to use below."/>
-
     <android.support.design.widget.TextInputLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
 
     <EditText
         android:id="@+id/user_name_input"
