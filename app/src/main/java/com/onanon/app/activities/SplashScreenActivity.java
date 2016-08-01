@@ -3,22 +3,33 @@ package com.onanon.app.activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.provider.Settings;
 import android.support.annotation.MainThread;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -47,6 +58,27 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.onanon.app",
+                    PackageManager.GET_SIGNATURES);
+            Log.d("KeyHash:", "Step1");
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d("KeyHash:", "Error1");
+
+        } catch (NoSuchAlgorithmException e) {
+            Log.d("KeyHash:", "Error2");
+        }
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        Log.d("KeyHash2", FacebookSdk.getApplicationSignature(this));
 
         runIntroSlidesIfNeeded();
 
@@ -153,7 +185,13 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public void logInButtonPressed(View view){
-        Intent intent = AuthUI.getInstance().createSignInIntentBuilder().build();
+        Intent intent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setLogo(R.mipmap.ic_launcher)
+                .setProviders(AuthUI.EMAIL_PROVIDER,
+                        AuthUI.GOOGLE_PROVIDER,
+                        AuthUI.FACEBOOK_PROVIDER)
+                .build();
         startActivityForResult(intent, RC_SIGN_IN);
     }
 
