@@ -122,6 +122,10 @@ public class ConversationListActivity extends AppCompatActivity {
         });
     }
 
+    private void showUserNameInTextView(){
+        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserName);
+    }
+
     private void setFloatingActionButton() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -167,7 +171,9 @@ public class ConversationListActivity extends AppCompatActivity {
         listView.setEmptyView(findViewById(android.R.id.empty));
 
         mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
-                R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserName)) {
+                R.layout.layout_conversation_list_item,
+                baseRef.child(Constants.FB_LOCATION_USER_CONVOS).child(currentUserName)) {
+
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
                 setViewsBasedOnConversationStatus(conversation, v);
@@ -199,15 +205,17 @@ public class ConversationListActivity extends AppCompatActivity {
                                 getResources().getString(R.string.cancel)
                         };
 
-                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ConversationListActivity.this);
+                        android.app.AlertDialog.Builder builder =
+                                new android.app.AlertDialog.Builder(ConversationListActivity.this);
                         builder.setTitle("Change group");
-                        builder.setIcon(R.drawable.alberticon);
+                        builder.setIcon(R.mipmap.ic_launcher);
                         builder.setItems(photoOptions, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        if (selectedConvo.getUserNamesInConversation().size() >= 4) {
+                                        if (selectedConvo.getUserNamesInConversation().size() >=
+                                                Constants.MAX_CONVO_PARTICIPANTS) {
                                             Toast.makeText(getApplicationContext(),
                                                     "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
                                         } else {
@@ -277,10 +285,6 @@ public class ConversationListActivity extends AppCompatActivity {
         ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(storyDuration);
 
         (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
-    }
-
-    private void showUserNameInTextView(){
-        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserName);
     }
 
     private void determineActivityToStart(Conversation conversation){

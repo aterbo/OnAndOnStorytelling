@@ -240,19 +240,19 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     public void shortForward(View view){
-        skip(+Constants.shortSkipTime);
+        skip(+Constants.SHORT_SKIP_TIME);
     }
 
     public void longForward(View view){
-        skip(+Constants.longSkipTime);
+        skip(+Constants.LONG_SKIP_TIME);
     }
 
     public void shortRewind(View view){
-        skip(-Constants.shortSkipTime);
+        skip(-Constants.SHORT_SKIP_TIME);
     }
 
     public void longRewind(View view){
-        skip(-Constants.longSkipTime);
+        skip(-Constants.LONG_SKIP_TIME);
     }
 
     private void skip(int skipTime) {
