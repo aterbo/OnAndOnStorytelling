@@ -168,8 +168,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 .createSignInIntentBuilder()
                 .setLogo(R.mipmap.ic_launcher)
                 .setProviders(AuthUI.EMAIL_PROVIDER,
-                        AuthUI.GOOGLE_PROVIDER,
-                        AuthUI.FACEBOOK_PROVIDER)
+                        AuthUI.GOOGLE_PROVIDER)
                 .build();
         startActivityForResult(intent, RC_SIGN_IN);
     }
