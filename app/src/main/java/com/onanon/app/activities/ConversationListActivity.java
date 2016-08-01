@@ -1,5 +1,6 @@
 package com.onanon.app.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.User;
 
@@ -56,6 +58,7 @@ public class ConversationListActivity extends AppCompatActivity {
     private FirebaseListAdapter<Conversation> mListAdapter;
     private PrefManager prefManager;
     private String mUserEmail, mUserProfilePicUrl;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +105,9 @@ public class ConversationListActivity extends AppCompatActivity {
         uIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+
                 if (existsUserProfile(snapshot)) {
-                    System.out.println(snapshot.getValue());
+                    Log.i("GetUserNameFromUID", (String)snapshot.getValue());
 
                     currentUserName = (String) snapshot.getValue();
                     prefManager.setUserNameToPreferences(currentUserName);
@@ -511,12 +515,20 @@ public class ConversationListActivity extends AppCompatActivity {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
                 currentUserName = userNameInput.getText().toString();
-                checkIfUserNameIsUnique();
+                if (currentUserName.length() > 2) {
+                    progressDialog = Utils.getSpinnerDialog(ConversationListActivity.this);
+                    checkIfUserNameIsUnique();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(ConversationListActivity.this, "Please enter a longer user name", Toast.LENGTH_SHORT);
+                }
             }
         });
 
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
         builder.show();
     }
 
@@ -562,6 +574,9 @@ public class ConversationListActivity extends AppCompatActivity {
                 setUserNameToPrefManager();
                 setFirebaseListToUserName();
                 showUserNameInTextView();
+                if(progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
             }
         });
 
