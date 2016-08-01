@@ -3,8 +3,11 @@ package com.onanon.app.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.google.firebase.database.Exclude;
+import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -304,26 +307,26 @@ public class Conversation implements Parcelable{
         return participantsString.substring(2, participantsString.length());
     }
 
-    public String determineTitle(String currentUserName){
+    public int currentConversationStatus(String currentUserName){
         if (isUserTurnToTell(currentUserName)) {
-            return "Tell:    " + proposedPromptsTagAsString();
+            return Constants.USER_TURN_TO_TELL;
 
         } else if (isUserTurnToSendPrompts(currentUserName)) {
-            return "You need to send topics!";
+            return Constants.USER_TURN_TO_SEND_PROMPTS;
 
         } else if (isUserTurnToHear(currentUserName)) {
-            return "Hear:    " + currentPrompt.getText();
+            return Constants.USER_TURN_TO_HEAR;
 
         } else if (isUserWaitingForPrompts(currentUserName)) {
-            return "Waiting for topics.";
+            return Constants.USER_WAITING_FOR_PROMPTS;
 
         } else if (isUserWaitingForStory(currentUserName)) {
-            return "Waiting for a story.";
+            return Constants.USER_WAITING_FOR_STORY;
 
         } else if (isUserWaitingForOthersToHear()) {
-            return "Waiting for everyone else to listen.";
+            return Constants.USER_WAITING_FOR_OTHERS;
         }
-        return "Oops";
+        return Constants.INCORRECT_RESULT;
     }
 
     public boolean isUserTurnToTell(String currentUserName) {
@@ -383,7 +386,7 @@ public class Conversation implements Parcelable{
     }
 
     public boolean isCurrentUserNextToTell(String currentUserName){
-        if(getNextUserNameToTell().equals(currentUserName)){
+        if(nextUserNameToTell.equals(currentUserName)){
             return true;
         } else{
             return false;
@@ -391,7 +394,7 @@ public class Conversation implements Parcelable{
     }
 
     public boolean isCurrentUserLastToTell(String currentUserName){
-        if(getLastUserNameToTell().equals(currentUserName)){
+        if(lastUserNameToTell.equals(currentUserName)){
             return true;
         } else{
             return false;
@@ -399,7 +402,7 @@ public class Conversation implements Parcelable{
     }
 
     public boolean haveAllUsersHeardStory() {
-        if (userNamesHaveHeardStory.contains("none")) {
+        if (userNamesHaveNotHeardStory.contains("none")) {
             return true;
         } else{
             return false;
@@ -407,7 +410,7 @@ public class Conversation implements Parcelable{
     }
 
     public boolean hasCurrentUserHeardStory(String currentUserName) {
-        if (getUserNamesHaveNotHeardStory().contains(currentUserName)) {
+        if (userNamesHaveHeardStory.contains(currentUserName)) {
             return true;
         } else{
             return false;

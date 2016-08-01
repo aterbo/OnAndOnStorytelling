@@ -171,7 +171,8 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
 
-                String title = conversation.determineTitle(currentUserName);
+                String title = determineTitle(conversation);
+
                 if (conversation.isUserTurnToTell(currentUserName)) {
                     ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
                     ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
@@ -248,6 +249,36 @@ public class ConversationListActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private String determineTitle(Conversation conversation) {
+        int conversationStatus = conversation.currentConversationStatus(currentUserName);
+        String title;
+
+        switch (conversationStatus) {
+            case Constants.USER_TURN_TO_TELL:
+                title = "Tell:    " + conversation.proposedPromptsTagAsString();
+                break;
+            case Constants.USER_TURN_TO_SEND_PROMPTS:
+                title = "You need to send topics!";
+                break;
+            case Constants.USER_TURN_TO_HEAR:
+                title = "Hear:    " + conversation.getCurrentPrompt().getTag();
+                break;
+            case Constants.USER_WAITING_FOR_PROMPTS:
+                title = "Waiting for topics.";
+                break;
+            case Constants.USER_WAITING_FOR_STORY:
+                title = "Waiting for a story.";
+                break;
+            case Constants.USER_WAITING_FOR_OTHERS:
+                title = "Waiting for everyone else to listen.";
+                break;
+            default:
+                title = "Oops.";
+                break;
+        }
+        return title;
     }
 
     private void showUserNameInTextView(){
