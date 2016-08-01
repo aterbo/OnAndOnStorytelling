@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
 /**
  * Created by ATerbo on 2/12/16.
  */
-public class Conversation implements Parcelable{
+public class Conversation implements Parcelable {
 
     @SuppressWarnings("unused")
     public static final Parcelable.Creator<Conversation> CREATOR = new Parcelable.Creator<Conversation>() {

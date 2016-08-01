@@ -170,29 +170,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 R.layout.layout_conversation_list_item, baseRef.child("userConvos").child(currentUserName)) {
             @Override
             protected void populateView(View v, Conversation conversation, int position) {
-
-                String title = determineTitle(conversation);
-
-                if (conversation.isUserTurnToTell(currentUserName)) {
-                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
-                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "You have a story to tell!");
-                } else if (conversation.isUserTurnToSendPrompts(currentUserName)) {
-                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText("Me");
-                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "You have to send some prompts!");
-                } else {
-                    String firstChar = conversation.getNextUserNameToTell().substring(0, 1);
-                    ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(firstChar);
-                    ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(
-                            "Next Up: " + conversation.getNextUserNameToTell());
-                }
-                ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-                ((TextView) v.findViewById(R.id.conversation_participants)).setText(
-                        "Conversation with:  " + conversation.otherConversationParticipants(currentUserName));
-                ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(
-                        conversation.recordingDurationAsFormattedString());
-                (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
+                setViewsBasedOnConversationStatus(conversation, v);
             }
         };
 
@@ -251,34 +229,54 @@ public class ConversationListActivity extends AppCompatActivity {
         });
     }
 
-    private String determineTitle(Conversation conversation) {
+    private void setViewsBasedOnConversationStatus(Conversation conversation, View v) {
+        String title = "Oops";
+        String imageText = conversation.getNextUserNameToTell().substring(0, 1);
+        String nextTurnDescription = "Next Up: " + conversation.getNextUserNameToTell();
+
         int conversationStatus = conversation.currentConversationStatus(currentUserName);
-        String title;
 
         switch (conversationStatus) {
             case Constants.USER_TURN_TO_TELL:
                 title = "Tell:    " + conversation.proposedPromptsTagAsString();
+                imageText = "ME";
+                nextTurnDescription = "You have a story to tell!";
                 break;
+
             case Constants.USER_TURN_TO_SEND_PROMPTS:
                 title = "You need to send topics!";
+                imageText = "ME";
+                nextTurnDescription = "You need to send some prompts!";
                 break;
+
             case Constants.USER_TURN_TO_HEAR:
                 title = "Hear:    " + conversation.getCurrentPrompt().getTag();
                 break;
+
             case Constants.USER_WAITING_FOR_PROMPTS:
                 title = "Waiting for topics.";
                 break;
+
             case Constants.USER_WAITING_FOR_STORY:
                 title = "Waiting for a story.";
                 break;
+
             case Constants.USER_WAITING_FOR_OTHERS:
                 title = "Waiting for everyone else to listen.";
                 break;
-            default:
-                title = "Oops.";
-                break;
         }
-        return title;
+
+        String conversationParticipants = "Conversation with:  "
+                + conversation.otherConversationParticipants(currentUserName);
+        String storyDuration = conversation.recordingDurationAsFormattedString();
+
+        ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
+        ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(imageText);
+        ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(nextTurnDescription);
+        ((TextView) v.findViewById(R.id.conversation_participants)).setText(conversationParticipants);
+        ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(storyDuration);
+
+        (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
     }
 
     private void showUserNameInTextView(){
@@ -286,28 +284,42 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void determineActivityToStart(Conversation conversation){
-        if (conversation.isUserTurnToTell(currentUserName)) {
-            Log.i("PickedAConvo!", "My turn to tell");
-            startNextActivity(conversation, PickTopicToRecordActivity.class);
+        int conversationStatus = conversation.currentConversationStatus(currentUserName);
 
-        } else if (conversation.isUserTurnToHear(currentUserName)) {
-            startNextActivity(conversation, ListenToStoryActivity.class);
-            Log.i("PickedAConvo!", "My turn to hear");
+        switch (conversationStatus) {
+            case Constants.USER_TURN_TO_TELL:
+                Log.i("PickedAConvo!", "My turn to tell");
+                startNextActivity(conversation, PickTopicToRecordActivity.class);
+                break;
 
-        } else if (conversation.isUserTurnToSendPrompts(currentUserName)) {
-            startNextActivity(conversation, ChooseTopicsToSendActivity.class);
-        }
-        else if (conversation.isUserWaitingForPrompts(currentUserName)) {
-            //TODO: startWait/PingActivity();
-            Log.i("PickedAConvo!", "Waiting for prompts");
-        }
-        else if (conversation.isUserWaitingForStory(currentUserName)) {
-            //TODO: startWait/PingActivity();
-            Log.i("PickedAConvo!", "Waiting for story");
-        }
-        else if (conversation.isUserWaitingForOthersToHear()) {
-            //TODO: startWait/PingActivity();
-            Log.i("PickedAConvo!", "Waiting for others to hear story");
+            case Constants.USER_TURN_TO_SEND_PROMPTS:
+                Log.i("PickedAConvo!", "My turn to send prompts");
+                startNextActivity(conversation, ChooseTopicsToSendActivity.class);
+                break;
+
+            case Constants.USER_TURN_TO_HEAR:
+                Log.i("PickedAConvo!", "My turn to hear");
+                startNextActivity(conversation, ListenToStoryActivity.class);
+                break;
+
+            case Constants.USER_WAITING_FOR_PROMPTS:
+                //TODO: startWait/PingActivity();
+                Log.i("PickedAConvo!", "Waiting for prompts");
+                break;
+
+            case Constants.USER_WAITING_FOR_STORY:
+                //TODO: startWait/PingActivity();
+                Log.i("PickedAConvo!", "Waiting for story");
+                break;
+
+            case Constants.USER_WAITING_FOR_OTHERS:
+                //TODO: startWait/PingActivity();
+                Log.i("PickedAConvo!", "Waiting for others to hear story");
+                break;
+
+            default:
+                Log.i("PickedAConvo!", "Default selected");
+                break;
         }
     }
 
