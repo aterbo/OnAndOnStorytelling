@@ -89,8 +89,10 @@ public class ConversationListActivity extends AppCompatActivity {
             mUserEmail = user.getEmail();
             getUserNameFromUID();
         } else {
-            currentUserName = "Error";
-            showUserNameInTextView();
+            Toast.makeText(getApplicationContext(),
+                    "There has been an error. Please sign in again.", Toast.LENGTH_LONG).show();
+            prefManager.setUserNameToPreferences("");
+            logOutFromFirebase();
         }
     }
 
