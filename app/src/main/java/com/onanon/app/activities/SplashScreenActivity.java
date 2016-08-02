@@ -46,18 +46,18 @@ public class SplashScreenActivity extends AppCompatActivity {
     private PrefManager prefManager;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int RC_SIGN_IN = 100;
+    private boolean didStartFromActivityResult;
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListenerFromStart;
-    private FirebaseAuth.AuthStateListener mAuthListenerFromLogIn;
-    private boolean didStartFromForResult;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        didStartFromForResult = true;
         prefManager = new PrefManager(this);
+        runIntroSlidesIfNeeded();
+        didStartFromActivityResult = false;
         mAuth = FirebaseAuth.getInstance();
         baseRef = FirebaseDatabase.getInstance().getReference();
     }
@@ -66,11 +66,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-
-            Button logInButton = (Button) findViewById(R.id.log_in_button);
-            logInButton.setVisibility(View.INVISIBLE);
-            logInButton.setClickable(false);
-
+            didStartFromActivityResult = true;
             handleSignInResponse(resultCode, data);
             return;
         }
@@ -82,10 +78,12 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        runIntroSlidesIfNeeded();
+        Button logInButton = (Button) findViewById(R.id.log_in_button);
+        logInButton.setVisibility(View.INVISIBLE);
+        logInButton.setClickable(false);
 
         if (isPermissionsGranted()) {
-            buildAuthStateListenerFromStart();
+            buildAuthStateListener();
         } else {
             requestAppPermissions();
         }
@@ -157,33 +155,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    buildAuthStateListenerFromStart();
+                    buildAuthStateListener();
                 } else {
                     requestAppPermissions();
                 }
                 return;
             }
-        }
-    }
-
-    private void buildAuthStateListenerFromStart() {
-        if (didStartFromForResult) {
-            mAuthListenerFromStart = new FirebaseAuth.AuthStateListener() {
-                @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                    if (user != null) {
-                        Log.d("onAuthStateChange1", "onAuthStateChanged:signed_in:" + user.getUid());
-                        moveToConversationListActivity();
-                        mAuth.removeAuthStateListener(mAuthListenerFromStart);
-                    } else {
-                        Log.d("onAuthStateChange1", "onAuthStateChanged:signed_out");
-                        showButtons();
-                        mAuth.removeAuthStateListener(mAuthListenerFromStart);
-                    }
-                }
-            };
-            mAuth.addAuthStateListener(mAuthListenerFromStart);
         }
     }
 
@@ -206,8 +183,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            didStartFromForResult = false;
-            buildAuthListenerFromLogin();
+            Toast.makeText(SplashScreenActivity.this, "Signed in.",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -221,9 +198,9 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void buildAuthListenerFromLogin() {
+    private void buildAuthStateListener() {
 
-        mAuthListenerFromLogIn = new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -235,16 +212,12 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                     checkIfUserAccountExistsInFB();
                 } else {
-                    Log.d("onAuthStateChange2", "onAuthStateChanged:signed_out");
-                    Toast.makeText(getApplicationContext(),
-                            "There has been an error. Please sign in again.", Toast.LENGTH_LONG).show();
-                    prefManager.setUserNameToPreferences("");
-                    logOutFromFirebase();
+                    showButtons();
                 }
             }
         };
 
-        mAuth.addAuthStateListener(mAuthListenerFromLogIn);
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     private void logOutFromFirebase(){
@@ -325,7 +298,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsDataSnapshop(snapshot)) {
-                    Toast.makeText(SplashScreenActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
+                    Toast.makeText(SplashScreenActivity.this, "That User Name already exists!", Toast.LENGTH_LONG);
                     setUpNewFBUserEntry();
                 } else {
                     createUserInFirebaseHelper();
@@ -376,11 +349,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void removeAuthStateListeners() {
-        if (mAuthListenerFromStart != null) {
-            mAuth.removeAuthStateListener(mAuthListenerFromStart);
-        }
-        if (mAuthListenerFromLogIn != null) {
-            mAuth.removeAuthStateListener(mAuthListenerFromLogIn);
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
