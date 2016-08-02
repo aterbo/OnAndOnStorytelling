@@ -15,7 +15,8 @@ android:padding="15dp">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:imeOptions="actionDone"
-        android:inputType="textCapWords" />
+        android:inputType="textCapWords"
+        android:digits="@string/user_name_characters"/>
 
     </android.support.design.widget.TextInputLayout>
 </FrameLayout>
