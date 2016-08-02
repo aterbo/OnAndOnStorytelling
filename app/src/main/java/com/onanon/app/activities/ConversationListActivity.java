@@ -95,10 +95,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
         switch (item.getItemId()) {
             case R.id.add_conversation_menu:
                 startNewConversation();
@@ -148,41 +144,9 @@ public class ConversationListActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final Conversation selectedConvo = mListAdapter.getItem(position);
                 if (selectedConvo != null) {
-                        selectedConvoPushId = mListAdapter.getRef(position).getKey();
-
-                        CharSequence photoOptions[] = new CharSequence[]{
-                                "Add someone to the conversation.",
-                                "Leave this conversation.",
-                                getResources().getString(R.string.cancel)
-                        };
-
-                        android.app.AlertDialog.Builder builder =
-                                new android.app.AlertDialog.Builder(ConversationListActivity.this);
-                        builder.setTitle("Change group");
-                        builder.setIcon(R.mipmap.ic_launcher);
-                        builder.setItems(photoOptions, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        if (selectedConvo.getUserNamesInConversation().size() >=
-                                                Constants.MAX_CONVO_PARTICIPANTS) {
-                                            Toast.makeText(getApplicationContext(),
-                                                    "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            startNextActivity(selectedConvo, AddUserToConversationActivity.class);
-                                        }
-                                        break;
-                                    case 1:
-                                        confirmLeaveConversation(selectedConvo);
-                                        break;
-                                    case 2:
-                                        break;
-                                }
-                            }
-                        });
-                        builder.show();
-                    }
+                    selectedConvoPushId = mListAdapter.getRef(position).getKey();
+                    showLongClickMenu(selectedConvo);
+                }
                 return true;
             }
         });
@@ -278,6 +242,40 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
+    private void showLongClickMenu(final Conversation selectedLongClickConvo) {
+        CharSequence photoOptions[] = new CharSequence[]{
+                "Add someone to the conversation.",
+                "Leave this conversation.",
+                getResources().getString(R.string.cancel)
+        };
+
+        android.app.AlertDialog.Builder builder =
+                new android.app.AlertDialog.Builder(ConversationListActivity.this);
+        builder.setTitle("Change group");
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setItems(photoOptions, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        if (selectedLongClickConvo.getUserNamesInConversation().size() >=
+                                Constants.MAX_CONVO_PARTICIPANTS) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            startNextActivity(selectedLongClickConvo, AddUserToConversationActivity.class);
+                        }
+                        break;
+                    case 1:
+                        confirmLeaveConversation(selectedLongClickConvo);
+                        break;
+                    case 2:
+                        break;
+                }
+            }
+        });
+        builder.show();
+    }
 
     private void confirmLeaveConversation(final Conversation conversation){
         AlertDialog.Builder alert = new AlertDialog.Builder(ConversationListActivity.this);
