@@ -291,7 +291,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void checkIfUserNameIsUnique() {
         DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USER_NAME_KEY_LIST)
-                .child(currentUserName.toLowerCase());
+                .child(userNameAsKey());
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -311,6 +311,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         });
     }
 
+    private String userNameAsKey() {
+        return currentUserName.toLowerCase().replace(" ", "");
+    }
+
     private void createUserInFirebaseHelper() {
 
         /* Create a HashMap version of the user to add */
@@ -321,8 +325,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         HashMap<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + currentUserName,
                 newUserMap);
-        childUpdates.put("/" + Constants.FB_LOCATION_USER_NAME_KEY_LIST + "/" + currentUserName.toLowerCase(),
-                true);
+        childUpdates.put("/" + Constants.FB_LOCATION_USER_NAME_KEY_LIST + "/" +
+                userNameAsKey(), true);
         childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
                 + currentUserUID, currentUserName);
 
