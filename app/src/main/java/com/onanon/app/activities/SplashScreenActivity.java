@@ -278,11 +278,11 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 currentUserName = userNameInput.getText().toString();
                 if (currentUserName.length() > 2) {
+                    dialog.dismiss();
                     checkIfUserNameIsUnique();
-                    dialog.dismiss();
                 } else {
-                    setUpNewFBUserEntry("That user name is too short.");
                     dialog.dismiss();
+                    setUpNewFBUserEntry("That user name is too short.");
                 }
             }
         });
@@ -290,7 +290,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void checkIfUserNameIsUnique() {
-        DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USERS).child(currentUserName);
+        DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USER_NAME_KEY_LIST)
+                .child(currentUserName.toLowerCase());
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -320,6 +321,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         HashMap<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + currentUserName,
                 newUserMap);
+        childUpdates.put("/" + Constants.FB_LOCATION_USER_NAME_KEY_LIST + "/" + currentUserName.toLowerCase(),
+                true);
         childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
                 + currentUserUID, currentUserName);
 

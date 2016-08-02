@@ -20,6 +20,7 @@ public class Constants {
     public static final String FB_LOCATION_TOTAL_NUMBER_OF_PROMPTS = "numberOfPrompts";
     public static final String FB_LOCATION_PROMPTS = "prompts";
     public static final String FB_LOCATION_UID_MAPPINGS = "uidMappings";
+    public static final String FB_LOCATION_USER_NAME_KEY_LIST = "userNamesLowerCase";
 
     /**
      * Intent Key and Activity Constants
