@@ -83,60 +83,10 @@ public class ConversationListActivity extends AppCompatActivity {
             setFirebaseListToUserName();
             showUserNameInTextView();
         } else {
-            getUserFromFirebase();
-        }
-    }
-
-    private void getUserFromFirebase() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            currentUserUID = user.getUid();
-            mUserEmail = user.getEmail();
-
-            for (UserInfo profile : user.getProviderData()) {
-                Uri photoUrl = profile.getPhotoUrl();
-                String providerEmail = profile.getEmail();
-                String providerUserName = profile.getDisplayName();
-                if (user.getPhotoUrl() != null) {
-                    mUserProfilePicUrl = photoUrl.toString();
-                }
-            }
-            getUserNameFromUID();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "There has been an error. Please sign in again.", Toast.LENGTH_LONG).show();
-            prefManager.setUserNameToPreferences("");
             logOutFromFirebase();
         }
     }
 
-    private void getUserNameFromUID(){
-        DatabaseReference uIdRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
-
-        uIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                if (existsDataSnapshop(snapshot)) {
-                    Log.i("GetUserNameFromUID", (String)snapshot.getValue());
-
-                    currentUserName = (String) snapshot.getValue();
-                    prefManager.setUserNameToPreferences(currentUserName);
-
-                    setFirebaseListToUserName();
-                    showUserNameInTextView();
-                } else {
-                    setUpNewFBUserEntry();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("Error getting user data from Firebase after login. " +
-                        "The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
 
     private void showUserNameInTextView(){
         ((TextView)findViewById(R.id.current_user_indicator)).setText("Hello, " + currentUserName);
@@ -508,92 +458,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void setUserNameToPrefManager() {
         prefManager.setUserNameToPreferences(currentUserName);
-    }
-
-    private void setUpNewFBUserEntry() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Welcome to ONanON!");
-
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
-                (ViewGroup) findViewById(android.R.id.content), false);
-
-        final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
-        userNameInput.setHint("User Name");
-        builder.setCancelable(false);
-        builder.setView(viewInflated);
-
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                currentUserName = userNameInput.getText().toString();
-                if (currentUserName.length() > 2) {
-                    progressDialog = Utils.getSpinnerDialog(ConversationListActivity.this);
-                    checkIfUserNameIsUnique();
-                    dialog.dismiss();
-                } else {
-                    Toast.makeText(ConversationListActivity.this, "Please enter a longer user name", Toast.LENGTH_SHORT);
-                }
-            }
-        });
-
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-        builder.show();
-    }
-
-    private void checkIfUserNameIsUnique() {
-        DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USERS).child(currentUserName);
-
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (existsDataSnapshop(snapshot)) {
-                    Toast.makeText(ConversationListActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
-                    setUpNewFBUserEntry();
-                } else {
-                    createUserInFirebaseHelper();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError firebaseError) {
-                System.out.println("Error getting user data from Firebase after login. " +
-                        "The read failed: " + firebaseError.getMessage());
-            }
-        });
-    }
-
-    private void createUserInFirebaseHelper() {
-
-        if (mUserProfilePicUrl == null) {
-            mUserProfilePicUrl = "XXXXX";
-        }
-
-        /* Create a HashMap version of the user to add */
-        User newUser = new User(currentUserName, mUserEmail, currentUserUID, mUserProfilePicUrl);
-        HashMap<String, Object> newUserMap =
-                (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
-
-        HashMap<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + currentUserName,
-                newUserMap);
-        childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
-                + currentUserUID, currentUserName);
-
-        baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                setUserNameToPrefManager();
-                setFirebaseListToUserName();
-                showUserNameInTextView();
-                if(progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-            }
-        });
-
     }
 
     @Override

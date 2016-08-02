@@ -6,31 +6,71 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
+import com.onanon.app.classes.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
 
+    private String currentUserName, currentUserUID, mUserEmail, mUserProfilePicUrl;
+    private DatabaseReference baseRef;
+    private PrefManager prefManager;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int RC_SIGN_IN = 100;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListenerFromStart;
+    private FirebaseAuth.AuthStateListener mAuthListenerFromLogIn;
+    private boolean didStartFromForResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash_screen);
+        didStartFromForResult = true;
+        prefManager = new PrefManager(this);
+        mAuth = FirebaseAuth.getInstance();
+        baseRef = FirebaseDatabase.getInstance().getReference();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
+
+            Button logInButton = (Button) findViewById(R.id.log_in_button);
+            logInButton.setVisibility(View.INVISIBLE);
+            logInButton.setClickable(false);
+
             handleSignInResponse(resultCode, data);
             return;
         }
@@ -40,30 +80,18 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         runIntroSlidesIfNeeded();
 
         if (isPermissionsGranted()) {
-            checkIfLoggedIn();
+            buildAuthStateListenerFromStart();
         } else {
             requestAppPermissions();
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
     private void runIntroSlidesIfNeeded() {
-        PrefManager prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
             prefManager.setFirstTimeLaunch(false);
 
@@ -71,23 +99,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.SPLASH_SCREEN);
             startActivity(intent);
             finish();
-        }
-    }
-
-    private void checkIfLoggedIn(){
-        if (isUserLoggedIn()) {
-            moveToConversationListActivity();
-        } else {
-            showButtons();
-        }
-    }
-
-    private boolean isUserLoggedIn(){
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -102,7 +113,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void requestAppPermissions(){
         if (isShowExplainationRequired()){
-            showPermissionsExplainationDialog("You need to allow access to the microphone to record " +
+            showPermissionsExplanationDialog("You need to allow access to the microphone to record " +
                             "your awesome stories!",
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -123,6 +134,15 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
+    private void showPermissionsExplanationDialog(String message,
+                                                  DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .create()
+                .show();
+    }
+
     private void showPermissionsRequestDialog(){
         ActivityCompat.requestPermissions(SplashScreenActivity.this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
@@ -137,12 +157,33 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    checkIfLoggedIn();
+                    buildAuthStateListenerFromStart();
                 } else {
                     requestAppPermissions();
                 }
                 return;
             }
+        }
+    }
+
+    private void buildAuthStateListenerFromStart() {
+        if (didStartFromForResult) {
+            mAuthListenerFromStart = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        Log.d("onAuthStateChange1", "onAuthStateChanged:signed_in:" + user.getUid());
+                        moveToConversationListActivity();
+                        mAuth.removeAuthStateListener(mAuthListenerFromStart);
+                    } else {
+                        Log.d("onAuthStateChange1", "onAuthStateChanged:signed_out");
+                        showButtons();
+                        mAuth.removeAuthStateListener(mAuthListenerFromStart);
+                    }
+                }
+            };
+            mAuth.addAuthStateListener(mAuthListenerFromStart);
         }
     }
 
@@ -162,12 +203,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         startActivityForResult(intent, RC_SIGN_IN);
     }
 
-
-
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            moveToConversationListActivity();
+            didStartFromForResult = false;
+            buildAuthListenerFromLogin();
             return;
         }
 
@@ -181,18 +221,172 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
+    private void buildAuthListenerFromLogin() {
+
+        mAuthListenerFromLogIn = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    Log.d("onAuthStateChange2", "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    currentUserUID = user.getUid();
+                    mUserEmail = user.getEmail();
+
+                    checkIfUserAccountExistsInFB();
+                } else {
+                    Log.d("onAuthStateChange2", "onAuthStateChanged:signed_out");
+                    Toast.makeText(getApplicationContext(),
+                            "There has been an error. Please sign in again.", Toast.LENGTH_LONG).show();
+                    prefManager.setUserNameToPreferences("");
+                    logOutFromFirebase();
+                }
+            }
+        };
+
+        mAuth.addAuthStateListener(mAuthListenerFromLogIn);
+    }
+
+    private void logOutFromFirebase(){
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // user is now signed out
+                        recreate();
+                    }
+                });
+    }
+    
+    private void checkIfUserAccountExistsInFB() {
+        DatabaseReference uIdRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
+
+        uIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                if (existsDataSnapshop(snapshot)) {
+                    currentUserName = (String) snapshot.getValue();
+                    prefManager.setUserNameToPreferences(currentUserName);
+                    moveToConversationListActivity();
+                } else {
+                    setUpNewFBUserEntry();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("Error getting user data from Firebase after login. " +
+                        "The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private boolean existsDataSnapshop(DataSnapshot dataSnapshot) {
+        if (dataSnapshot != null && dataSnapshot.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void setUpNewFBUserEntry() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Welcome to ONanON!");
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
+                (ViewGroup) findViewById(android.R.id.content), false);
+
+        final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
+        userNameInput.setHint("User Name");
+        builder.setCancelable(false);
+        builder.setView(viewInflated);
+
+        // Set up the buttons
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                currentUserName = userNameInput.getText().toString();
+                if (currentUserName.length() > 2) {
+                    checkIfUserNameIsUnique();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(SplashScreenActivity.this, "Please enter a longer user name", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void checkIfUserNameIsUnique() {
+        DatabaseReference userRef = baseRef.child(Constants.FB_LOCATION_USERS).child(currentUserName);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (existsDataSnapshop(snapshot)) {
+                    Toast.makeText(SplashScreenActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
+                    setUpNewFBUserEntry();
+                } else {
+                    createUserInFirebaseHelper();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("Error getting user data from Firebase after login. " +
+                        "The read failed: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void createUserInFirebaseHelper() {
+
+        if (mUserProfilePicUrl == null) {
+            mUserProfilePicUrl = "XXXXX";
+        }
+
+        /* Create a HashMap version of the user to add */
+        User newUser = new User(currentUserName, mUserEmail, currentUserUID, mUserProfilePicUrl);
+        HashMap<String, Object> newUserMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(newUser, Map.class);
+
+        HashMap<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/" + Constants.FB_LOCATION_USERS + "/" + currentUserName,
+                newUserMap);
+        childUpdates.put("/" + Constants.FB_LOCATION_UID_MAPPINGS + "/"
+                + currentUserUID, currentUserName);
+
+        baseRef.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                prefManager.setUserNameToPreferences(currentUserName);
+                moveToConversationListActivity();
+            }
+        });
+
+    }
+
+
     private void moveToConversationListActivity(){
+        removeAuthStateListeners();
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private void showPermissionsExplainationDialog(String message,
-                                                   DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .create()
-                .show();
+    private void removeAuthStateListeners() {
+        if (mAuthListenerFromStart != null) {
+            mAuth.removeAuthStateListener(mAuthListenerFromStart);
+        }
+        if (mAuthListenerFromLogIn != null) {
+            mAuth.removeAuthStateListener(mAuthListenerFromLogIn);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        removeAuthStateListeners();
     }
 }
