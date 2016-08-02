@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,8 @@ import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.classes.User;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -235,7 +238,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     prefManager.setUserNameToPreferences(currentUserName);
                     moveToConversationListActivity();
                 } else {
-                    setUpNewFBUserEntry();
+                    setUpNewFBUserEntry("User Name");
                 }
             }
 
@@ -255,7 +258,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpNewFBUserEntry() {
+    private void setUpNewFBUserEntry(String hintMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Welcome to ONanON!");
 
@@ -263,7 +266,9 @@ public class SplashScreenActivity extends AppCompatActivity {
                 (ViewGroup) findViewById(android.R.id.content), false);
 
         final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
-        userNameInput.setHint("User Name");
+        final TextInputLayout textInputLayout = (TextInputLayout) viewInflated.findViewById(R.id.text_input_layout);
+        textInputLayout.setHint(hintMessage);
+        textInputLayout.setHintAnimationEnabled(false);
         builder.setCancelable(false);
         builder.setView(viewInflated);
 
@@ -276,7 +281,8 @@ public class SplashScreenActivity extends AppCompatActivity {
                     checkIfUserNameIsUnique();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(SplashScreenActivity.this, "Please enter a longer user name", Toast.LENGTH_SHORT);
+                    setUpNewFBUserEntry("That user name is too short.");
+                    dialog.dismiss();
                 }
             }
         });
@@ -290,8 +296,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (existsDataSnapshop(snapshot)) {
-                    Toast.makeText(SplashScreenActivity.this, "That User Name already exists!", Toast.LENGTH_LONG);
-                    setUpNewFBUserEntry();
+                    setUpNewFBUserEntry("That user name is taken.");
                 } else {
                     createUserInFirebaseHelper();
                 }

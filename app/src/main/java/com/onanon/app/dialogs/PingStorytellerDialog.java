@@ -1,4 +1,4 @@
-package com.onanon.app.alertdialogs;
+package com.onanon.app.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
