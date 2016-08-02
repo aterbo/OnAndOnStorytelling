@@ -110,7 +110,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void requestAppPermissions(){
-        if (isShowExplainationRequired()){
+        if (isShowExplanationRequired()){
             showPermissionsExplanationDialog("You need to allow access to the microphone to record " +
                             "your awesome stories!",
                     new DialogInterface.OnClickListener() {
@@ -124,7 +124,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isShowExplainationRequired(){
+    private boolean isShowExplanationRequired(){
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
             return true;
         }  else {
@@ -183,8 +183,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Toast.makeText(SplashScreenActivity.this, "Signed in.",
-                    Toast.LENGTH_SHORT).show();
             return;
         }
 
