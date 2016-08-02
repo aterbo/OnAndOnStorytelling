@@ -128,7 +128,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void showUserNameInTextView(){
-        ((TextView)findViewById(R.id.log_in_indicator)).setText("Logged in as: " + currentUserName);
+        ((TextView)findViewById(R.id.log_in_indicator)).setText("Hello, " + currentUserName);
     }
 
     private void setFloatingActionButton() {
