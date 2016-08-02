@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "722073204587-2sncucf96gboj94mafjru15h1j6gk713.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onanon.app",
+            "certificate_hash": "ECE33B02B6998C4C83E5F309797C61DF127AB355"
+          }
+        },
+        {
           "client_id": "722073204587-savlpjilqtrh7lc1gj59226s0u7f3cs5.apps.googleusercontent.com",
           "client_type": 3
         }

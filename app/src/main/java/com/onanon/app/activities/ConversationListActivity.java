@@ -3,6 +3,7 @@ package com.onanon.app.activities;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -30,6 +31,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,6 +92,15 @@ public class ConversationListActivity extends AppCompatActivity {
         if (user != null) {
             currentUserUID = user.getUid();
             mUserEmail = user.getEmail();
+
+            for (UserInfo profile : user.getProviderData()) {
+                Uri photoUrl = profile.getPhotoUrl();
+                String providerEmail = profile.getEmail();
+                String providerUserName = profile.getDisplayName();
+                if (user.getPhotoUrl() != null) {
+                    mUserProfilePicUrl = photoUrl.toString();
+                }
+            }
             getUserNameFromUID();
         } else {
             Toast.makeText(getApplicationContext(),
@@ -128,7 +139,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void showUserNameInTextView(){
-        ((TextView)findViewById(R.id.log_in_indicator)).setText("Hello, " + currentUserName);
+        ((TextView)findViewById(R.id.current_user_indicator)).setText("Hello, " + currentUserName);
     }
 
     private void setFloatingActionButton() {
@@ -556,7 +567,10 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void createUserInFirebaseHelper() {
 
-        mUserProfilePicUrl = "XXXXXX";
+        if (mUserProfilePicUrl == null) {
+            mUserProfilePicUrl = "XXXXX";
+        }
+
         /* Create a HashMap version of the user to add */
         User newUser = new User(currentUserName, mUserEmail, currentUserUID, mUserProfilePicUrl);
         HashMap<String, Object> newUserMap =

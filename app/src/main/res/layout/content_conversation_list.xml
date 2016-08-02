@@ -11,13 +11,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.onanon.app.activities.ConversationListActivity"
-    tools:showIn="@layout/activity_conversation_list">Removed
+    tools:showIn="@layout/activity_conversation_list">
 
     <TextView
-        android:id="@+id/log_in_indicator"
+        android:id="@+id/current_user_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/blackTint"
         android:layout_marginBottom="5dp"/>
 
     <ListView
