@@ -106,7 +106,7 @@ public class ConversationListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                if (existsUserProfile(snapshot)) {
+                if (existsDataSnapshop(snapshot)) {
                     Log.i("GetUserNameFromUID", (String)snapshot.getValue());
 
                     currentUserName = (String) snapshot.getValue();
@@ -487,8 +487,8 @@ public class ConversationListActivity extends AppCompatActivity {
         finish();
     }
 
-    private boolean existsUserProfile(DataSnapshot dataSnapshot) {
-        if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
+    private boolean existsDataSnapshop(DataSnapshot dataSnapshot) {
+        if (dataSnapshot != null && dataSnapshot.exists()) {
             return true;
         } else {
             return false;
@@ -538,7 +538,7 @@ public class ConversationListActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if (existsUserProfile(snapshot)) {
+                if (existsDataSnapshop(snapshot)) {
                     Toast.makeText(ConversationListActivity.this, "That User Name already exists!", Toast.LENGTH_SHORT);
                     setUpNewFBUserEntry();
                 } else {
