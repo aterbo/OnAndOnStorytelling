@@ -9,6 +9,7 @@ public class Constants {
     public static final int NUMBER_OF_PROMPT_OPTIONS = 3;
     public static final int SHORT_SKIP_TIME = 5000;
     public static  final int LONG_SKIP_TIME = 30000;
+    public static final String NO_PHOTO_KEY = "NO_PHOTO";
 
     /**
      * Firebase Location Constants

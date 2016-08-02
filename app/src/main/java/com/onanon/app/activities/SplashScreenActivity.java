@@ -22,11 +22,8 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -185,7 +182,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Log.d("handleSignInResponse", "Signed in");
+            Log.i("handleSignInResponse", "Signed in");
             return;
         }
 
@@ -205,27 +202,16 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Log.d("onAuthStateChange2", "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.i("onAuthStateChange2", "onAuthStateChanged:signed_in:" + user.getUid());
 
                     currentUserUID = user.getUid();
                     mUserEmail = user.getEmail();
-                    Log.d("ProfileData", user.getProviderId());
-                    if (user.getProviderId() == "google.com") {
-                        for (UserInfo profile : user.getProviderData()) {
-                            // Id of the provider (ex: google.com)
-                            if (profile.getProviderId() == "google.com") {
-                                String name = profile.getDisplayName();
-                                mUserEmail = profile.getEmail();
-                                Uri photoUrl = profile.getPhotoUrl();
-                                mUserProfilePicUrl = photoUrl.toString();
 
-
-                                Log.d("ProfileData", profile.getProviderId());
-                                Log.d("ProfileData", name);
-                                Log.d("ProfileData", mUserEmail);
-                                Log.d("ProfileData", mUserProfilePicUrl);
-                            }
-                        }
+                    Uri photoUrl = user.getPhotoUrl();
+                    if (photoUrl != null) {
+                        mUserProfilePicUrl = photoUrl.toString();
+                    } else {
+                        mUserProfilePicUrl = Constants.NO_PHOTO_KEY;
                     }
                     checkIfUserAccountExistsInFB();
                 } else {
@@ -235,17 +221,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         };
 
         mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    private void logOutFromFirebase(){
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // user is now signed out
-                        recreate();
-                    }
-                });
     }
     
     private void checkIfUserAccountExistsInFB() {
@@ -331,10 +306,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void createUserInFirebaseHelper() {
-
-        if (mUserProfilePicUrl == null) {
-            mUserProfilePicUrl = "XXXXX";
-        }
 
         /* Create a HashMap version of the user to add */
         User newUser = new User(currentUserName, mUserEmail, currentUserUID, mUserProfilePicUrl);
