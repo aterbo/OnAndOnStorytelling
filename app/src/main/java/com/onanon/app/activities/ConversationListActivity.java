@@ -1,9 +1,7 @@
 package com.onanon.app.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -11,13 +9,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,22 +24,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
-import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
-import com.onanon.app.classes.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,12 +43,9 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private String currentUserName;
     private String selectedConvoPushId;
-    private String currentUserUID;
     private DatabaseReference baseRef;
     private FirebaseListAdapter<Conversation> mListAdapter;
     private PrefManager prefManager;
-    private String mUserEmail, mUserProfilePicUrl;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -446,18 +431,6 @@ public class ConversationListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SplashScreenActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private boolean existsDataSnapshop(DataSnapshot dataSnapshot) {
-        if (dataSnapshot != null && dataSnapshot.exists()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void setUserNameToPrefManager() {
-        prefManager.setUserNameToPreferences(currentUserName);
     }
 
     @Override
