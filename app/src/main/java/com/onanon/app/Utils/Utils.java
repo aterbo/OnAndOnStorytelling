@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Environment;
 
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,4 +42,18 @@ public class Utils {
     public static long getSystemTimeAsLong() {
         return System.currentTimeMillis();
     }
+
+    public static String converSystemTimeToDateAsString(long milliSeconds)
+    {
+        String dateFormat = "HH:mm, MMM d";
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+
+        return formatter.format(calendar.getTime());
+    }
+
 }

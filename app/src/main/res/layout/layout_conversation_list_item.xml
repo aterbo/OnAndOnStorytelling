@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/conversation_profile_image"
         android:layout_alignParentTop="true"
-        android:text="Participants"
+        android:text="Next Turn"
         />
 
     <TextView
@@ -55,18 +55,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:text="Story Duration"
         />
-
-
-
+    
     <TextView
         android:id="@+id/conversation_time_since_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:text="Time Since"
         />
 </RelativeLayout>
