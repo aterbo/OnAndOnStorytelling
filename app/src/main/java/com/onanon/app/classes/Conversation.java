@@ -361,7 +361,8 @@ public class Conversation implements Parcelable {
 
     public boolean isUserTurnToHear(String currentUserName) {
         if(isStoryRecorded()
-                && hasCurrentUserHeardStory(currentUserName)) {
+                && !isCurrentUserLastToTell(currentUserName)
+                && !hasCurrentUserHeardStory(currentUserName)) {
             return true;
         } else{
             return false;

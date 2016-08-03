@@ -320,18 +320,10 @@ public class ListenToStoryActivity extends AppCompatActivity {
         deleteLocalStoryAudioFile();
 
         conversation.markUserAsHasHeardStory(currentUserName);
-        if (haveAllUsersHeardStory()){
+        if (conversation.haveAllUsersHeardStory()){
             deleteFBStorageStoryAudioFile();
         } else {
             updateConversationAfterListening();
-        }
-    }
-
-    private boolean haveAllUsersHeardStory(){
-        if (conversation.getUserNamesHaveNotHeardStory().contains("none")) {
-            return true;
-        } else {
-            return false;
         }
     }
 
