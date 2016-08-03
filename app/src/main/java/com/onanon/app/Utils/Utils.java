@@ -61,33 +61,29 @@ public class Utils {
         long currentTime = System.currentTimeMillis();
         long millis = currentTime - milliSeconds;
 
-
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         millis -= TimeUnit.HOURS.toMillis(hours);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-        millis -= TimeUnit.MINUTES.toMillis(minutes);
 
         StringBuilder sb = new StringBuilder(64);
 
-        sb.append("Active ");
-
         if (days >= 2) {
             sb.append(days);
-            sb.append(" Days");
+            sb.append(" days");
         } else if (days >= 1) {
             sb.append(days);
-            sb.append(" Day");
+            sb.append(" day");
         } else if (hours >= 2) {
             sb.append(hours);
-            sb.append(" Hours");
+            sb.append(" hours");
         } else if (hours >= 1) {
             sb.append(hours);
-            sb.append(" Hour");
+            sb.append(" hour");
         } else if (minutes >= 5) {
             sb.append(minutes);
-            sb.append(" Min");
+            sb.append(" min");
         } else{
             sb.append("Just a few minutes");
         }
