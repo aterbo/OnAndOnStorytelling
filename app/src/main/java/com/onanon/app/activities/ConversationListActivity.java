@@ -193,8 +193,7 @@ public class ConversationListActivity extends AppCompatActivity {
         String conversationParticipants = "Conversation with:  "
                 + conversation.otherConversationParticipants(currentUserName);
         String storyDuration = conversation.recordingDurationAsFormattedString();
-        String lastAction = Utils.converSystemTimeToDateAsString(
-                conversation.getDateLastActionOccurred());
+        String lastAction = Utils.calcTimeFromMillisToNow(conversation.getDateLastActionOccurred());
 
         ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
         ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(imageText);
