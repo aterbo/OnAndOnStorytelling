@@ -155,7 +155,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void setViewsBasedOnConversationStatus(Conversation conversation, View v) {
         String title = "Oops";
-        String imageText = conversation.getNextUserNameToTell().substring(0, 1);
         String nextTurnDescription = "Next Up: " + conversation.getNextUserNameToTell();
 
         int conversationStatus = conversation.currentConversationStatus(currentUserName);
@@ -163,14 +162,12 @@ public class ConversationListActivity extends AppCompatActivity {
         switch (conversationStatus) {
             case Constants.USER_TURN_TO_TELL:
                 title = "Tell:  " + conversation.proposedPromptsTagAsString();
-                imageText = "ME";
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 nextTurnDescription = "You have a story to tell!";
                 break;
 
             case Constants.USER_TURN_TO_SEND_PROMPTS:
                 title = "You need to send topics!";
-                imageText = "ME";
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 nextTurnDescription = "You need to send some prompts!";
                 break;
@@ -198,7 +195,6 @@ public class ConversationListActivity extends AppCompatActivity {
         String lastAction = Utils.calcTimeFromMillisToNow(conversation.getDateLastActionOccurred());
 
         ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-        ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(imageText);
         ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(nextTurnDescription);
         ((TextView) v.findViewById(R.id.conversation_participants)).setText(conversationParticipants);
         ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(storyDuration);
