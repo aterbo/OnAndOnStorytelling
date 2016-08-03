@@ -48,7 +48,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private PrefManager prefManager;
     private final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int RC_SIGN_IN = 100;
-    private boolean didStartFromActivityResult;
+    private boolean flag;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -59,7 +59,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         prefManager = new PrefManager(this);
         runIntroSlidesIfNeeded();
-        didStartFromActivityResult = false;
         mAuth = FirebaseAuth.getInstance();
         baseRef = FirebaseDatabase.getInstance().getReference();
     }
@@ -68,7 +67,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            didStartFromActivityResult = true;
             handleSignInResponse(resultCode, data);
             return;
         }
@@ -83,6 +81,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         Button logInButton = (Button) findViewById(R.id.log_in_button);
         logInButton.setVisibility(View.INVISIBLE);
         logInButton.setClickable(false);
+        flag = true;
 
         if (isPermissionsGranted()) {
             buildAuthStateListener();
@@ -204,8 +203,10 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
+                if (user != null && flag) {
                     Log.i("onAuthStateChange2", "onAuthStateChanged:signed_in:" + user.getUid());
+
+                    flag = false;
 
                     currentUserUID = user.getUid();
                     mUserEmail = user.getEmail();
@@ -218,6 +219,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     }
                     checkIfUserAccountExistsInFB();
                 } else {
+                    flag = false;
                     showButtons();
                 }
             }
@@ -234,6 +236,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
 
                 if (existsDataSnapshop(snapshot)) {
+                    Log.i("checkIfUserExists", "Data Snapshot Exists");
                     currentUserName = (String) snapshot.getValue();
                     prefManager.setUserNameToPreferences(currentUserName);
                     moveToConversationListActivity();
@@ -259,34 +262,33 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void setUpNewFBUserEntry(String hintMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Welcome to ONanON!");
+        Log.i("setUpNewFBUser", "Started Activity");
 
-        View viewInflated = LayoutInflater.from(this).inflate(R.layout.layout_new_user_info,
-                (ViewGroup) findViewById(android.R.id.content), false);
+        findViewById(R.id.add_user_name_text).setVisibility(View.VISIBLE);
 
-        final EditText userNameInput = (EditText) viewInflated.findViewById(R.id.user_name_input);
-        final TextInputLayout textInputLayout = (TextInputLayout) viewInflated.findViewById(R.id.text_input_layout);
+        final EditText userNameInput = (EditText) findViewById(R.id.user_name_input);
+        final TextInputLayout textInputLayout = (TextInputLayout) findViewById(R.id.text_input_layout);
+        final Button setUserNameButton = (Button) findViewById(R.id.create_user_name_button);
+
+        setUserNameButton.setClickable(true);
+        setUserNameButton.setEnabled(true);
+        setUserNameButton.setVisibility(View.VISIBLE);
+        textInputLayout.setVisibility(View.VISIBLE);
         textInputLayout.setHint(hintMessage);
-        textInputLayout.setHintAnimationEnabled(false);
-        builder.setCancelable(false);
-        builder.setView(viewInflated);
+        textInputLayout.setHintAnimationEnabled(true);
 
-        // Set up the buttons
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        setUserNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(View view) {
                 currentUserName = userNameInput.getText().toString();
                 if (currentUserName.length() > 2) {
-                    dialog.dismiss();
+                    setUserNameButton.setEnabled(false);
                     checkIfUserNameIsUnique();
                 } else {
-                    dialog.dismiss();
-                    setUpNewFBUserEntry("That user name is too short.");
+                    textInputLayout.setHint("That user name is too short.");
                 }
             }
         });
-        builder.show();
     }
 
     private void checkIfUserNameIsUnique() {

@@ -32,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 
 import java.util.ArrayList;
@@ -192,14 +193,15 @@ public class ConversationListActivity extends AppCompatActivity {
         String conversationParticipants = "Conversation with:  "
                 + conversation.otherConversationParticipants(currentUserName);
         String storyDuration = conversation.recordingDurationAsFormattedString();
+        String lastAction = Utils.converSystemTimeToDateAsString(
+                conversation.getDateLastActionOccurred());
 
         ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
         ((TextView) v.findViewById(R.id.conversation_profile_image)).setText(imageText);
         ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(nextTurnDescription);
         ((TextView) v.findViewById(R.id.conversation_participants)).setText(conversationParticipants);
         ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(storyDuration);
-
-        (v.findViewById(R.id.conversation_time_since_action)).setVisibility(View.GONE);
+        ((TextView) v.findViewById(R.id.conversation_time_since_action)).setText(lastAction);
     }
 
     private void determineActivityToStart(Conversation conversation){

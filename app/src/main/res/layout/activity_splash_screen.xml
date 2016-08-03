@@ -10,8 +10,21 @@
     android:orientation="vertical"
     tools:context=".activities.SplashScreenActivity">
 
+    <TextView
+        android:id="@+id/add_user_name_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/logo"
+        android:layout_marginBottom="75dp"
+        android:textAlignment="center"
+        android:text="Welcome to ONanON!\n
+        Please enter a user name."
+        android:textSize="20dp"
+        android:visibility="gone"
+        />
+
     <ImageView
-        android:id="@+id/logo"
+        android:id="@id/logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
@@ -28,5 +41,35 @@
         android:clickable="false"
         android:onClick="logInButtonPressed"
         android:text="Start"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_below="@id/logo"
+        android:visibility="gone">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/user_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="textCapWords"
+            android:digits="@string/user_name_characters"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/create_user_name_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@id/text_input_layout"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:clickable="false"
+        android:text="Ok!"/>
 
 </RelativeLayout>
