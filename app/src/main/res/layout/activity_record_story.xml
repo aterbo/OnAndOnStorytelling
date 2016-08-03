@@ -83,14 +83,15 @@
         <Button
             android:id="@+id/reset_control_button"
             android:layout_marginRight="30dp"
-            android:layout_width="25dp"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:enabled="false"
             android:text="Reset Recording"
             android:textSize="1sp"
             android:textColor="#00ffffff"
             android:onClick="resetRecording"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="bottom"
+            android:background="@drawable/reset_selector"/>
 
         <ToggleButton
             android:id="@+id/recording_control_button"
@@ -106,8 +107,8 @@
         <ToggleButton
             android:id="@+id/playback_control_button"
             android:layout_marginLeft="30dp"
-            android:layout_width="35dp"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="@drawable/ic_toggle_play_pause"
             android:enabled="false"
             android:text="Play Recording"
