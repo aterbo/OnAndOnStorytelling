@@ -313,6 +313,7 @@ public class RecordStoryActivity extends AppCompatActivity {
             myPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
+                    playbackButton.setChecked(false);
                     stopPlayback();
                 }
             });

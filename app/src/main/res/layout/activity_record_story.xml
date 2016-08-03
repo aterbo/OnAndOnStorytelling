@@ -23,6 +23,7 @@
             android:id="@+id/sender_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/sender_profile_pic"
             android:text="Albert says"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -41,7 +42,8 @@
         android:id="@+id/recording_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/conversation_details"
+        android:layout_above="@+id/control_panel"
+        android:layout_marginBottom="25dp"
         android:orientation="vertical">
 
         <TextView
@@ -77,6 +79,7 @@
 
 
     <LinearLayout
+        android:id="@id/control_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -87,8 +90,8 @@
             android:id="@+id/reset_control_button"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:enabled="false"
             android:text="Reset Recording"
             android:textSize="1sp"
@@ -99,8 +102,8 @@
 
         <ToggleButton
             android:id="@+id/record_button"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:background="@drawable/recording_button_selector"
             android:textOn=""
             android:textOff=""
@@ -111,8 +114,8 @@
             android:id="@+id/playback_control_button"
             android:layout_marginLeft="30dp"
             android:layout_marginBottom="5dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:background="@drawable/ic_toggle_play_pause"
             android:textOn=""
             android:textOff=""
@@ -127,8 +130,8 @@
         android:id="@id/finish_and_send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="15dp"
         android:enabled="false"
         android:text="Send Recording"
         android:onClick="sendRecordingClick"

@@ -64,6 +64,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         runIntroSlidesIfNeeded();
         mAuth = FirebaseAuth.getInstance();
         baseRef = FirebaseDatabase.getInstance().getReference();
+
+        Button logInButton = (Button) findViewById(R.id.log_in_button);
+        logInButton.setVisibility(View.GONE);
+        logInButton.setClickable(false);
     }
 
     @Override
@@ -81,9 +85,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Button logInButton = (Button) findViewById(R.id.log_in_button);
-        logInButton.setVisibility(View.GONE);
-        logInButton.setClickable(false);
         flag = true;
 
         if (isPermissionsGranted()) {
