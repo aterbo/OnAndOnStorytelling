@@ -286,13 +286,13 @@ public class ListenToStoryActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle("Listen again?");
-        builder.setPositiveButton("No, thank you!", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("No, I'm done!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 finishListeningToStory();
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton("Listen Again", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Yes, please!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 resetPlayer();
                 dialog.dismiss();
