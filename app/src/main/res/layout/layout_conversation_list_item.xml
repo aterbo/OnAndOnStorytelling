@@ -17,17 +17,19 @@
         />
 
     <TextView
-        android:id="@+id/conversation_next_turn"
-        android:layout_width="wrap_content"
+        android:id="@+id/conversation_title"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:ellipsize="end"
         android:layout_toRightOf="@id/conversation_profile_image"
         android:layout_alignParentTop="true"
-        android:text="Next Turn"
+        android:text="Title"
         />
 
     <TextView
         android:id="@+id/conversation_participants"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/conversation_profile_image"
         android:maxLines="1"
@@ -37,29 +39,8 @@
         />
 
     <TextView
-        android:id="@+id/conversation_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:layout_toRightOf="@id/conversation_profile_image"
-        android:layout_toLeftOf="@+id/conversation_story_duration"
-        android:layout_below="@id/conversation_next_turn"
-        android:text="Title"
-        />
-
-    <TextView
-        android:id="@id/conversation_story_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/conversation_next_turn"
-        android:text="Story Duration"
-        />
-    
-    <TextView
         android:id="@id/conversation_time_since_action"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/conversation_profile_image"
         android:layout_alignParentBottom="true"

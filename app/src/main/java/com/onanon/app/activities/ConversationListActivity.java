@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -108,6 +109,8 @@ public class ConversationListActivity extends AppCompatActivity {
                 Intent intent = new Intent(ConversationListActivity.this, IntroSliderActivity.class);
                 intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.CONVO_LIST);
                 startActivity(intent);
+            case R.id.send_comments:
+                composeEmail(new String[]{"andy@onanonapp.com"}, "Comments for ONanON!");
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -155,34 +158,33 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void setViewsBasedOnConversationStatus(Conversation conversation, View v) {
         String title = "Oops";
-        String nextTurnDescription = "Next Up: " + conversation.getNextUserNameToTell();
         v.findViewById(R.id.item_layout).setBackgroundResource(0);
 
         int conversationStatus = conversation.currentConversationStatus(currentUserName);
 
         switch (conversationStatus) {
             case Constants.USER_TURN_TO_TELL:
-                title = "Tell:  " + conversation.proposedPromptsTagAsString();
+                title = "Talk about " + conversation.proposedPromptsTagAsString();
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
-                nextTurnDescription = "You have a story to tell!";
                 break;
 
             case Constants.USER_TURN_TO_SEND_PROMPTS:
-                title = "You need to send topics!";
+                title = "You need to send topics to " + conversation.getNextUserNameToTell() + "!";
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
-                nextTurnDescription = "You need to send some prompts!";
                 break;
 
             case Constants.USER_TURN_TO_HEAR:
-                title = "Hear:  " + conversation.getCurrentPrompt().getTag();
+                title = "Hear " + conversation.getLastUserNameToTell() + " on "
+                        + conversation.getCurrentPrompt().getTag() + ". \n"
+                        + conversation.recordingDurationAsFormattedString();
                 break;
 
             case Constants.USER_WAITING_FOR_PROMPTS:
-                title = "Waiting for topics.";
+                title = "Waiting for topics from " + conversation.getLastUserNameToTell();
                 break;
 
             case Constants.USER_WAITING_FOR_STORY:
-                title = "Waiting for a story.";
+                title = "Waiting for a story from " + conversation.getNextUserNameToTell();
                 break;
 
             case Constants.USER_WAITING_FOR_OTHERS:
@@ -196,9 +198,7 @@ public class ConversationListActivity extends AppCompatActivity {
         String lastAction = Utils.calcTimeFromMillisToNow(conversation.getDateLastActionOccurred());
 
         ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
-        ((TextView) v.findViewById(R.id.conversation_next_turn)).setText(nextTurnDescription);
         ((TextView) v.findViewById(R.id.conversation_participants)).setText(conversationParticipants);
-        ((TextView) v.findViewById(R.id.conversation_story_duration)).setText(storyDuration);
         ((TextView) v.findViewById(R.id.conversation_time_since_action)).setText(lastAction);
     }
 
@@ -399,6 +399,16 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onDestroy();
         if (mListAdapter != null) {
             mListAdapter.cleanup();
+        }
+    }
+
+    public void composeEmail(String[] addresses, String subject) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
 }

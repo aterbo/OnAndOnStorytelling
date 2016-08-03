@@ -16,4 +16,9 @@
         android:orderInCategory="50"
         android:title="Help"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/send_comments"
+        android:orderInCategory="60"
+        android:title="Send Feedback"
+        app:showAsAction="ifRoom" />
 </menu>
