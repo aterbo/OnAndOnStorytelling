@@ -308,7 +308,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setUserNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentUserName = userNameInput.getText().toString();
+                currentUserName = userNameInput.getText().toString().trim();
                 if (currentUserName.length() > 2) {
                     setUserNameButton.setEnabled(false);
                     checkIfUserNameIsUnique();
