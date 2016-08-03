@@ -14,11 +14,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +82,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         Button logInButton = (Button) findViewById(R.id.log_in_button);
-        logInButton.setVisibility(View.INVISIBLE);
+        logInButton.setVisibility(View.GONE);
         logInButton.setClickable(false);
         flag = true;
 
@@ -229,6 +232,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
     
     private void checkIfUserAccountExistsInFB() {
+
+        Button logInButton = (Button) findViewById(R.id.log_in_button);
+        logInButton.setVisibility(View.GONE);
+        logInButton.setClickable(false);
+
         DatabaseReference uIdRef = baseRef.child(Constants.FB_LOCATION_UID_MAPPINGS).child(currentUserUID);
 
         uIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -264,6 +272,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void setUpNewFBUserEntry(String hintMessage) {
         Log.i("setUpNewFBUser", "Started Activity");
 
+
+        Button logInButton = (Button) findViewById(R.id.log_in_button);
+        logInButton.setVisibility(View.GONE);
+        logInButton.setClickable(false);
+
         findViewById(R.id.add_user_name_text).setVisibility(View.VISIBLE);
 
         final EditText userNameInput = (EditText) findViewById(R.id.user_name_input);
@@ -276,6 +289,21 @@ public class SplashScreenActivity extends AppCompatActivity {
         textInputLayout.setVisibility(View.VISIBLE);
         textInputLayout.setHint(hintMessage);
         textInputLayout.setHintAnimationEnabled(true);
+
+        userNameInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    currentUserName = userNameInput.getText().toString();
+                    if (currentUserName.length() > 2) {
+                        setUserNameButton.setEnabled(false);
+                        checkIfUserNameIsUnique();
+                    } else {
+                        textInputLayout.setHint("That user name is too short.");
+                    }
+                }
+                return false;
+            }
+        });
 
         setUserNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
