@@ -156,6 +156,7 @@ public class ConversationListActivity extends AppCompatActivity {
     private void setViewsBasedOnConversationStatus(Conversation conversation, View v) {
         String title = "Oops";
         String nextTurnDescription = "Next Up: " + conversation.getNextUserNameToTell();
+        v.findViewById(R.id.item_layout).setBackgroundResource(0);
 
         int conversationStatus = conversation.currentConversationStatus(currentUserName);
 
