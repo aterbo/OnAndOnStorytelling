@@ -284,6 +284,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void askIfUserWantsToListenAgain() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
         builder.setTitle("Listen again?");
         builder.setPositiveButton("No, thank you!", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
