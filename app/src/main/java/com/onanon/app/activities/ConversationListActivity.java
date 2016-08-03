@@ -302,11 +302,7 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void deleteConversation(Conversation conversation){
-        if(conversation.isOnlyTwoPeople()) {
-            removeEntireConversation(conversation);
-        } else {
-            removeCurrentUserFromConversation(conversation);
-        }
+        removeEntireConversation(conversation);
     }
 
     private void removeEntireConversation(Conversation conversation) {
@@ -365,39 +361,6 @@ public class ConversationListActivity extends AppCompatActivity {
                     Log.i("FBDeleteConvo", "Error deleting conversatoin");
                 }
                 Log.i("FBDeleteConvo", "Convo deleted successfully");
-            }
-        });
-    }
-
-    private void removeCurrentUserFromConversation(Conversation conversation) {
-        conversation.removeUserFromConversation(currentUserName);
-
-        ArrayList<String> userNamesInConversation = conversation.getUserNamesInConversation();
-
-        HashMap<String, Object> mapOfDataToDelete = new HashMap<String, Object>();
-        mapOfDataToDelete.put("/" + Constants.FB_LOCATION_CONVO_PARTICIPANTS + "/" +
-                selectedConvoPushId + "/" + currentUserName, null);
-
-        mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                + currentUserName + "/" + selectedConvoPushId, null);
-
-
-        HashMap<String, Object> itemToAddHashMap =
-                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
-
-        for (String userNames : userNamesInConversation) {
-            mapOfDataToDelete.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userNames + "/" + selectedConvoPushId, itemToAddHashMap);
-        }
-
-
-        baseRef.updateChildren(mapOfDataToDelete, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
-                if (firebaseError != null) {
-                    Log.i("FBDeleteConvo", "Error removing user from conversation");
-                }
-                Log.i("FBDeleteConvo", "User removed from convo successfully");
             }
         });
     }
