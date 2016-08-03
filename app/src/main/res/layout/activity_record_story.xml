@@ -115,7 +115,7 @@
             android:layout_marginLeft="30dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/ic_toggle_play_pause"
+            android:background="@drawable/recording_playback_selector"
             android:textOn=""
             android:textOff=""
             android:text=""

@@ -420,7 +420,7 @@ public class Conversation implements Parcelable {
     }
 
     public boolean hasCurrentUserHeardStory(String currentUserName) {
-        if (userNamesHaveHeardStory.contains(currentUserName)) {
+        if (!userNamesHaveNotHeardStory.contains(currentUserName)) {
             return true;
         } else{
             return false;
