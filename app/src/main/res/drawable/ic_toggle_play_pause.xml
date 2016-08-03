@@ -4,12 +4,12 @@
         android:state_enabled="false"
         android:drawable="@drawable/play_arrow_disabled"/>
     <item
+        android:state_pressed="true"
+        android:drawable="@drawable/play_arrow_pressed"/>
+    <item
         android:state_checked="true"
         android:drawable="@drawable/pause_bars_checked" />
     <item
         android:state_checked="false"
         android:drawable="@drawable/play_arrow_normal" />
-    <item
-        android:state_pressed="true"
-        android:drawable="@drawable/play_arrow_pressed"/>
 </selector>

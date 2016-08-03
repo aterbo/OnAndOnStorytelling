@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context="com.onanon.app.activities.RecordStoryActivity">
 
     <RelativeLayout
+        android:id="@+id/conversation_details"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
         <ImageView
             android:id="@+id/sender_profile_pic"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/alberticon"/>
+            android:layout_marginRight="5dp"
+            android:src="@mipmap/ic_launcher"/>
         <TextView
             android:id="@+id/sender_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/sender_profile_pic"
             android:text="Albert says"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -28,13 +30,19 @@
             android:id="@+id/prompt_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/sender_profile_pic"
+            android:layout_toRightOf="@id/sender_profile_pic"
             android:layout_below="@id/sender_text"
             android:text="Tell me a story that ends in a joke."
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
+
+    <LinearLayout
+        android:id="@+id/recording_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/conversation_details"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/recording_duration"
@@ -56,14 +64,6 @@
             android:visibility="invisible"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <ImageView
-            android:id="@+id/playImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:src="@android:drawable/presence_audio_online" />
-
         <TextView
             android:id="@+id/recording_status_indicator"
             android:layout_width="wrap_content"
@@ -73,16 +73,20 @@
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    </LinearLayout>
+
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center">
+        android:gravity="center"
+        android:layout_above="@+id/finish_and_send_button">
 
         <Button
             android:id="@+id/reset_control_button"
             android:layout_marginRight="30dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:enabled="false"
@@ -94,19 +98,17 @@
             android:background="@drawable/reset_selector"/>
 
         <ToggleButton
-            android:id="@+id/recording_control_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/record_button"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:background="@drawable/recording_button_selector"
-            android:text="Start Recording"
-            android:textSize="1sp"
             android:textColor="#00ffffff"
-            android:onClick="recordingControlClick"
             android:layout_gravity="top"/>
 
         <ToggleButton
             android:id="@+id/playback_control_button"
             android:layout_marginLeft="30dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/ic_toggle_play_pause"
@@ -121,14 +123,15 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/finish_and_send_button"
+        android:id="@id/finish_and_send_button"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
         android:enabled="false"
         android:text="Send Recording"
         android:onClick="sendRecordingClick"
-        android:layout_gravity="center"
-        android:layout_weight="1" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</RelativeLayout>

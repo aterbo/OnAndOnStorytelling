@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lassana.recorder.AudioRecorder;
@@ -45,8 +47,8 @@ public class RecordStoryActivity extends AppCompatActivity {
     private Conversation conversation;
     private Chronometer recordingDurationCounter;
     private String outputFile = null;
-    private Button playbackControlButton;
-    private Button recordingStatusButton;
+    private ToggleButton playbackControlButton;
+    private ToggleButton recordButton;
     private Button resetControlButton;
     private Button finishAndSendButton;
     private TextView recordingStatus;
@@ -64,6 +66,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         cumulativeRecordingTime = 0;
         initializeViews();
+        setRecordingButtonListener();
         getConversation();
         createRecordingFile();
         showConversationDetails();
@@ -75,8 +78,8 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingStatus = (TextView) findViewById(R.id.recording_status_indicator);
         recordingDuration = (TextView) findViewById(R.id.recording_duration);
         recordingDurationCounter = (Chronometer) findViewById(R.id.recording_time_counter);
-        playbackControlButton = (Button)findViewById(R.id.playback_control_button);
-        recordingStatusButton = (Button)findViewById(R.id.recording_control_button);
+        recordButton = (ToggleButton)findViewById(R.id.record_button);
+        playbackControlButton = (ToggleButton) findViewById(R.id.playback_control_button);
         resetControlButton = (Button)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackControlButton.setEnabled(false);
@@ -144,15 +147,17 @@ public class RecordStoryActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
     }
 
-    public void recordingControlClick(View view){
-        String recordingStatus = recordingStatusButton.getText().toString();
-
-        if (recordingStatus.equals("Start Recording") ||
-                recordingStatus.equals("Continue Recording")){
-            startRecording();
-        } else if (recordingStatus.equals("Stop Recording")){
-            stopRecording();
-        }
+    private void setRecordingButtonListener(){
+        recordButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startRecording();
+                } else {
+                    stopRecording();
+                }
+            }
+        });
     }
 
 
@@ -183,7 +188,6 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void changeButtonsToRecordingOptions() {
-        recordingStatusButton.setText("Stop Recording");
         recordingStatus.setText("Recording");
         playbackControlButton.setEnabled(false);
         resetControlButton.setEnabled(false);
@@ -239,7 +243,6 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void changeButtonsToPostRecordingOptions() {
-        recordingStatusButton.setText("Continue Recording");
         recordingStatus.setText("Recording Pause");
         resetControlButton.setEnabled(true);
         recordingDurationCounter.setVisibility(View.GONE);
@@ -275,7 +278,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         cumulativeRecordingTime = 0;
         deleteRecordingFile();
         createRecordingFile();
-        recordingStatusButton.setText("Start Recording");
         recordingDurationCounter.setVisibility(View.INVISIBLE);
         recordingDuration.setVisibility(View.GONE);
         recordingStatus.setText("");
