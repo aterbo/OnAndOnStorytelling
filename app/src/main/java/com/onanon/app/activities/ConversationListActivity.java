@@ -162,19 +162,21 @@ public class ConversationListActivity extends AppCompatActivity {
 
         switch (conversationStatus) {
             case Constants.USER_TURN_TO_TELL:
-                title = "Tell:    " + conversation.proposedPromptsTagAsString();
+                title = "Tell:  " + conversation.proposedPromptsTagAsString();
                 imageText = "ME";
+                v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 nextTurnDescription = "You have a story to tell!";
                 break;
 
             case Constants.USER_TURN_TO_SEND_PROMPTS:
                 title = "You need to send topics!";
                 imageText = "ME";
+                v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 nextTurnDescription = "You need to send some prompts!";
                 break;
 
             case Constants.USER_TURN_TO_HEAR:
-                title = "Hear:    " + conversation.getCurrentPrompt().getTag();
+                title = "Hear:  " + conversation.getCurrentPrompt().getTag();
                 break;
 
             case Constants.USER_WAITING_FOR_PROMPTS:
@@ -186,11 +188,11 @@ public class ConversationListActivity extends AppCompatActivity {
                 break;
 
             case Constants.USER_WAITING_FOR_OTHERS:
-                title = "Waiting for everyone else to listen.";
+                title = "Waiting for others to listen.";
                 break;
         }
 
-        String conversationParticipants = "Conversation with:  "
+        String conversationParticipants = "With "
                 + conversation.otherConversationParticipants(currentUserName);
         String storyDuration = conversation.recordingDurationAsFormattedString();
         String lastAction = Utils.calcTimeFromMillisToNow(conversation.getDateLastActionOccurred());
