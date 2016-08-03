@@ -35,81 +35,99 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/recording_duration"
+
+        <TextView
+            android:id="@+id/recording_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text=""
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Chronometer
+            android:id="@+id/recording_time_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:format="%s"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ImageView
+            android:id="@+id/playImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:src="@android:drawable/presence_audio_online" />
+
+        <TextView
+            android:id="@+id/recording_status_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text=""
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:orientation="horizontal"
+        android:layout_gravity="center">
 
-    <Chronometer
-        android:id="@+id/recording_time_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:format="%s"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <Button
+            android:id="@+id/reset_control_button"
+            android:layout_marginRight="30dp"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Reset Recording"
+            android:textSize="1sp"
+            android:textColor="#00ffffff"
+            android:onClick="resetRecording"
+            android:layout_gravity="bottom" />
 
-    <ImageView
-        android:id="@+id/playImage"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:src="@android:drawable/presence_audio_online" />
+        <ToggleButton
+            android:id="@+id/recording_control_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/recording_button_selector"
+            android:text="Start Recording"
+            android:textSize="1sp"
+            android:textColor="#00ffffff"
+            android:onClick="recordingControlClick"
+            android:layout_gravity="top"/>
 
-    <TextView
-        android:id="@+id/recording_status_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_gravity="center"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <ToggleButton
+            android:id="@+id/playback_control_button"
+            android:layout_marginLeft="30dp"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_toggle_play_pause"
+            android:enabled="false"
+            android:text="Play Recording"
+            android:textSize="1sp"
+            android:textColor="#00ffffff"
+            android:onClick="playbackControlClick"
+            android:layout_gravity="bottom" />
 
 
-    <Button
-        android:id="@+id/recording_control_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Start Recording"
-        android:onClick="recordingControlClick"
-        android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/playback_control_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:enabled="false"
-        android:text="Play Recording"
-        android:onClick="playbackControlClick"
-        android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/reset_control_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:enabled="false"
-        android:text="Reset Recording"
-        android:onClick="resetRecording"
-        android:layout_weight="1" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/finish_and_send_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
         android:enabled="false"
         android:text="Send Recording"
         android:onClick="sendRecordingClick"
+        android:layout_gravity="center"
         android:layout_weight="1" />
 
 </LinearLayout>
