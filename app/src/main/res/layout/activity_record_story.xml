@@ -102,7 +102,9 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:background="@drawable/recording_button_selector"
-            android:textColor="#00ffffff"
+            android:textOn=""
+            android:textOff=""
+            android:text=""
             android:layout_gravity="top"/>
 
         <ToggleButton
@@ -112,11 +114,10 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@drawable/ic_toggle_play_pause"
+            android:textOn=""
+            android:textOff=""
+            android:text=""
             android:enabled="false"
-            android:text="Play Recording"
-            android:textSize="1sp"
-            android:textColor="#00ffffff"
-            android:onClick="playbackControlClick"
             android:layout_gravity="bottom" />
 
 

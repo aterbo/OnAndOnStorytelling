@@ -47,7 +47,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private Conversation conversation;
     private Chronometer recordingDurationCounter;
     private String outputFile = null;
-    private ToggleButton playbackControlButton;
+    private ToggleButton playbackButton;
     private ToggleButton recordButton;
     private Button resetControlButton;
     private Button finishAndSendButton;
@@ -67,6 +67,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         cumulativeRecordingTime = 0;
         initializeViews();
         setRecordingButtonListener();
+        setPlaybackButtonListener();
         getConversation();
         createRecordingFile();
         showConversationDetails();
@@ -79,10 +80,10 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDuration = (TextView) findViewById(R.id.recording_duration);
         recordingDurationCounter = (Chronometer) findViewById(R.id.recording_time_counter);
         recordButton = (ToggleButton)findViewById(R.id.record_button);
-        playbackControlButton = (ToggleButton) findViewById(R.id.playback_control_button);
+        playbackButton = (ToggleButton) findViewById(R.id.playback_control_button);
         resetControlButton = (Button)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
-        playbackControlButton.setEnabled(false);
+        playbackButton.setEnabled(false);
     }
 
     private void getConversation(){
@@ -160,10 +161,23 @@ public class RecordStoryActivity extends AppCompatActivity {
         });
     }
 
+    private void setPlaybackButtonListener(){
+        playbackButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    startPlayback();
+                } else {
+                    stopPlayback();
+                }
+            }
+        });
+    }
 
     private void startRecording(){
 
         recordingDuration.setVisibility(View.GONE);
+        recordingStatus.setVisibility(View.GONE);
 
         myRecorder = AudioRecorderBuilder.with(this)
                 .fileName(outputFile)
@@ -189,7 +203,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void changeButtonsToRecordingOptions() {
         recordingStatus.setText("Recording");
-        playbackControlButton.setEnabled(false);
+        recordingStatus.setVisibility(View.VISIBLE);
+        playbackButton.setEnabled(false);
         resetControlButton.setEnabled(false);
     }
 
@@ -225,7 +240,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1000);
+        }, 800);
     }
 
     private void stopRecordingDurationCounter() {
@@ -243,13 +258,13 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void changeButtonsToPostRecordingOptions() {
-        recordingStatus.setText("Recording Pause");
+        recordingStatus.setText("Recording Paused");
         resetControlButton.setEnabled(true);
         recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.VISIBLE);
         recordingDuration.setText("Story Length: " +
                 recordingDurationAsFormattedString(cumulativeRecordingTime));
-        playbackControlButton.setEnabled(true);
+        playbackButton.setEnabled(true);
         finishAndSendButton.setEnabled(true);
     }
 
@@ -281,20 +296,9 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDurationCounter.setVisibility(View.INVISIBLE);
         recordingDuration.setVisibility(View.GONE);
         recordingStatus.setText("");
-        playbackControlButton.setEnabled(false);
+        playbackButton.setEnabled(false);
         resetControlButton.setEnabled(false);
         finishAndSendButton.setEnabled(false);
-    }
-
-    public void playbackControlClick(View view){
-        Button playbackControlButton = (Button)findViewById(R.id.playback_control_button);
-        String playbackStatus = playbackControlButton.getText().toString();
-
-        if (playbackStatus.equals("Play Recording")){
-            startPlayback();
-        } else if (playbackStatus.equals("Stop Playback")){
-            stopPlayback();
-        }
     }
 
     private void startPlayback() {
@@ -314,7 +318,6 @@ public class RecordStoryActivity extends AppCompatActivity {
             });
 
             recordingStatus.setText("Playing");
-            playbackControlButton.setText("Stop Playback");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -338,8 +341,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        playbackControlButton.setText("Play Recording");
     }
 
     public void sendRecordingClick(View view){
