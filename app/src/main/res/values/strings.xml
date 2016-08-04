@@ -33,7 +33,7 @@
     <string name="no_messages">You have no conversations. Start one by clicking + below!</string>
 
     <array name="slide_title_array">
-        <item>Welcome to Onanon!</item>
+        <item>Welcome!</item>
         <item>Start Conversations</item>
         <item>Record Your Story</item>
         <item>Share Familiarly</item>
