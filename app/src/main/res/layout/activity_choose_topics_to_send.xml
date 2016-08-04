@@ -9,14 +9,14 @@
 
     <ImageView
         android:id="@+id/sender_profile_pic"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:src="@drawable/alberticon"/>
     <TextView
         android:id="@+id/next_storyteller_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/sender_profile_pic"
         android:text="Albert is next to tell a story."
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -29,47 +29,51 @@
         android:layout_toRightOf="@+id/sender_profile_pic"
         android:layout_below="@id/next_storyteller_prompt"
         android:text="You get three pairs of topics. Please choose one from each pair to send."
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
         android:layout_below="@id/sender_profile_pic">
-
-
-        <Button
-            android:id="@+id/send_topic_option_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text=""
-            android:onClick="sendTopic1"
-            android:layout_weight="1"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/or_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_centerInParent="true"
             android:text=" - OR - "
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="gone" />
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/send_topic_option_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_above="@id/or_section"
+            android:layout_alignParentTop="true"
+            android:text=""
+            android:onClick="sendTopic1"
+            android:layout_weight="1"
+            android:visibility="visible" />
+
+
 
         <Button
             android:id="@+id/send_topic_option_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             android:text=""
             android:onClick="sendTopic2"
             android:layout_weight="1"
-            android:visibility="gone" />
+            android:layout_below="@id/or_section"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible" />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>
