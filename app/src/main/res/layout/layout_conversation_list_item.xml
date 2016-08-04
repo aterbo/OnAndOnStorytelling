@@ -14,7 +14,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical|center_horizontal"
-        android:src="@drawable/icon_logo_no_space_144"
+        android:src="@drawable/status_none_144_70"
         />
 
     <TextView
