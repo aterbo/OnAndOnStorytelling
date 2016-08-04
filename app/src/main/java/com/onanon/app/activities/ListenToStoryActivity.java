@@ -63,6 +63,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private String localTempFilePath;
     private ProgressDialog progressDialog;
     private StorageReference audioFileStorageRef;
+    private HashMap<String, Object> convoInfoToUpdate;
+    private DatabaseReference baseRef;
 
     private VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
@@ -318,6 +320,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void finishListeningToStory() {
         deleteLocalStoryAudioFile();
+        baseRef = FirebaseDatabase.getInstance().getReference();
+        convoInfoToUpdate = new HashMap<String, Object>();
 
         conversation.markUserAsHasHeardStory(currentUserName);
         if (conversation.haveAllUsersHeardStory()){
@@ -344,7 +348,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 Log.i("Recording deleted", "FB Storage recoding file deleted.");
 
-                deleteConversationReferencesToFile();
+
+                deleteConversationReferencesToFileinHashMap();
                 updateConversationAfterListening();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -352,29 +357,49 @@ public class ListenToStoryActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception exception) {
                 Log.i("Recording deleted", "ERROR - FB Storage recoding file NOT deleted.");
 
-                deleteConversationReferencesToFile();
+                deleteConversationReferencesToFileinHashMap();
                 updateConversationAfterListening();
             }
         });
     }
 
-    private void deleteConversationReferencesToFile(){
+    private void deleteConversationReferencesToFileinHashMap(){
         conversation.setFbStorageFilePathToRecording("none");
         conversation.setCurrentPrompt(new Prompt("null", "null"));
         conversation.setStoryRecordingDuration(0);
-    }
 
-    private void updateConversationAfterListening(){
-        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
-        HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
-
-        HashMap<String, Object> conversationToAddHashMap =
-                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+        HashMap<String, Object> nullPromptToAddToHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(
+                        new Prompt("null", "null"), Map.class);
 
         for (String userName : conversation.getUserNamesInConversation()) {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
+                            + userName + "/" + selectedConvoPushId + "/fbStorageFilePathToRecording",
+                    "none");
+
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/currentPrompt",
+                    nullPromptToAddToHashMap);
+
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/storyRecordingDuration",
+                    0);
+        }
+    }
+
+    private void updateConversationAfterListening(){
+
+        for (String userName : conversation.getUserNamesInConversation()) {
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/userNamesHaveHeardStory",
+                    conversation.getUserNamesHaveHeardStory());
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/userNamesHaveNotHeardStory",
+                    conversation.getUserNamesHaveNotHeardStory());
         }
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
