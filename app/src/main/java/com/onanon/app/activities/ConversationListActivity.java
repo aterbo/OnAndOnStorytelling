@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -168,29 +169,35 @@ public class ConversationListActivity extends AppCompatActivity {
             case Constants.USER_TURN_TO_TELL:
                 title = "Talk about " + conversation.proposedPromptsTagAsString();
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_to_record);
                 break;
 
             case Constants.USER_TURN_TO_SEND_PROMPTS:
                 title = "You need to send topics to " + conversation.getNextUserNameToTell() + "!";
                 v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_to_record);
                 break;
 
             case Constants.USER_TURN_TO_HEAR:
                 title = "Hear " + conversation.getLastUserNameToTell() + " on "
                         + conversation.getCurrentPrompt().getTag() + ". \n"
                         + conversation.recordingDurationAsFormattedString();
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_to_hear);
                 break;
 
             case Constants.USER_WAITING_FOR_PROMPTS:
                 title = "Waiting for topics from " + conversation.getLastUserNameToTell();
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_waiting);
                 break;
 
             case Constants.USER_WAITING_FOR_STORY:
                 title = "Waiting for a story from " + conversation.getNextUserNameToTell();
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_waiting);
                 break;
 
             case Constants.USER_WAITING_FOR_OTHERS:
                 title = "Waiting for others to listen.";
+                ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.icon_waiting);
                 break;
         }
 
