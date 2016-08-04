@@ -109,8 +109,10 @@ public class ConversationListActivity extends AppCompatActivity {
                 Intent intent = new Intent(ConversationListActivity.this, IntroSliderActivity.class);
                 intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.CONVO_LIST);
                 startActivity(intent);
+                return true;
             case R.id.send_comments:
                 composeEmail(new String[]{"andy@onanonapp.com"}, "Comments for ONanON!");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

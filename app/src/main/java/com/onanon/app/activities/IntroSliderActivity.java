@@ -34,6 +34,7 @@ public class IntroSliderActivity extends AppCompatActivity {
     private TypedArray graphic_references;
     private String[] title_references, description_references;
     private Button btnSkip, btnNext;
+    private View separatorBar;
     private int numberOfSlides;
     private int sourceActivity;
 
@@ -55,6 +56,7 @@ public class IntroSliderActivity extends AppCompatActivity {
         dotsLayout = (LinearLayout) findViewById(R.id.layout_dots);
         btnSkip = (Button) findViewById(R.id.skip_button);
         btnNext = (Button) findViewById(R.id.next_button);
+        separatorBar = findViewById(R.id.separator_bar);
 
 
         // layouts of all welcome sliders
@@ -68,6 +70,7 @@ public class IntroSliderActivity extends AppCompatActivity {
         changeStatusBarColor();
 
         myViewPagerAdapter = new MyViewPagerAdapter();
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
     }
@@ -120,8 +123,9 @@ public class IntroSliderActivity extends AppCompatActivity {
             dotsLayout.addView(dots[i]);
         }
 
-        if (dots.length > 0)
+        if (dots.length > 0) {
             dots[currentPage].setTextColor(getResources().getColor(R.color.whiteTint));
+        }
     }
 
     private int getItem(int i) {
@@ -150,6 +154,23 @@ public class IntroSliderActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             addBottomDots(position);
+
+            if(position == 0) {
+                ((TextView) findViewById(R.id.intro_slide_title)).setTextColor(
+                        getResources().getColor(R.color.colorPrimary));
+                ((TextView) findViewById(R.id.intro_slide_description)).setTextColor(
+                        getResources().getColor(R.color.colorPrimary));
+                btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
+                btnSkip.setTextColor(getResources().getColor(R.color.colorPrimary));
+                separatorBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+            } else {
+                ((TextView) findViewById(R.id.intro_slide_title)).setTextColor(Color.WHITE);
+                ((TextView) findViewById(R.id.intro_slide_description)).setTextColor(Color.WHITE);
+                btnNext.setTextColor(Color.WHITE);
+                btnSkip.setTextColor(Color.WHITE);
+                separatorBar.setBackgroundColor(Color.WHITE);
+            }
 
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position == numberOfSlides - 1) {
@@ -203,6 +224,8 @@ public class IntroSliderActivity extends AppCompatActivity {
             ((ImageView) view.findViewById(R.id.intro_slide_graphic)).setImageResource(graphic_references.getResourceId(position, 0));
             ((TextView) view.findViewById(R.id.intro_slide_title)).setText(title_references[position]);
             ((TextView) view.findViewById(R.id.intro_slide_description)).setText(description_references[position]);
+
+
             container.addView(view);
 
             return view;
