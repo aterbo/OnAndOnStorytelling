@@ -73,7 +73,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         selectedPromptsList = new ArrayList<>();
 
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
-                conversation.getLastUserNameToTell() + " is next to tell a story");
+                conversation.getNextUserNameToTell() + " is next to tell a story");
     }
 
     private void getPromptOptionsList(){
