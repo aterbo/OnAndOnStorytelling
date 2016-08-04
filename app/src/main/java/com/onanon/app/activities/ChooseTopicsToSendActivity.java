@@ -194,25 +194,30 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void questioningComplete(){
         Toast.makeText(this, "PROMPTS SELECTED!", Toast.LENGTH_SHORT).show();
-        updateConversation();
-        updateConversationOnServer();
+        updatePromptsInConversationOnServer();
     }
 
-    private void updateConversation(){
-        conversation.setProposedPrompt1(selectedPromptsList.get(0));
-        conversation.setProposedPrompt2(selectedPromptsList.get(1));
-        conversation.setProposedPrompt3(selectedPromptsList.get(2));
-    }
-
-    private void updateConversationOnServer(){
+    private void updatePromptsInConversationOnServer(){
         HashMap<String, Object> convoInfoToUpdate = new HashMap<String, Object>();
 
-        HashMap<String, Object> conversationToAddHashMap =
-                (HashMap<String, Object>) new ObjectMapper().convertValue(conversation, Map.class);
+        HashMap<String, Object> prompt1HashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(selectedPromptsList.get(0), Map.class);
+        HashMap<String, Object> prompt2HashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(selectedPromptsList.get(1), Map.class);
+        HashMap<String, Object> prompt3HashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(selectedPromptsList.get(2), Map.class);
 
+        //Update the prompts in the conversation only
         for (String userName : conversation.getUserNamesInConversation()) {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
-                    + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
+                    + userName + "/" + selectedConvoPushId + "/proposedPrompt1",
+                    prompt1HashMap);
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/proposedPrompt2",
+                    prompt2HashMap);
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/proposedPrompt3",
+                    prompt3HashMap);
         }
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {

@@ -238,7 +238,7 @@ public class Conversation implements Parcelable {
                 proposedPrompt3.getTag();
     }
 
-    public ArrayList<Prompt> getProposedPromptsAsList() {
+    public ArrayList<Prompt> returnProposedPromptsAsList() {
         ArrayList<Prompt> proposedPromptsList = new ArrayList<>();
         proposedPromptsList.add(proposedPrompt1);
         proposedPromptsList.add(proposedPrompt2);
@@ -259,7 +259,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public void setAllUsersAsHaveNotListenedButLastToTell(){
+    public void changeAllUsersAsHaveNotListenedButLastToTell(){
         userNamesHaveHeardStory = new ArrayList<>();
         userNamesHaveHeardStory.add("none");
         userNamesHaveNotHeardStory = new ArrayList<>();
@@ -326,50 +326,50 @@ public class Conversation implements Parcelable {
     }
 
     public int currentConversationStatus(String currentUserName){
-        if (isUserTurnToTell(currentUserName)) {
+        if (cIsUserTurnToTell(currentUserName)) {
             return Constants.USER_TURN_TO_TELL;
 
-        } else if (isUserTurnToSendPrompts(currentUserName)) {
+        } else if (cIsUserTurnToSendPrompts(currentUserName)) {
             return Constants.USER_TURN_TO_SEND_PROMPTS;
 
-        } else if (isUserTurnToHear(currentUserName)) {
+        } else if (cIsUserTurnToHear(currentUserName)) {
             return Constants.USER_TURN_TO_HEAR;
 
-        } else if (isUserWaitingForPrompts(currentUserName)) {
+        } else if (cIsUserWaitingForPrompts(currentUserName)) {
             return Constants.USER_WAITING_FOR_PROMPTS;
 
-        } else if (isUserWaitingForStory(currentUserName)) {
+        } else if (cIsUserWaitingForStory(currentUserName)) {
             return Constants.USER_WAITING_FOR_STORY;
 
-        } else if (isUserWaitingForOthersToHear()) {
+        } else if (cIsUserWaitingForOthersToHear()) {
             return Constants.USER_WAITING_FOR_OTHERS;
         }
         return Constants.INCORRECT_RESULT;
     }
 
-    public boolean isUserTurnToTell(String currentUserName) {
-        if(isCurrentUserNextToTell(currentUserName)
+    public boolean cIsUserTurnToTell(String currentUserName) {
+        if(cIsCurrentUserNextToTell(currentUserName)
                 && haveAllUsersHeardStory()
-                && !isStoryRecorded()
-                && isProposedPromptSelected()) {
+                && !cIsStoryRecorded()
+                && cIsProposedPromptSelected()) {
             return true;
         } else{
             return false;
         }
     }
 
-    public boolean isUserTurnToSendPrompts(String currentUserName) {
-        if(isCurrentUserLastToTell(currentUserName)
-                && !isProposedPromptSelected()) {
+    public boolean cIsUserTurnToSendPrompts(String currentUserName) {
+        if(cIsCurrentUserLastToTell(currentUserName)
+                && !cIsProposedPromptSelected()) {
             return true;
         } else{
             return false;
         }
     }
 
-    public boolean isUserTurnToHear(String currentUserName) {
-        if(isStoryRecorded()
-                && !isCurrentUserLastToTell(currentUserName)
+    public boolean cIsUserTurnToHear(String currentUserName) {
+        if(cIsStoryRecorded()
+                && !cIsCurrentUserLastToTell(currentUserName)
                 && !hasCurrentUserHeardStory(currentUserName)) {
             return true;
         } else{
@@ -377,26 +377,26 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isUserWaitingForPrompts(String currentUserName) {
-        if(isCurrentUserNextToTell(currentUserName)
-                && !isProposedPromptSelected()) {
+    public boolean cIsUserWaitingForPrompts(String currentUserName) {
+        if(cIsCurrentUserNextToTell(currentUserName)
+                && !cIsProposedPromptSelected()) {
             return true;
         } else{
             return false;
         }
     }
 
-    public boolean isUserWaitingForStory(String currentUserName) {
-        if(!isCurrentUserNextToTell(currentUserName)
-                && !isStoryRecorded()) {
+    public boolean cIsUserWaitingForStory(String currentUserName) {
+        if(!cIsCurrentUserNextToTell(currentUserName)
+                && !cIsStoryRecorded()) {
             return true;
         } else{
             return false;
         }
     }
 
-    public boolean isUserWaitingForOthersToHear() {
-        if(isStoryRecorded()
+    public boolean cIsUserWaitingForOthersToHear() {
+        if(cIsStoryRecorded()
                 && !haveAllUsersHeardStory()) {
             return true;
         } else{
@@ -404,7 +404,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isCurrentUserNextToTell(String currentUserName){
+    public boolean cIsCurrentUserNextToTell(String currentUserName){
         if(nextUserNameToTell.equals(currentUserName)){
             return true;
         } else{
@@ -412,7 +412,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isCurrentUserLastToTell(String currentUserName){
+    public boolean cIsCurrentUserLastToTell(String currentUserName){
         if(lastUserNameToTell.equals(currentUserName)){
             return true;
         } else{
@@ -436,7 +436,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isStoryRecorded() {
+    public boolean cIsStoryRecorded() {
         if(!fbStorageFilePathToRecording.equals("none")) {
             return true;
         } else{
@@ -444,7 +444,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isProposedPromptSelected() {
+    public boolean cIsProposedPromptSelected() {
         if(proposedPrompt1 != null) {
             return true;
         } else{
@@ -452,7 +452,7 @@ public class Conversation implements Parcelable {
         }
     }
 
-    public boolean isOnlyTwoPeople() {
+    public boolean cIsOnlyTwoPeople() {
         if (userNamesInConversation.size() == 2) {
             return true;
         } else {
