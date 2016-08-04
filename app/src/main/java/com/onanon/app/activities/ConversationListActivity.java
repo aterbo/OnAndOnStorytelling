@@ -172,13 +172,11 @@ public class ConversationListActivity extends AppCompatActivity {
         switch (conversationStatus) {
             case Constants.USER_TURN_TO_TELL:
                 title = "Talk about " + conversation.proposedPromptsTagAsString();
-                v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.status_circle_144_70);
                 break;
 
             case Constants.USER_TURN_TO_SEND_PROMPTS:
                 title = "You need to send topics to " + conversation.getNextUserNameToTell() + "!";
-                v.findViewById(R.id.item_layout).setBackgroundResource(R.drawable.rounded_rectangle_border);
                 ((ImageView)v.findViewById(R.id.conversation_profile_image)).setImageResource(R.drawable.status_circle_144_70);
                 break;
 

@@ -107,6 +107,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
                 if (model.getEmail() != null && !model.getEmail().isEmpty()) {
                     ((TextView) v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
+                } else {
+                    ((TextView) v.findViewById(android.R.id.text2)).setText("");
                 }
             }
         };
