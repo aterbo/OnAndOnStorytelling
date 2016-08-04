@@ -203,7 +203,6 @@ public class ConversationListActivity extends AppCompatActivity {
 
         String conversationParticipants = "With "
                 + conversation.otherConversationParticipants(currentUserName);
-        String storyDuration = conversation.recordingDurationAsFormattedString();
         String lastAction = Utils.calcTimeFromMillisToNow(conversation.getDateLastActionOccurred());
 
         ((TextView) v.findViewById(R.id.conversation_title)).setText(title);
