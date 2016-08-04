@@ -293,7 +293,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         cumulativeRecordingTime = 0;
         deleteRecordingFile();
         createRecordingFile();
-        recordingDurationCounter.setVisibility(View.INVISIBLE);
+        recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.GONE);
         recordingStatus.setText("");
         playbackButton.setEnabled(false);
@@ -336,7 +336,7 @@ public class RecordStoryActivity extends AppCompatActivity {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
-                recordingStatus.setText("");
+                recordingStatus.setText("Recording Paused");
 
             }
         } catch (Exception e) {

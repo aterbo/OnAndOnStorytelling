@@ -18,7 +18,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginRight="5dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@drawable/logo"/>
         <TextView
             android:id="@+id/sender_text"
             android:layout_width="wrap_content"
@@ -38,21 +38,28 @@
     </RelativeLayout>
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/recording_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/control_panel"
-        android:layout_marginBottom="25dp"
-        android:orientation="vertical">
+        android:layout_below="@id/conversation_details">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            android:id="@+id/centering_bar"
+            android:layout_centerInParent="true"/>
 
         <TextView
             android:id="@+id/recording_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_above="@id/centering_bar"
+            android:layout_marginBottom="3dp"
             android:text=""
-            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -60,22 +67,25 @@
             android:id="@+id/recording_time_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_above="@id/centering_bar"
+            android:layout_marginBottom="3dp"
             android:format="%s"
-            android:layout_gravity="center"
-            android:visibility="invisible"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/recording_status_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
+            android:layout_below="@id/centering_bar"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -129,7 +139,7 @@
         android:id="@id/finish_and_send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:enabled="false"
         android:text="Send Recording"
