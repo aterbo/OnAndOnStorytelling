@@ -296,10 +296,18 @@ public class Conversation implements Parcelable {
             int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
             int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
 
-            if (seconds < 10){
-                return minutes + ":0" + seconds;
+            String returnString = "";
+
+            if (minutes >= 1) {
+                returnString = minutes + "m";
             }
-            return minutes + ":" + seconds;
+
+            if (seconds < 10 && seconds > 0){
+                returnString = returnString + "0" + seconds + "s";
+            } else if (seconds >= 10) {
+                returnString = returnString + seconds + "s";
+            }
+            return  returnString;
 
         } else {
             return "";
