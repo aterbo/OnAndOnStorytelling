@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#265c00</color>
-    <color name="colorPrimaryDark">#143100</color>
-    <color name="colorAccent">#563c20</color>
+    <color name="colorPrimary">#2f6806</color>
+    <color name="colorPrimaryDark">#193901</color>
+    <color name="colorAccent">#6f9fcd</color>
 
     <color name="colorAccentTint">#99ff5722</color>
     <color name="grayTint">#10000000</color>
     <color name="blackTint">#30000000</color>
     <color name="whiteTint">#aaffffff</color>
-
-    <color name="bg_screen1">#ebeeee</color>
-    <color name="bg_screen2">#265c00</color>
-    <color name="bg_screen3">#563c20</color>
-    <color name="bg_screen4">#143100</color>
-    <color name="bg_screen5">#68a225</color>
 
 </resources>

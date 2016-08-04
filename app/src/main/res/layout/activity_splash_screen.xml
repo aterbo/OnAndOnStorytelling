@@ -13,17 +13,28 @@
     <ImageView
         android:id="@+id/icon_logo"
         android:layout_width="144dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_height="80dp"
+        android:scaleType="fitCenter"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/centering_bar"
+        android:layout_marginBottom="5dp"
         android:src="@drawable/logo_512_250"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:id="@id/centering_bar"
+        android:layout_centerInParent="true"/>
 
     <ImageView
         android:id="@+id/text_logo"
         android:layout_width="144dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/icon_logo"
+        android:layout_height="42dp"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
+        android:layout_below="@id/centering_bar"
         android:src="@drawable/word_treatment_512_84"/>
 
     <Button

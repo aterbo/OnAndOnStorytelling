@@ -2,11 +2,11 @@
 <resources>
 
     <array name="slide_background_colors">
-        <item>@color/bg_screen1</item>
-        <item>@color/bg_screen2</item>
-        <item>@color/bg_screen3</item>
-        <item>@color/bg_screen4</item>
-        <item>@color/bg_screen5</item>
+        <item>@color/background_linen_white</item>
+        <item>@color/colorPrimary</item>
+        <item>@color/colorAccent</item>
+        <item>@color/colorPrimary</item>
+        <item>@color/colorPrimaryDark</item>
     </array>
 
     <integer-array name="slide_graphic_array">

@@ -178,7 +178,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void logInButtonPressed(View view){
         Intent intent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setLogo(R.drawable.logo_512_250)
+                .setLogo(R.drawable.logo_144_70)
                 .setProviders(AuthUI.EMAIL_PROVIDER,
                         AuthUI.GOOGLE_PROVIDER)
                 .build();
