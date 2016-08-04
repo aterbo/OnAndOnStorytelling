@@ -111,6 +111,10 @@ public class ConversationListActivity extends AppCompatActivity {
                 intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.CONVO_LIST);
                 startActivity(intent);
                 return true;
+            case R.id.invite_friends:
+                composeMmsMessage("Get ONanON's new app for Android, so we can share stories! " +
+                        "Check out the beta version on the Google Play Store today: ");
+                return true;
             case R.id.send_comments:
                 composeEmail(new String[]{"andy@onanonapp.com"}, "Comments for ONanON!");
                 return true;
@@ -407,6 +411,15 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onDestroy();
         if (mListAdapter != null) {
             mListAdapter.cleanup();
+        }
+    }
+
+    public void composeMmsMessage(String message) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setType("text/plain");
+        intent.putExtra("sms_body", message);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
 

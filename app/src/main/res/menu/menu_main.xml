@@ -17,6 +17,11 @@
         android:title="Help"
         app:showAsAction="never" />
     <item
+        android:id="@+id/invite_friends"
+        android:orderInCategory="55"
+        android:title="Invite Friends"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/send_comments"
         android:orderInCategory="60"
         android:title="Send Feedback"
