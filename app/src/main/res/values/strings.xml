@@ -33,7 +33,7 @@
     <string name="no_messages">You have no conversations. Start one by clicking + below!</string>
 
     <array name="slide_title_array">
-        <item>Welcome!</item>
+        <item></item>
         <item>Start Conversations</item>
         <item>Record Your Story</item>
         <item>Share Familiarly</item>
@@ -41,7 +41,7 @@
     </array>
 
     <array name="slide_description_array">
-        <item>Talk. Listen.</item>
+        <item></item>
         <item>Use Onanon to drive storytelling and conversations with friends and family.</item>
         <item>Onanon records you telling your story in your voice, the way you would in real life.
         </item>

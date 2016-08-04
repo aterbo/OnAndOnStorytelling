@@ -10,7 +10,7 @@
     </array>
 
     <integer-array name="slide_graphic_array">
-        <item>@drawable/logo_512_250</item>
+        <item>@drawable/word_treatment_512_84</item>
         <item>@drawable/ic_mood_white_48dp</item>
         <item>@drawable/ic_mic_none_white_48dp</item>
         <item>@drawable/ic_group_white_48dp</item>

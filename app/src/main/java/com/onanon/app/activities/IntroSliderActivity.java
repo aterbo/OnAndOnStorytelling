@@ -156,17 +156,11 @@ public class IntroSliderActivity extends AppCompatActivity {
             addBottomDots(position);
 
             if(position == 0) {
-                ((TextView) findViewById(R.id.intro_slide_title)).setTextColor(
-                        getResources().getColor(R.color.colorPrimary));
-                ((TextView) findViewById(R.id.intro_slide_description)).setTextColor(
-                        getResources().getColor(R.color.colorPrimary));
                 btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
                 btnSkip.setTextColor(getResources().getColor(R.color.colorPrimary));
                 separatorBar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
             } else {
-                ((TextView) findViewById(R.id.intro_slide_title)).setTextColor(Color.WHITE);
-                ((TextView) findViewById(R.id.intro_slide_description)).setTextColor(Color.WHITE);
                 btnNext.setTextColor(Color.WHITE);
                 btnSkip.setTextColor(Color.WHITE);
                 separatorBar.setBackgroundColor(Color.WHITE);
