@@ -23,9 +23,12 @@ import com.github.lassana.recorder.AudioRecorder;
 import com.github.lassana.recorder.AudioRecorderBuilder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -422,7 +425,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
                 progressDialog.dismiss();
                 Toast.makeText(RecordStoryActivity.this, R.string.recording_sent_notice, Toast.LENGTH_SHORT);
-                moveToNextActivity();
+                increaseRecordingCounter();
             }
         });
     }
@@ -445,5 +448,31 @@ public class RecordStoryActivity extends AppCompatActivity {
         intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
         startActivity(intent);
         finish();
+    }
+
+    private void increaseRecordingCounter() {
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference upvotesRef = baseRef.child(Constants.FB_COUNTER_RECORDING);
+        upvotesRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentValue = mutableData.getValue(Integer.class);
+                if (currentValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                System.out.println("Transaction completed");
+                moveToNextActivity();
+            }
+        });
     }
 }

@@ -23,9 +23,12 @@ import android.widget.CompoundButton;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -409,7 +412,32 @@ public class ListenToStoryActivity extends AppCompatActivity {
                     Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
                 }
                 Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+            increaseHeardCounter();
+            }
+        });
+    }
 
+    private void increaseHeardCounter() {
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+
+        DatabaseReference counterRef = baseRef.child(Constants.FB_COUNTER_RECORDINGS_HEARD);
+        counterRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentValue = mutableData.getValue(Integer.class);
+                if (currentValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                System.out.println("Transaction completed");
                 goBackToMainScreen();
             }
         });
