@@ -113,7 +113,8 @@ public class ConversationListActivity extends AppCompatActivity {
                 return true;
             case R.id.invite_friends:
                 composeMmsMessage("Get ONanON's new app for Android, so we can share stories! " +
-                        "Check out the beta version on the Google Play Store today: ");
+                        "Check out the beta version on the Google Play Store today: " +
+                        "https://play.google.com/store/apps/details?id=com.onanon.app");
                 return true;
             case R.id.send_comments:
                 composeEmail(new String[]{"andy@onanonapp.com"}, "Comments for ONanON!");
