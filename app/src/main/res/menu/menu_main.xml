@@ -2,28 +2,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item
+        android:id="@+id/invite_friends"
+        android:orderInCategory="10"
+        android:title="Invite Friends"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/add_conversation_menu"
-        android:orderInCategory="30"
+        android:orderInCategory="20"
         android:title="Add Convo"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/log_out_menu"
-        android:orderInCategory="40"
+        android:orderInCategory="30"
         android:title="Log Out"
         app:showAsAction="never" />
     <item
         android:id="@+id/see_intro_slides_menu"
-        android:orderInCategory="50"
+        android:orderInCategory="40"
         android:title="Help"
         app:showAsAction="never" />
     <item
-        android:id="@+id/invite_friends"
-        android:orderInCategory="55"
-        android:title="Invite Friends"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/send_comments"
-        android:orderInCategory="60"
+        android:orderInCategory="50"
         android:title="Send Feedback"
         app:showAsAction="ifRoom" />
 </menu>

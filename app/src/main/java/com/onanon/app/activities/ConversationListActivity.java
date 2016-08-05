@@ -414,9 +414,9 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     public void composeMmsMessage(String message) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra("sms_body", message);
+        intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
