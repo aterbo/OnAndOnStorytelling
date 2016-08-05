@@ -36,7 +36,7 @@
         <item></item>
         <item>Start Conversations</item>
         <item>Record Your Story</item>
-        <item>Share Familiarly</item>
+        <item>Share Personally</item>
         <item>Help Us Improve</item>
     </array>
 
@@ -45,9 +45,11 @@
         <item>Use Onanon to drive storytelling and conversations with friends and family.</item>
         <item>Onanon records you telling your story in your voice, the way you would in real life.
         </item>
-        <item>Talk one on one or in small groups of friends or family.</item>
-        <item>This is our alpha version. Please expect some bugs. We\'d love your feedback and
-            suggestions!
+        <item>Talk one on one or in small groups of friends or family. Share privately and
+            intimately, because you know no one is listening.</item>
+        <item>This is our beta release. Please expect some bugs, and the potential for some
+            unexpected changes in the database. Onanon is in it's infancy, and we\'d love your feedback and
+            suggestions. Reach out any time for any reason to andy@onanonapp.com.
         </item>
     </array>
 
