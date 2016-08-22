@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 
@@ -218,6 +219,11 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                             + userName + "/" + selectedConvoPushId + "/proposedPrompt3",
                     prompt3HashMap);
+
+            //Update time last action occurred
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/dateLastActionOccurred",
+                    Utils.getSystemTimeAsLong());
         }
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {

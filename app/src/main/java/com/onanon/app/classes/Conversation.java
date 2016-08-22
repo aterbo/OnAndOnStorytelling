@@ -59,7 +59,7 @@ public class Conversation implements Parcelable {
         fbStorageFilePathToRecording = "none";
         storyRecordingDuration = 0;
         this.dateLastStoryRecorded = 0;
-        this.dateLastActionOccurred = System.currentTimeMillis();
+        changeDateLastActionOccuredToNow();
     }
 
     //Parcelabler.com

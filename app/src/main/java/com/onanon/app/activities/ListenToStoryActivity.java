@@ -403,6 +403,11 @@ public class ListenToStoryActivity extends AppCompatActivity {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                             + userName + "/" + selectedConvoPushId + "/userNamesHaveNotHeardStory",
                     conversation.getUserNamesHaveNotHeardStory());
+
+            //Update time last action occurred
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + selectedConvoPushId + "/dateLastActionOccurred",
+                    Utils.getSystemTimeAsLong());
         }
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {

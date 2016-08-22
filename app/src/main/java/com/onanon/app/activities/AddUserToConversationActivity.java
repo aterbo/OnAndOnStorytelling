@@ -137,6 +137,7 @@ public class AddUserToConversationActivity extends AppCompatActivity {
         if (!conversation.getFbStorageFilePathToRecording().equals("none")) {
             conversation.markUserAsHasHeardStory(addedUserName);
         }
+        conversation.changeDateLastActionOccuredToNow();
     }
 
     private void updateConversationInFB(User selectedUser){
