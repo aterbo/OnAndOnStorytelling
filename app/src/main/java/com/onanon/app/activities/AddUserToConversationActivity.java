@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.User;
 
@@ -86,18 +87,7 @@ public class AddUserToConversationActivity extends AppCompatActivity {
     private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_display_all_users);
 
-        mListAdapter = new FirebaseListAdapter<User>(this, User.class,
-                android.R.layout.two_line_list_item, mUsersRef) {
-            @Override
-            protected void populateView(View v, User model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
-                if (model.getEmail() != null && !model.getEmail().isEmpty()) {
-                    ((TextView) v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
-                } else {
-                    ((TextView) v.findViewById(android.R.id.text2)).setText("");
-                }
-            }
-        };
+        mListAdapter = Utils.getUserListAdaptor(this);
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

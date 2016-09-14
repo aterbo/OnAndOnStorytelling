@@ -1,8 +1,20 @@
 package com.onanon.app.Utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Environment;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.api.model.StringList;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.onanon.app.R;
+import com.onanon.app.classes.User;
 
 import java.sql.Time;
 import java.text.DateFormat;
@@ -91,5 +103,37 @@ public class Utils {
         sb.append(" ago");
 
         return(sb.toString());
+    }
+
+    public static FirebaseListAdapter<User> getUserListAdaptor(final Activity activity){
+
+        DatabaseReference baseRef, mUsersRef;
+        baseRef = FirebaseDatabase.getInstance().getReference();
+        mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
+
+        FirebaseListAdapter userListAdaptor = new FirebaseListAdapter<User>(activity, User.class,
+                R.layout.layout_user_list_item, mUsersRef) {
+            @Override
+            protected void populateView(View v, User model, int position) {
+                ((TextView) v.findViewById(R.id.user_name)).setText(model.getUserName());
+                String profilePicUrl = model.getProfilePhotoUrl();
+                ImageView profilePic = ((ImageView) v.findViewById(R.id.profile_photo));
+
+                if (profilePicUrl != null && !profilePicUrl.isEmpty() && !profilePicUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(profilePicUrl.charAt(0)).equals("\"")) {
+                        profilePicUrl = profilePicUrl.substring(1, profilePicUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    profilePicUrl = "";
+                }
+                Glide.with(activity).load(profilePicUrl).placeholder(R.drawable.alberticon)
+                        .fallback(R.drawable.alberticon).into(profilePic);
+            }
+        };
+
+        return userListAdaptor;
     }
 }
