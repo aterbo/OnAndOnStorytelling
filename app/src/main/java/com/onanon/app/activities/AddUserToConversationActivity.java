@@ -33,7 +33,7 @@ public class AddUserToConversationActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<User> mListAdapter;
     private ListView mListView;
-    private DatabaseReference baseRef, mUsersRef;
+    private DatabaseReference baseRef;
     private String currentUserName;
     private String selectedConvoPushId;
     private Conversation conversation;
@@ -47,7 +47,6 @@ public class AddUserToConversationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         baseRef = FirebaseDatabase.getInstance().getReference();
-        mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
 
         getConversation();
         getUserNameFromSharedPreferences();
