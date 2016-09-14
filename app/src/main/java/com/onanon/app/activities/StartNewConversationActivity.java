@@ -40,7 +40,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
     private FirebaseListAdapter<User> mListAdapter;
     private ListView mListView;
-    private DatabaseReference baseRef, mUsersRef, mNumberOfPromptsRef;
+    private DatabaseReference baseRef, mNumberOfPromptsRef;
     private String currentUserName;
 
     private ArrayList<Prompt> promptOptionsList;
@@ -61,7 +61,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
         progressDialog = Utils.getSpinnerDialog(this);
 
         baseRef = FirebaseDatabase.getInstance().getReference();
-        mUsersRef = baseRef.child(Constants.FB_LOCATION_USERS);
 
         promptOptionsList = new ArrayList<>();
         getUserNameFromSharedPreferences();
@@ -100,18 +99,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
     private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_display_all_users);
 
-        mListAdapter = new FirebaseListAdapter<User>(this, User.class,
-                android.R.layout.simple_list_item_2, mUsersRef) {
-            @Override
-            protected void populateView(View v, User model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
-                if (model.getEmail() != null && !model.getEmail().isEmpty()) {
-                    ((TextView) v.findViewById(android.R.id.text2)).setText(model.getEmail().replace(",", "."));
-                } else {
-                    ((TextView) v.findViewById(android.R.id.text2)).setText("");
-                }
-            }
-        };
+        mListAdapter = Utils.getUserListAdaptor(this);
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
