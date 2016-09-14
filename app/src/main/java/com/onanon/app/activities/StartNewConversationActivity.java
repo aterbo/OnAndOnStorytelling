@@ -101,7 +101,7 @@ public class StartNewConversationActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.list_display_all_users);
 
         mListAdapter = new FirebaseListAdapter<User>(this, User.class,
-                android.R.layout.two_line_list_item, mUsersRef) {
+                android.R.layout.simple_list_item_2, mUsersRef) {
             @Override
             protected void populateView(View v, User model, int position) {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getUserName());
