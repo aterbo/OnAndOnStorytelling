@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,6 +77,40 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
                 conversation.getNextUserNameToTell() + " is next to tell a story");
+        setProfilePicture();
+    }
+
+    private void setProfilePicture(){
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child(conversation.getNextUserNameToTell());
+
+        userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String convoIconUrl = (String) snapshot.getValue();
+                ImageView profilePic = (ImageView) findViewById(R.id.conversation_icon);
+
+                if (convoIconUrl != null && !convoIconUrl.isEmpty() && !convoIconUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(convoIconUrl.charAt(0)).equals("\"")) {
+                        convoIconUrl = convoIconUrl.substring(1, convoIconUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    convoIconUrl = "";
+                }
+                Glide.with(ChooseTopicsToSendActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
+                        .fallback(R.drawable.icon_144).into(profilePic);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void getPromptOptionsList(){
