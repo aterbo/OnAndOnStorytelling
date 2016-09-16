@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <ImageView
-            android:id="@+id/sender_profile_pic"
+            android:id="@+id/conversation_icon"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:src="@drawable/alberticon" />
@@ -26,8 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/sender_profile_pic"
-            android:layout_alignTop="@id/sender_profile_pic"
+            android:layout_toRightOf="@+id/conversation_icon"
+            android:layout_alignTop="@id/conversation_icon"
             android:text="Albert answered"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/sender_text"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/sender_profile_pic"
+            android:layout_toRightOf="@+id/conversation_icon"
             android:text="Do you have a life plan?"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>

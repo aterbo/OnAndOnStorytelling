@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
@@ -14,12 +15,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton;
 
+import com.bumptech.glide.util.Util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -156,6 +159,13 @@ public class ListenToStoryActivity extends AppCompatActivity {
         senderText.setText(conversation.getLastUserNameToTell() + " answered");
         duration.setText(conversation.recordingDurationAsFormattedString());
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
+
+        TypedArray conversation_graphic_resources;
+        conversation_graphic_resources = getResources().obtainTypedArray(R.array.convo_graphic_array);
+
+        ((ImageView) findViewById(R.id.conversation_icon))
+                .setImageResource(conversation_graphic_resources
+                        .getResourceId(conversation.getCurrentStoryIcon(), Constants.DEFAULT_ICON));
     }
 
     private void setToggleButton(){
