@@ -14,10 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lassana.recorder.AudioRecorder;
 import com.github.lassana.recorder.AudioRecorderBuilder;
@@ -29,16 +31,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -87,6 +92,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         resetControlButton = (Button)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackButton.setEnabled(false);
+        setProfilePicture();
     }
 
     private void getConversation(){
@@ -97,6 +103,44 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void buildRecorder() {
 
+    }
+
+    private void setProfilePicture(){
+
+        PrefManager prefManager = new PrefManager(this);
+        String currentUserName = prefManager.getUserNameFromSharedPreferences();
+
+        ArrayList<String> otherParticipantsArray = conversation.otherConversationParticipantsArray(currentUserName);
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child(otherParticipantsArray.get(0));
+
+        userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String convoIconUrl = (String) snapshot.getValue();
+                ImageView profilePic = (ImageView) findViewById(R.id.conversation_icon);
+
+                if (convoIconUrl != null && !convoIconUrl.isEmpty() && !convoIconUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(convoIconUrl.charAt(0)).equals("\"")) {
+                        convoIconUrl = convoIconUrl.substring(1, convoIconUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    convoIconUrl = "";
+                }
+                Glide.with(RecordStoryActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
+                        .fallback(R.drawable.icon_144).into(profilePic);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void createRecordingFile(){
