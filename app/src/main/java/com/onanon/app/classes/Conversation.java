@@ -325,6 +325,17 @@ public class Conversation implements Parcelable {
         return participantsString.substring(2, participantsString.length());
     }
 
+    public ArrayList<String> otherConversationParticipantsArray(String currentUserName){
+        ArrayList<String> participantsArray = new ArrayList<>();
+        for (String userName : userNamesInConversation) {
+            if(!userName.equals(currentUserName)) {
+                participantsArray.add(userName);
+            }
+        }
+
+        return participantsArray;
+    }
+
     public int currentConversationStatus(String currentUserName){
         if (cIsUserTurnToTell(currentUserName)) {
             return Constants.USER_TURN_TO_TELL;

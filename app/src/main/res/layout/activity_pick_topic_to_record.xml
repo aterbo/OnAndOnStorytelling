@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
-            android:id="@+id/sender_profile_pic"
+            android:id="@+id/conversation_icon"
             android:layout_width="125dp"
             android:layout_height="125dp"
             android:layout_weight="1"
@@ -33,13 +33,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_below="@id/sender_profile_pic">
+        android:layout_below="@id/conversation_icon">
 
         <Button
             android:id="@+id/record_topic_option_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sender_profile_pic"
+            android:layout_below="@id/conversation_icon"
             android:text=""
             android:onClick="topic1"
             android:layout_weight="3" />

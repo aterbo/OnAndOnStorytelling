@@ -5,10 +5,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.PrefManager;
+import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 
@@ -51,6 +60,44 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         topicOption2 = (Button)findViewById(R.id.record_topic_option_2);
         topicOption3 = (Button)findViewById(R.id.record_topic_option_3);
         promptOptionsList = new ArrayList<>();
+    }
+
+    private void setProfilePicture(){
+
+        PrefManager prefManager = new PrefManager(this);
+        String currentUserName = prefManager.getUserNameFromSharedPreferences();
+
+        ArrayList<String> otherParticipantsArray = conversation.otherConversationParticipantsArray(currentUserName);
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child(otherParticipantsArray.get(0));
+
+        userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String convoIconUrl = (String) snapshot.getValue();
+                ImageView profilePic = (ImageView) findViewById(R.id.conversation_icon);
+
+                if (convoIconUrl != null && !convoIconUrl.isEmpty() && !convoIconUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(convoIconUrl.charAt(0)).equals("\"")) {
+                        convoIconUrl = convoIconUrl.substring(1, convoIconUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    convoIconUrl = "";
+                }
+                Glide.with(PickTopicToRecordActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
+                        .fallback(R.drawable.icon_144).into(profilePic);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void getPrompts(){
