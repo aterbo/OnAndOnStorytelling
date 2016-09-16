@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
@@ -20,9 +19,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import android.widget.CompoundButton;
 
-import com.bumptech.glide.util.Util;
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -82,6 +81,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
         getUserName();
         getConversation();
+        setFirebaseDetails();
+        setProfilePicture();
         getRecordingFromFirebaseStorage();
         initializeViews();
         showConversationDetails();
@@ -97,6 +98,41 @@ public class ListenToStoryActivity extends AppCompatActivity {
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
         selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
+    }
+
+    private void setFirebaseDetails(){
+        baseRef = FirebaseDatabase.getInstance().getReference();
+    }
+
+    private void setProfilePicture(){
+        DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child("lastUserNameToTell");
+
+        userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String convoIconUrl = (String) snapshot.getValue();
+                ImageView profilePic = (ImageView) findViewById(R.id.conversation_icon);
+
+                if (convoIconUrl != null && !convoIconUrl.isEmpty() && !convoIconUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(convoIconUrl.charAt(0)).equals("\"")) {
+                        convoIconUrl = convoIconUrl.substring(1, convoIconUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    convoIconUrl = "";
+                }
+                Glide.with(ListenToStoryActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
+                        .fallback(R.drawable.icon_144).into(profilePic);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     private void getRecordingFromFirebaseStorage(){
@@ -159,8 +195,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
         senderText.setText(conversation.getLastUserNameToTell() + " answered");
         duration.setText(conversation.recordingDurationAsFormattedString());
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
-
-
     }
 
     private void setToggleButton(){
@@ -328,7 +362,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void finishListeningToStory() {
         deleteLocalStoryAudioFile();
-        baseRef = FirebaseDatabase.getInstance().getReference();
         convoInfoToUpdate = new HashMap<String, Object>();
 
         conversation.markUserAsHasHeardStory(currentUserName);
@@ -428,8 +461,6 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void increaseHeardCounter() {
-
-        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
         DatabaseReference counterRef = baseRef.child(Constants.FB_COUNTER_RECORDINGS_HEARD);
         counterRef.runTransaction(new Transaction.Handler() {
