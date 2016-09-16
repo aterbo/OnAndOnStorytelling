@@ -17,4 +17,17 @@
         <item>@drawable/ic_import_export_white_48dp</item>
     </integer-array>
 
+    <integer-array name="convo_graphic_array">
+        <item>@drawable/convo_icon_0</item>
+        <item>@drawable/convo_icon_1</item>
+        <item>@drawable/convo_icon_2</item>
+        <item>@drawable/convo_icon_3</item>
+        <item>@drawable/convo_icon_4</item>
+        <item>@drawable/convo_icon_5</item>
+        <item>@drawable/convo_icon_6</item>
+        <item>@drawable/convo_icon_7</item>
+        <item>@drawable/convo_icon_8</item>
+        <item>@drawable/convo_icon_9</item>
+    </integer-array>
+
 </resources>
