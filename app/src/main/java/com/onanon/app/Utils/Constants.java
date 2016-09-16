@@ -12,6 +12,17 @@ public class Constants {
     public static final String NO_PHOTO_KEY = "NO_PHOTO";
 
     /**
+     * Conversation image codes
+     */
+    public static final int DEFAULT_ICON = 0;
+    public static final int SMILE_ICON = 1;
+    public static final int NEUTRAL_ICON = 2;
+    public static final int FROWN_ICON = 3;
+    public static final int LAUGH_ICON = 4;
+    public static final int CRY_ICON = 5;
+    public static final int SHOCKED_ICON = 6;
+
+    /**
      * Firebase Location Constants
      */
     public static final String FB_LOCATION_USERS = "users";

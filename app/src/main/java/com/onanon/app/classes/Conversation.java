@@ -37,6 +37,7 @@ public class Conversation implements Parcelable {
     private Prompt proposedPrompt2;
     private Prompt proposedPrompt3;
     private Prompt currentPrompt;
+    private int currentStoryIcon;
     private long storyRecordingDuration;
     private long dateLastStoryRecorded;
     private long dateLastActionOccurred;
@@ -60,6 +61,7 @@ public class Conversation implements Parcelable {
         storyRecordingDuration = 0;
         this.dateLastStoryRecorded = 0;
         changeDateLastActionOccuredToNow();
+        currentStoryIcon = Constants.DEFAULT_ICON;
     }
 
     //Parcelabler.com
@@ -89,6 +91,7 @@ public class Conversation implements Parcelable {
         proposedPrompt2 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         proposedPrompt3 = (Prompt) in.readValue(Prompt.class.getClassLoader());
         currentPrompt = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        currentStoryIcon = in.readInt();
         storyRecordingDuration = in.readLong();
         dateLastStoryRecorded = in.readLong();
         dateLastActionOccurred = in.readLong();
@@ -156,6 +159,14 @@ public class Conversation implements Parcelable {
 
     public void setProposedPrompt3(Prompt proposedPrompt3) {
         this.proposedPrompt3 = proposedPrompt3;
+    }
+
+    public int getCurrentStoryIcon() {
+        return currentStoryIcon;
+    }
+
+    public void setCurrentStoryIcon(int currentStoryIcon) {
+        this.currentStoryIcon = currentStoryIcon;
     }
 
     public String getNextUserNameToTell() {
@@ -499,6 +510,7 @@ public class Conversation implements Parcelable {
         dest.writeLong(storyRecordingDuration);
         dest.writeLong(dateLastStoryRecorded);
         dest.writeLong(dateLastActionOccurred);
+        dest.writeInt(currentStoryIcon);
     }
 
     //Mapper
@@ -514,6 +526,7 @@ public class Conversation implements Parcelable {
         result.put("proposedPrompt1", proposedPrompt1);
         result.put("proposedPrompt2", proposedPrompt2);
         result.put("proposedPrompt3", proposedPrompt3);
+        result.put("currentStoryIcon", currentStoryIcon);
         result.put("currentPrompt", currentPrompt);
         result.put("storyRecordingDuration", storyRecordingDuration);
         result.put("dateLastStoryRecorded", dateLastStoryRecorded);
