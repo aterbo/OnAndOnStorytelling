@@ -160,12 +160,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
         duration.setText(conversation.recordingDurationAsFormattedString());
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
 
-        TypedArray conversation_graphic_resources;
-        conversation_graphic_resources = getResources().obtainTypedArray(R.array.convo_graphic_array);
 
-        ((ImageView) findViewById(R.id.conversation_icon))
-                .setImageResource(conversation_graphic_resources
-                        .getResourceId(conversation.getCurrentStoryIcon(), Constants.DEFAULT_ICON));
     }
 
     private void setToggleButton(){
