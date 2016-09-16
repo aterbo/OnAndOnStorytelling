@@ -60,18 +60,14 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         topicOption2 = (Button)findViewById(R.id.record_topic_option_2);
         topicOption3 = (Button)findViewById(R.id.record_topic_option_3);
         promptOptionsList = new ArrayList<>();
+        setProfilePicture();
     }
 
     private void setProfilePicture(){
 
-        PrefManager prefManager = new PrefManager(this);
-        String currentUserName = prefManager.getUserNameFromSharedPreferences();
-
-        ArrayList<String> otherParticipantsArray = conversation.otherConversationParticipantsArray(currentUserName);
-
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
-                .child(otherParticipantsArray.get(0));
+                .child(conversation.getLastUserNameToTell());
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
