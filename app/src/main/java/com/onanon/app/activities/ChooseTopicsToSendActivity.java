@@ -102,8 +102,8 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(ChooseTopicsToSendActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
-                        .fallback(R.drawable.icon_144).into(profilePic);
+                Glide.with(ChooseTopicsToSendActivity.this).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
+                        .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePic);
             }
 
             @Override

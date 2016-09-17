@@ -132,8 +132,8 @@ public class RecordStoryActivity extends AppCompatActivity {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(RecordStoryActivity.this).load(convoIconUrl).placeholder(R.drawable.icon_144)
-                        .fallback(R.drawable.icon_144).into(profilePic);
+                Glide.with(RecordStoryActivity.this).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
+                        .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePic);
             }
 
             @Override
