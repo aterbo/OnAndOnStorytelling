@@ -80,6 +80,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         createRecordingFile();
         showConversationDetails();
         buildRecorder();
+        setProfilePicture();
 
     }
 
@@ -92,7 +93,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         resetControlButton = (Button)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackButton.setEnabled(false);
-        setProfilePicture();
     }
 
     private void getConversation(){
@@ -114,7 +114,7 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
-                .child(otherParticipantsArray.get(0));
+                .child(otherParticipantsArray.get(0)).child("profilePhotoUrl");
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

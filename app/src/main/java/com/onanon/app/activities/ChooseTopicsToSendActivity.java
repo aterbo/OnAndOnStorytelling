@@ -84,7 +84,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
-                .child(conversation.getNextUserNameToTell());
+                .child(conversation.getNextUserNameToTell()).child("profilePhotoUrl");
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

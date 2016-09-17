@@ -106,7 +106,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void setProfilePicture(){
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
-                .child(conversation.getLastUserNameToTell());
+                .child(conversation.getLastUserNameToTell()).child("profilePhotoUrl");
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

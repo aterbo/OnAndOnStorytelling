@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
         <ImageView
-            android:id="@+id/sender_profile_pic"
+            android:id="@+id/conversation_icon"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginRight="5dp"
@@ -24,14 +24,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/sender_profile_pic"
+            android:layout_toRightOf="@id/conversation_icon"
             android:text="Albert says"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView
             android:id="@+id/prompt_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/sender_profile_pic"
+            android:layout_toRightOf="@id/conversation_icon"
             android:layout_below="@id/sender_text"
             android:text="Tell me a story that ends in a joke."
             android:textAppearance="?android:attr/textAppearanceMedium" />

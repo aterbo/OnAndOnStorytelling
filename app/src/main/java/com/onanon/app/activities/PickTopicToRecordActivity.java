@@ -67,7 +67,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
-                .child(conversation.getLastUserNameToTell());
+                .child(conversation.getLastUserNameToTell()).child("profilePhotoUrl");
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
