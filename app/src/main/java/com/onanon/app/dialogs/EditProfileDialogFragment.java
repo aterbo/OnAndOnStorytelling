@@ -65,7 +65,7 @@ public class EditProfileDialogFragment extends DialogFragment {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(getContext()).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
+                Glide.with(getActivity()).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
                         .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePicView);
             }
 
