@@ -1,9 +1,8 @@
 package com.onanon.app.dialogs;
 
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +19,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onanon.app.Manifest;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.activities.ChooseTopicsToSendActivity;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 /**
  * Created by ATerbo on 9/18/16.
  */
-public class EditProfileDialogFragment extends DialogFragment {
+public class EditProfileDialogFragment extends android.support.v4.app.DialogFragment {
 
     private ImageView profilePicView;
 
@@ -95,6 +96,20 @@ public class EditProfileDialogFragment extends DialogFragment {
 
     private void changeProfilePic() {
 
+/*
+
+        if (CropImage.isExplicitCameraPermissionRequired(this)) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+        } else {
+            CropImage.startPickImageActivity(this);
+        }
+
+        ;
+        CropImage.activity(imageUri)
+                .setFixAspectRatio(true)
+                .setAspectRatio(0,0)
+                .start(getContext(), this);
+
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -110,7 +125,18 @@ public class EditProfileDialogFragment extends DialogFragment {
         getActivity().startActivityForResult(photoPickerIntent, Constants.REQ_CODE_PICK_IMAGE);
     }
 
-/*
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
 
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -125,6 +151,6 @@ public class EditProfileDialogFragment extends DialogFragment {
                         imageR.setImageBitmap(selectedBitmap);
                     }
                 }
+                */
         }
-        */
 }
