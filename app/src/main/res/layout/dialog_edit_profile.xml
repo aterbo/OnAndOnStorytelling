@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
-        android:src="@drawable/alberticon"/>
+        android:src="@drawable/word_treatment_512_84"/>
 
     <Button
         android:id="@+id/change_profile_pic_button"
