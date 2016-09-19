@@ -2,6 +2,8 @@ package com.onanon.app.dialogs;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +94,37 @@ public class EditProfileDialogFragment extends DialogFragment {
     }
 
     private void changeProfilePic() {
-        Toast.makeText(getActivity(), "Change!", Toast.LENGTH_LONG).show();
+
+
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        photoPickerIntent.setType("image/*");
+        photoPickerIntent.putExtra("crop", "true");
+        photoPickerIntent.putExtra("scale", true);
+        photoPickerIntent.putExtra("outputX", 96);
+        photoPickerIntent.putExtra("outputY", 96);
+        photoPickerIntent.putExtra("aspectX", 1);
+        photoPickerIntent.putExtra("aspectY", 1);
+        photoPickerIntent.putExtra("return-data", true);
+        photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        getActivity().startActivityForResult(photoPickerIntent, Constants.REQ_CODE_PICK_IMAGE);
     }
+
+/*
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch (requestCode) {
+            case Constants.REQ_CODE_PICK_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    if (imageReturnedIntent!=null) {
+                        Bundle extras = imageReturnedIntent.getExtras();
+                        Bitmap selectedBitmap = extras.getParcelable("data");
+                        imageR = (ImageView) findViewById(R.id.image);
+                        imageR.setImageBitmap(selectedBitmap);
+                    }
+                }
+        }
+        */
 }
