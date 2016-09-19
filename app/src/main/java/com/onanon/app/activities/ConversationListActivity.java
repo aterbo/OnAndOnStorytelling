@@ -130,7 +130,7 @@ public class ConversationListActivity extends AppCompatActivity {
 
     private void editProfileMenu(){
         EditProfileDialogFragment myDiag=new EditProfileDialogFragment();
-        myDiag.show(getFragmentManager(), "Diag");
+        myDiag.show(getFragmentManager(), "EditProfileDialog");
     }
 
     private void setFirebaseListToUserName() {

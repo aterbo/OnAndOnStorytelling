@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -27,17 +28,31 @@ import com.onanon.app.activities.ChooseTopicsToSendActivity;
  */
 public class EditProfileDialogFragment extends DialogFragment {
 
-    private EditText mEditText;
-    ImageView profilePicView;
+    private ImageView profilePicView;
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dialog_edit_profile, container);
-        mEditText = (EditText) view.findViewById(R.id.txt_your_name);
         getDialog().setTitle("Hello");
         profilePicView = (ImageView) view.findViewById(R.id.profile_photo);
         setProfileImageFromFirebase();
+
+        Button changeProfilePicButton = (Button)view.findViewById(R.id.change_profile_pic_button);
+        changeProfilePicButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // When button is clicked, call up to owning activity.
+                changeProfilePic();
+            }
+        });
+
+        Button cancelButton = (Button)view.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // When button is clicked, call up to owning activity.
+                dismiss();
+            }
+        });
 
         return view;
     }
@@ -74,5 +89,9 @@ public class EditProfileDialogFragment extends DialogFragment {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
+
+    private void changeProfilePic() {
+        Toast.makeText(getActivity(), "Change!", Toast.LENGTH_LONG).show();
     }
 }
