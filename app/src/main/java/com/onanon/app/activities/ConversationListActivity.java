@@ -1,11 +1,7 @@
 package com.onanon.app.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,12 +36,8 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.dialogs.EditProfileDialogFragment;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class ConversationListActivity extends AppCompatActivity {
@@ -249,16 +240,34 @@ public class ConversationListActivity extends AppCompatActivity {
 
             case Constants.USER_WAITING_FOR_PROMPTS:
                 //TODO: startWait/PingActivity();
+                Toast.makeText(this, conversation.getLastUserNameToTell() +
+                        " owes you some prompts!", Toast.LENGTH_LONG).show();
                 Log.i("PickedAConvo!", "Waiting for prompts");
                 break;
 
             case Constants.USER_WAITING_FOR_STORY:
                 //TODO: startWait/PingActivity();
+                Toast.makeText(this, conversation.getNextUserNameToTell() +
+                        " owes you a story!", Toast.LENGTH_LONG).show();
                 Log.i("PickedAConvo!", "Waiting for story");
                 break;
 
             case Constants.USER_WAITING_FOR_OTHERS:
                 //TODO: startWait/PingActivity();
+                ArrayList<String> usersToHearArray = conversation.getUserNamesHaveNotHeardStory();
+                String usersToHear = "";
+                for (String userName : usersToHearArray) {
+                    usersToHear = usersToHear + ", " + userName;
+                }
+                usersToHear = usersToHear.substring(1);
+                String verb;
+                if (usersToHear.contains(",")) {
+                    verb = " have ";
+                } else {
+                    verb = " has ";
+                }
+
+                Toast.makeText(this, usersToHear + verb + "to hear the current story!", Toast.LENGTH_LONG).show();
                 Log.i("PickedAConvo!", "Waiting for others to hear story");
                 break;
 
