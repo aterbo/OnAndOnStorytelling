@@ -2,6 +2,7 @@ package com.onanon.app.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
+import com.onanon.app.Utils.Utils;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -40,27 +42,28 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
     private ImageView profilePicView;
     private Uri mCropImageUri;
     private String currentUserName;
+    private ProgressDialog progressDialog;
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        PrefManager prefManager = new PrefManager(getActivity());
+        currentUserName = prefManager.getUserNameFromSharedPreferences();
 
         View view = inflater.inflate(R.layout.dialog_edit_profile, container);
-        getDialog().setTitle("Hello");
+        getDialog().setTitle("Hello " + currentUserName);
         profilePicView = (ImageView) view.findViewById(R.id.profile_photo);
         setProfileImageFromFirebase();
 
         Button changeProfilePicButton = (Button)view.findViewById(R.id.change_profile_pic_button);
         changeProfilePicButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // When button is clicked, call up to owning activity.
                 changeProfilePic();
             }
         });
 
-        Button cancelButton = (Button)view.findViewById(R.id.done_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        Button doneButton = (Button)view.findViewById(R.id.done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // When button is clicked, call up to owning activity.
                 dismiss();
             }
         });
@@ -69,8 +72,6 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
     }
 
     private void setProfileImageFromFirebase() {
-        PrefManager prefManager = new PrefManager(getActivity());
-        currentUserName = prefManager.getUserNameFromSharedPreferences();
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
@@ -93,11 +94,21 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
                 }
                 Glide.with(getActivity()).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
                         .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePicView);
+
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
+
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
             }
         });
     }
@@ -129,6 +140,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
+                progressDialog = Utils.getSpinnerDialog(getContext());
                 Uri resultUri = result.getUri();
                 uploadPhotoToFirebase(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -159,9 +171,10 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
 
     private void uploadPhotoToFirebase(Uri photoUri) {
 
-
-        PrefManager prefManager = new PrefManager(getActivity());
-        currentUserName = prefManager.getUserNameFromSharedPreferences();
+        if (currentUserName == null) {
+            PrefManager prefManager = new PrefManager(getActivity());
+            currentUserName = prefManager.getUserNameFromSharedPreferences();
+        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -196,8 +209,6 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
     }
 
     private void updateUserOnFirebase(Uri photoDownloadUrl){
-
-
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
                 .child(currentUserName).child("profilePhotoUrl");
