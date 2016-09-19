@@ -50,7 +50,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
         currentUserName = prefManager.getUserNameFromSharedPreferences();
 
         View view = inflater.inflate(R.layout.dialog_edit_profile, container);
-        getDialog().setTitle("Hello " + currentUserName);
+        getDialog().setTitle("Hello, " + currentUserName);
         profilePicView = (ImageView) view.findViewById(R.id.profile_photo);
         setProfileImageFromFirebase();
 
