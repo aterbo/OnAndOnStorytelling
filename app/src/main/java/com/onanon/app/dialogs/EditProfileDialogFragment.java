@@ -1,6 +1,9 @@
 package com.onanon.app.dialogs;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.activities.ChooseTopicsToSendActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 /**
  * Created by ATerbo on 9/18/16.
@@ -32,6 +36,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 public class EditProfileDialogFragment extends android.support.v4.app.DialogFragment {
 
     private ImageView profilePicView;
+    private Uri mCropImageUri;
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,62 +100,58 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
     }
 
     private void changeProfilePic() {
-
-/*
-
-        if (CropImage.isExplicitCameraPermissionRequired(this)) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
-        } else {
-            CropImage.startPickImageActivity(this);
-        }
-
-        ;
-        CropImage.activity(imageUri)
-                .setFixAspectRatio(true)
-                .setAspectRatio(0,0)
-                .start(getContext(), this);
-
-
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.putExtra("crop", "true");
-        photoPickerIntent.putExtra("scale", true);
-        photoPickerIntent.putExtra("outputX", 96);
-        photoPickerIntent.putExtra("outputY", 96);
-        photoPickerIntent.putExtra("aspectX", 1);
-        photoPickerIntent.putExtra("aspectY", 1);
-        photoPickerIntent.putExtra("return-data", true);
-        photoPickerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-        getActivity().startActivityForResult(photoPickerIntent, Constants.REQ_CODE_PICK_IMAGE);
+        Intent pickImageChooserIntent = CropImage.getPickImageChooserIntent(getContext());
+        startActivityForResult(pickImageChooserIntent, CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE);
     }
 
+
+
     @Override
+    @SuppressLint("NewApi")
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // handle result of pick image chooser
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri imageUri = CropImage.getPickImageResultUri(getContext(), data);
+
+            // For API >= 23 we need to check specifically that we have permissions to read external storage.
+            if (CropImage.isReadExternalStoragePermissionsRequired(getContext(), imageUri)) {
+                // request permissions and handle the result in onRequestPermissionsResult()
+                mCropImageUri = imageUri;
+                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},   CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
+            } else {
+                // no permissions required or already grunted, can start crop image activity
+                startCropImageActivity(imageUri);
+            }
+        }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 Uri resultUri = result.getUri();
+                Toast.makeText(getContext(), "Result OK " + resultUri.toString(), Toast.LENGTH_LONG).show();
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(getContext(), "Result Error", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        switch (requestCode) {
-            case Constants.REQ_CODE_PICK_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    if (imageReturnedIntent!=null) {
-                        Bundle extras = imageReturnedIntent.getExtras();
-                        Bitmap selectedBitmap = extras.getParcelable("data");
-                        imageR = (ImageView) findViewById(R.id.image);
-                        imageR.setImageBitmap(selectedBitmap);
-                    }
-                }
-                */
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE) {
+            if (mCropImageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // required permissions granted, start crop image activity
+                startCropImageActivity(mCropImageUri);
+            } else {
+                Toast.makeText(getContext(), "Cancelling, required permissions are not granted", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    private void startCropImageActivity(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setFixAspectRatio(true)
+                .setAspectRatio(1,1)
+                .setRequestedSize(96,96, CropImageView.RequestSizeOptions.RESIZE_FIT)
+                .start(getContext(), this);
+    }
+
 }
