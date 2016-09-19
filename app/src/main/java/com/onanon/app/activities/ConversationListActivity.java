@@ -36,6 +36,7 @@ import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
+import com.onanon.app.dialogs.EditProfileDialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,7 +129,8 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void editProfileMenu(){
-
+        EditProfileDialogFragment myDiag=new EditProfileDialogFragment();
+        myDiag.show(getFragmentManager(), "Diag");
     }
 
     private void setFirebaseListToUserName() {
