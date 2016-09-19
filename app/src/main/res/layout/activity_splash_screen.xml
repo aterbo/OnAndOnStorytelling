@@ -92,7 +92,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/text_input_layout"
         android:layout_gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
