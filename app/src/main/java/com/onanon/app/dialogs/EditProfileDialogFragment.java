@@ -4,29 +4,31 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.onanon.app.Manifest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
-import com.onanon.app.activities.ChooseTopicsToSendActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -37,6 +39,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
 
     private ImageView profilePicView;
     private Uri mCropImageUri;
+    private String currentUserName;
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
             }
         });
 
-        Button cancelButton = (Button)view.findViewById(R.id.cancel_button);
+        Button cancelButton = (Button)view.findViewById(R.id.done_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // When button is clicked, call up to owning activity.
@@ -67,7 +70,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
 
     private void setProfileImageFromFirebase() {
         PrefManager prefManager = new PrefManager(getActivity());
-        String currentUserName = prefManager.getUserNameFromSharedPreferences();
+        currentUserName = prefManager.getUserNameFromSharedPreferences();
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
@@ -127,7 +130,7 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK) {
                 Uri resultUri = result.getUri();
-                Toast.makeText(getContext(), "Result OK " + resultUri.toString(), Toast.LENGTH_LONG).show();
+                uploadPhotoToFirebase(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(getContext(), "Result Error", Toast.LENGTH_LONG).show();
@@ -152,6 +155,65 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
                 .setAspectRatio(1,1)
                 .setRequestedSize(96,96, CropImageView.RequestSizeOptions.RESIZE_FIT)
                 .start(getContext(), this);
+    }
+
+    private void uploadPhotoToFirebase(Uri photoUri) {
+
+
+        PrefManager prefManager = new PrefManager(getActivity());
+        currentUserName = prefManager.getUserNameFromSharedPreferences();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
+        StorageReference profilePicturesRef = storageRef.child("profilePictures");
+        StorageReference currentUserRef = profilePicturesRef.child(currentUserName);
+        String photoFileName = currentUserName + ".jpeg";
+
+        StorageReference photoStorageRef = currentUserRef.child(photoFileName);
+
+
+        Log.i("StorageUpload", "String ref: " + photoStorageRef.getPath());
+
+        UploadTask uploadTask = photoStorageRef.putFile(photoUri);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.i("StorageUpload", "Error uploading file to storage.");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Log.i("StorageUpload", "File uploaded to storage.");
+                updateUserOnFirebase(downloadUrl);
+            }
+        });
+    }
+
+    private void updateUserOnFirebase(Uri photoDownloadUrl){
+
+
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child(currentUserName).child("profilePhotoUrl");
+
+        userIconRef.setValue(photoDownloadUrl.toString(), new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updated to Firebase successfully");
+
+                setProfileImageFromFirebase();
+
+            }
+        });
     }
 
 }

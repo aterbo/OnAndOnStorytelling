@@ -4,13 +4,6 @@
     android:layout_height="match_parent"
     android:padding="20dp">
 
-
-    <TextView
-        android:id="@+id/label_profile_photo"
-        android:text="Current Profile Picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <ImageView
         android:id="@+id/profile_photo"
         android:layout_width="match_parent"
@@ -28,10 +21,10 @@
         />
 
     <Button
-        android:id="@+id/cancel_button"
+        android:id="@+id/done_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="Done"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         />
