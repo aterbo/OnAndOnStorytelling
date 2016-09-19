@@ -106,6 +106,9 @@ public class ConversationListActivity extends AppCompatActivity {
                 prefManager.setUserNameToPreferences("");
                 logOutFromFirebase();
                 return true;
+            case R.id.edit_profile_menu:
+                editProfileMenu();
+                return true;
             case R.id.see_intro_slides_menu:
                 Intent intent = new Intent(ConversationListActivity.this, IntroSliderActivity.class);
                 intent.putExtra(Constants.INITIATING_ACTIVITY_INTENT_KEY, Constants.CONVO_LIST);
@@ -122,6 +125,10 @@ public class ConversationListActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void editProfileMenu(){
+
     }
 
     private void setFirebaseListToUserName() {

@@ -12,6 +12,11 @@
         android:title="Add Convo"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/edit_profile_menu"
+        android:orderInCategory="25"
+        android:title="Edit Profile"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/log_out_menu"
         android:orderInCategory="30"
         android:title="Log Out"
