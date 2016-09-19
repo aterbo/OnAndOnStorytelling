@@ -10,45 +10,31 @@
     android:orientation="vertical"
     tools:context=".activities.SplashScreenActivity">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        android:id="@+id/centering_bar"
-        android:layout_centerInParent="true"/>
-
-    <ImageView
-        android:id="@+id/icon_logo"
-        android:layout_width="144dp"
-        android:layout_height="80dp"
-        android:scaleType="fitCenter"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/centering_bar"
-        android:src="@drawable/logo_512_250"/>
-
-    <ImageView
-        android:id="@+id/text_logo"
-        android:layout_width="144dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter"
-        android:layout_below="@id/icon_logo"
-        android:src="@drawable/word_treatment_512_84"/>
-
-    <Button
-        android:id="@+id/log_in_button"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/icon_graphics"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_below="@id/text_logo"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:clickable="false"
-        android:onClick="logInButtonPressed"
-        android:text="Start"/>
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+        <ImageView
+            android:id="@+id/icon_logo"
+            android:layout_width="144dp"
+            android:layout_height="80dp"
+            android:scaleType="fitCenter"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/centering_bar"
+            android:src="@drawable/logo_512_250"/>
+
+        <ImageView
+            android:id="@+id/text_logo"
+            android:layout_width="144dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:layout_below="@id/icon_logo"
+            android:src="@drawable/word_treatment_512_84"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/add_user_name_text"
@@ -61,16 +47,18 @@
         android:text="Welcome to ONanON!\n Please enter a user name."
         android:textSize="20sp"
         android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center"
-        android:layout_below="@+id/add_user_name_text"
-        android:visibility="gone">
+        android:layout_below="@id/add_user_name_text"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/user_name_input"
@@ -83,13 +71,31 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:clickable="false"
+        android:onClick="logInButtonPressed"
+        android:text="Start"
+        tools:visibility="visible"/>
+
+    <Button
         android:id="@+id/create_user_name_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_below="@id/text_input_layout"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:visibility="gone"
+        tools:visibility="visible"
         android:clickable="false"
         android:text="Ok!"/>
 
