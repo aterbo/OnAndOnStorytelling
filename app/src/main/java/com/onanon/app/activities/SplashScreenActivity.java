@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,9 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,8 +35,6 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.classes.User;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +49,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private boolean flag;
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +79,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         flag = true;
 
         if (isPermissionsGranted()) {
-            buildAuthStateListener();
+            checkIfUserLoggedIn();
         } else {
             requestAppPermissions();
         }
@@ -101,17 +96,17 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isPermissionsGranted(){
+    private boolean isPermissionsGranted() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
             return true;
-        }  else {
+        } else {
             return false;
         }
     }
 
-    private void requestAppPermissions(){
-        if (isShowExplanationRequired()){
+    private void requestAppPermissions() {
+        if (isShowExplanationRequired()) {
             showPermissionsExplanationDialog("You need to allow access to the microphone to record " +
                             "your awesome stories!",
                     new DialogInterface.OnClickListener() {
@@ -125,10 +120,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isShowExplanationRequired(){
+    private boolean isShowExplanationRequired() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
             return true;
-        }  else {
+        } else {
             return false;
         }
     }
@@ -142,7 +137,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showPermissionsRequestDialog(){
+    private void showPermissionsRequestDialog() {
         ActivityCompat.requestPermissions(SplashScreenActivity.this,
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
@@ -156,7 +151,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    buildAuthStateListener();
+                    checkIfUserLoggedIn();
                 } else {
                     requestAppPermissions();
                 }
@@ -165,13 +160,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private void showButtons(){
+    private void showButtons() {
         Button logInButton = (Button) findViewById(R.id.log_in_button);
         logInButton.setVisibility(View.VISIBLE);
         logInButton.setClickable(true);
     }
 
-    public void logInButtonPressed(View view){
+    public void logInButtonPressed(View view) {
         Intent intent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setLogo(R.drawable.logo_144_70)
@@ -198,36 +193,24 @@ public class SplashScreenActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void buildAuthStateListener() {
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null && flag) {
-                    Log.i("onAuthStateChange2", "onAuthStateChanged:signed_in:" + user.getUid());
+    private void checkIfUserLoggedIn() {
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            currentUserUID = user.getUid();
+            mUserEmail = user.getEmail();
 
-                    flag = false;
-
-                    currentUserUID = user.getUid();
-                    mUserEmail = user.getEmail();
-
-                    Uri photoUrl = user.getPhotoUrl();
-                    if (photoUrl != null) {
-                        mUserProfilePicUrl = photoUrl.toString();
-                    } else {
-                        mUserProfilePicUrl = Constants.NO_PHOTO_KEY;
-                    }
-                    checkIfUserAccountExistsInFB();
-                } else {
-                    flag = false;
-                    showButtons();
-                }
+            Uri photoUrl = user.getPhotoUrl();
+            if (photoUrl != null) {
+                mUserProfilePicUrl = photoUrl.toString();
+            } else {
+                mUserProfilePicUrl = Constants.NO_PHOTO_KEY;
             }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
+            checkIfUserAccountExistsInFB();
+        } else {
+            showButtons();
+        }
     }
-    
+
     private void checkIfUserAccountExistsInFB() {
 
         Button logInButton = (Button) findViewById(R.id.log_in_button);
@@ -367,23 +350,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     }
 
-
-    private void moveToConversationListActivity(){
-        removeAuthStateListeners();
+    private void moveToConversationListActivity() {
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private void removeAuthStateListeners() {
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        removeAuthStateListeners();
     }
 }
