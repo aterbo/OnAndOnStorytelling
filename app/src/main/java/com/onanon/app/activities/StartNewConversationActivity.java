@@ -66,16 +66,6 @@ public class StartNewConversationActivity extends AppCompatActivity {
         getUserNameFromSharedPreferences();
         getPromptOptionsList();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "This will eventually let you add a new friend to your " +
-                        "contact list", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-            }
-        });
-
         initializeScreen();
     }
 
