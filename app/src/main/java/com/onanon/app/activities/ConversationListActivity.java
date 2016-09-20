@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.onanon.app.Utils.NetworkUtil;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
@@ -401,15 +402,19 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void startNextActivity(Conversation conversation, Class classToStart){
-        Intent intent = new Intent(this, classToStart);
-        intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
-        intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
-        startActivity(intent);
+        if (NetworkUtil.isConnectedToNetwork(this)) {
+            Intent intent = new Intent(this, classToStart);
+            intent.putExtra(Constants.CONVERSATION_INTENT_KEY, conversation);
+            intent.putExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY, selectedConvoPushId);
+            startActivity(intent);
+        }
     }
 
     private void startNewConversation(){
-        Intent intent = new Intent(this, StartNewConversationActivity.class);
-        startActivity(intent);
+        if (NetworkUtil.isConnectedToNetwork(this)) {
+            Intent intent = new Intent(this, StartNewConversationActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void logOutFromFirebase(){

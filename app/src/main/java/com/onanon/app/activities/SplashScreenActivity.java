@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.NetworkUtil;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.classes.User;
 
@@ -79,7 +80,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         flag = true;
 
         if (isPermissionsGranted()) {
-            checkIfUserLoggedIn();
+            if(NetworkUtil.isConnectedToNetwork(this)){
+                checkIfUserLoggedIn();
+            }
         } else {
             requestAppPermissions();
         }
