@@ -475,6 +475,10 @@ public class Conversation implements Parcelable {
         dateLastActionOccurred = System.currentTimeMillis();
     }
 
+    public void changeDateLastStoryRecordedToNow() {
+        dateLastStoryRecorded = System.currentTimeMillis();
+    }
+
     @Override
     public int describeContents() {
         return 0;

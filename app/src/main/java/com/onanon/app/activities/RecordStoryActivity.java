@@ -447,6 +447,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         conversation.changeNextPlayer();
         conversation.changeAllUsersAsHaveNotListenedButLastToTell();
         conversation.changeDateLastActionOccuredToNow();
+        conversation.changeDateLastStoryRecordedToNow();
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
