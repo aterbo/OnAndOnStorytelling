@@ -19,8 +19,10 @@ public class PrefManager {
     // Shared preferences file name
     private static final String PREF_NAME = "ONanON_Pref";
 
-    private static final String IS_FIRST_TIME_LAUNCH_KEY = "IsFirstTimeLaunch";
+    private static final String IS_FIRST_TIME_LAUNCH_KEY = "isFirstTimeLaunch";
     private static final String CURRENT_USER_NAME_KEY = "currentUser";
+    private static final String FCM_TOKEN = "fcmToken";
+    private static final String IS_FCM_TOKEN_CURRENT = "isFcmTokenCurrent";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -53,5 +55,23 @@ public class PrefManager {
         } else {
             return false;
         }
+    }
+
+    public void setFcmTokenToPreferences(String token){
+        editor.putString(FCM_TOKEN, token);
+        editor.commit();
+    }
+
+    public String getFcmTokenFromSharedPreferences(){
+        return pref.getString(FCM_TOKEN, "");
+    }
+
+    public void setIsFcmTokenCurrentToPreferences(boolean isTokenCurrent){
+        editor.putBoolean(IS_FCM_TOKEN_CURRENT, isTokenCurrent);
+        editor.commit();
+    }
+
+    public boolean isFcmTokenCurrent(){
+        return pref.getBoolean(IS_FCM_TOKEN_CURRENT, false);
     }
 }

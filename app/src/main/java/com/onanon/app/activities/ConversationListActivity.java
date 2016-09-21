@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +40,7 @@ import com.onanon.app.classes.Conversation;
 import com.onanon.app.dialogs.EditProfileDialogFragment;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class ConversationListActivity extends AppCompatActivity {
@@ -62,6 +64,9 @@ public class ConversationListActivity extends AppCompatActivity {
 
         prefManager = new PrefManager(this);
         getUserName();
+        if (!prefManager.isFcmTokenCurrent() && !prefManager.getFcmTokenFromSharedPreferences().isEmpty()) {
+            updateFcmTokenInFBDatabase();
+        }
     }
 
     private void getUserName(){
@@ -74,6 +79,24 @@ public class ConversationListActivity extends AppCompatActivity {
         }
     }
 
+    private void updateFcmTokenInFBDatabase() {
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference tokenRef = baseRef.child(Constants.FB_LOCATION_FCM_TOKENS).child(currentUserName);
+        String token = prefManager.getFcmTokenFromSharedPreferences();
+
+        tokenRef.setValue(token, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FCM Token", "Error updating token to FB");
+                    prefManager.setIsFcmTokenCurrentToPreferences(false);
+                } else {
+                    prefManager.setIsFcmTokenCurrentToPreferences(true);
+                }
+                Log.i("FCM Token", "Token updated to Firebase successfully");
+            }
+        });
+    }
 
     private void showUserNameInTextView(){
         ((TextView)findViewById(R.id.current_user_indicator)).setText("Hello, " + currentUserName);
