@@ -8,8 +8,8 @@ android {
         applicationId "com.onanon.app"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 15
-        versionName "1.53"
+        versionCode 16
+        versionName "1.54"
     }
     buildTypes {
         release {
