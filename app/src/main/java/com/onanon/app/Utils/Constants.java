@@ -8,9 +8,10 @@ public class Constants {
     public static final int MAX_CONVO_PARTICIPANTS = 4;
     public static final int NUMBER_OF_PROMPT_OPTIONS = 3;
     public static final int SHORT_SKIP_TIME = 5000;
-    public static  final int LONG_SKIP_TIME = 30000;
+    public static final int LONG_SKIP_TIME = 30000;
     public static final String NO_PHOTO_KEY = "NO_PHOTO";
     public static final int REQ_CODE_PICK_IMAGE = 1;
+    public static final int PROFILE_PIC_DIMENSIONS = 288;
 
     /**
      * Firebase Location Constants

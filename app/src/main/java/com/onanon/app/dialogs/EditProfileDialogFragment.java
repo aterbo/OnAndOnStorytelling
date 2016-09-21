@@ -165,7 +165,8 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
         CropImage.activity(imageUri)
                 .setFixAspectRatio(true)
                 .setAspectRatio(1,1)
-                .setRequestedSize(96,96, CropImageView.RequestSizeOptions.RESIZE_FIT)
+                .setRequestedSize(Constants.PROFILE_PIC_DIMENSIONS,Constants.PROFILE_PIC_DIMENSIONS,
+                        CropImageView.RequestSizeOptions.RESIZE_FIT)
                 .start(getContext(), this);
     }
 
