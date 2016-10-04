@@ -500,7 +500,8 @@ public class RecordStoryActivity extends AppCompatActivity {
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
-        DatabaseReference upvotesRef = baseRef.child(Constants.FB_COUNTER_RECORDING);
+        DatabaseReference upvotesRef = baseRef.child(Constants.FB_LOCATION_STATISTICS)
+                .child(Constants.FB_COUNTER_RECORDING);
         upvotesRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {

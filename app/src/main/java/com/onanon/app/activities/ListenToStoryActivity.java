@@ -462,7 +462,8 @@ public class ListenToStoryActivity extends AppCompatActivity {
 
     private void increaseHeardCounter() {
 
-        DatabaseReference counterRef = baseRef.child(Constants.FB_COUNTER_RECORDINGS_HEARD);
+        DatabaseReference counterRef = baseRef.child(Constants.FB_LOCATION_STATISTICS)
+                .child(Constants.FB_COUNTER_RECORDINGS_HEARD);
         counterRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {

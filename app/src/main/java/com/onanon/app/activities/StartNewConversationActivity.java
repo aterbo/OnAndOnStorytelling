@@ -230,7 +230,8 @@ public class StartNewConversationActivity extends AppCompatActivity {
 
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
 
-        DatabaseReference counterRef = baseRef.child(Constants.FB_COUNTER_CONVERSATIONS_STARTED);
+        DatabaseReference counterRef = baseRef.child(Constants.FB_LOCATION_STATISTICS)
+                .child(Constants.FB_COUNTER_CONVERSATIONS_STARTED);
         counterRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
