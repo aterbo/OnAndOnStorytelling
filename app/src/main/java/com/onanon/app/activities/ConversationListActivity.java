@@ -137,12 +137,11 @@ public class ConversationListActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.invite_friends:
-                composeMmsMessage("Get ONanON's new app for Android, so we can share stories! " +
-                        "Check out the beta version on the Google Play Store today: " +
-                        "https://play.google.com/store/apps/details?id=com.onanon.app");
+                Utils.composeMmsMessage(getString(R.string.invite_sms_message_text), this);
                 return true;
             case R.id.send_comments:
-                composeEmail(new String[]{"andy@onanonapp.com"}, "Comments for ONanON!");
+                Utils.composeEmail(new String[]{getString(R.string.andy_onanon_email)},
+                        getString(R.string.comments), this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -462,25 +461,6 @@ public class ConversationListActivity extends AppCompatActivity {
         super.onDestroy();
         if (mListAdapter != null) {
             mListAdapter.cleanup();
-        }
-    }
-
-    public void composeMmsMessage(String message) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(android.content.Intent.EXTRA_TEXT, message);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
-    public void composeEmail(String[] addresses, String subject) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
         }
     }
 }

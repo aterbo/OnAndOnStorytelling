@@ -25,6 +25,10 @@
     <string name="title_activity_add_new_user">Add a New User</string>
     <string name="title_activity_opening_screen">ONanON</string>
     <string name="title_activity_add_user_to_conversation">Add Someone</string>
+    <string name="invite_sms_message_text">Get the ONanON app so we can share stories!
+        \nCheck it out in the Google Play Store today:
+        \nhttps://play.google.com/store/apps/details?id=com.onanon.app</string>
+    <string name="comments">"Comments for ONanON!"</string>
 
 
     <string name="next">NEXT</string>
@@ -54,5 +58,6 @@
     </array>
 
     <string name="user_name_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</string>
+    <string name="andy_onanon_email">andy@onanonapp.com</string>
 
 </resources>
