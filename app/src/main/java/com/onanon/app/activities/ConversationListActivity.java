@@ -38,6 +38,8 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.dialogs.EditProfileDialogFragment;
+import com.onanon.app.dialogs.WaitingForPromptsDialog;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -262,10 +264,7 @@ public class ConversationListActivity extends AppCompatActivity {
                 break;
 
             case Constants.USER_WAITING_FOR_PROMPTS:
-                //TODO: startWait/PingActivity();
-                Toast.makeText(this, conversation.getLastUserNameToTell() +
-                        " owes you some prompts!", Toast.LENGTH_LONG).show();
-                Log.i("PickedAConvo!", "Waiting for prompts");
+                getRandomPromptsOrWait(conversation);
                 break;
 
             case Constants.USER_WAITING_FOR_STORY:
@@ -437,6 +436,11 @@ public class ConversationListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, StartNewConversationActivity.class);
             startActivity(intent);
         }
+    }
+
+    private void getRandomPromptsOrWait(Conversation conversation) {
+        WaitingForPromptsDialog waitingForPromptsDialog = WaitingForPromptsDialog.newInstance(conversation);
+        waitingForPromptsDialog.show(getSupportFragmentManager(), "WaitingForPromptsDialog");
     }
 
     private void logOutFromFirebase(){
