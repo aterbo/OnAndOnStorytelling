@@ -7,6 +7,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -59,6 +61,23 @@ public class AddUserToConversationActivity extends AppCompatActivity {
         super.onDestroy();
         if (mListAdapter != null) {
             mListAdapter.cleanup();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_invite_users, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.invite_friends:
+                Utils.composeMmsMessage(getString(R.string.invite_sms_message_text), this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
