@@ -27,6 +27,7 @@ public class Constants {
     public static final String FB_COUNTER_RECORDING = "totalNumberOfRecordings";
     public static final String FB_COUNTER_CONVERSATIONS_STARTED = "totalNumberOfConversationsStarted";
     public static final String FB_COUNTER_RECORDINGS_HEARD = "totalNumberOfRecordingsHeard";
+    public static final String FB_COUNTER_RANDOM_TOPICS_REQUESTED = "totalNumberOfRandomTopicsRequested";
     public static final String FB_LOCATION_STATISTICS = "statistics";
 
     /**

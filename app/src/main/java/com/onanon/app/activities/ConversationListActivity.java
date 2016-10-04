@@ -439,7 +439,8 @@ public class ConversationListActivity extends AppCompatActivity {
     }
 
     private void getRandomPromptsOrWait(Conversation conversation) {
-        WaitingForPromptsDialog waitingForPromptsDialog = WaitingForPromptsDialog.newInstance(conversation);
+        WaitingForPromptsDialog waitingForPromptsDialog = WaitingForPromptsDialog.newInstance(
+                conversation, selectedConvoPushId);
         waitingForPromptsDialog.show(getSupportFragmentManager(), "WaitingForPromptsDialog");
     }
 
