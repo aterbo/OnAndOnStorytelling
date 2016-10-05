@@ -38,11 +38,13 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
+import com.onanon.app.classes.Response;
 import com.onanon.app.classes.VisualizerView;
 import com.onanon.app.dialogs.StoryFinishedDialog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -331,27 +333,23 @@ public class ListenToStoryActivity extends AppCompatActivity
         storyFinishedDialog.show(getSupportFragmentManager(), "StoryFinishedDialog");
     }
 
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
     @Override
     public void continueWithResponseClick(String responseText) {
         // User touched the dialog's positive button
-        Toast.makeText(ListenToStoryActivity.this, "Positive " + responseText, Toast.LENGTH_SHORT).show();
+        progressDialog = Utils.getSpinnerDialog(this);
         uploadResponseToFB(responseText);
     }
 
     @Override
     public void continueWithoutResponseClick() {
         // User touched the dialog's negative button
-        Toast.makeText(ListenToStoryActivity.this, "Negative", Toast.LENGTH_SHORT).show();
+        progressDialog = Utils.getSpinnerDialog(this);
         finishListeningToStory();
     }
 
     @Override
     public void listenAgainClick() {
         // User touched the dialog's neutral button
-        Toast.makeText(ListenToStoryActivity.this, "Neutral", Toast.LENGTH_SHORT).show();
         resetPlayer();
     }
 
@@ -370,11 +368,36 @@ public class ListenToStoryActivity extends AppCompatActivity
     }
 
 
-    private void uploadResponseToFB(String response) {
+    private void uploadResponseToFB(String responseString) {
         //TODO: Upload response to FB.
-        if (progressDialog.isShowing()){
-            progressDialog.dismiss();
+        Response response = new Response(
+                conversation.getLastUserNameToTell(), currentUserName, responseString,
+                conversationPushId, conversation.getCurrentPrompt(), Utils.getSystemTimeAsLong(),
+                Response.TEXT_RESPONSE);
+
+        DatabaseReference responseRef = baseRef.child(Constants.FB_LOCATION_RESPONSES);
+
+        HashMap<String, Object> responseHashMap = new HashMap<String, Object>();
+
+        HashMap<String, Object> itemToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(response, Map.class);
+
+        for (String userNames : conversation.otherConversationParticipantsArray(currentUserName)) {
+            DatabaseReference newResponseRef = responseRef.child(userNames).push();
+            String responsePushId = newResponseRef.getKey();
+            responseHashMap.put("/" + userNames + "/" + responsePushId, itemToAddHashMap);
         }
+
+        responseRef.updateChildren(responseHashMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateResponse", "Error updating response to Firebase");
+                }
+                Log.i("FIREBASEUpdateResponse", "Response updated to Firebase successfully");
+                finishListeningToStory();
+            }
+        });
     }
 
     private void finishListeningToStory() {
@@ -513,6 +536,7 @@ public class ListenToStoryActivity extends AppCompatActivity
         }
         Intent intent = new Intent(this, ConversationListActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }

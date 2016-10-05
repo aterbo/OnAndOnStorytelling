@@ -1,5 +1,9 @@
 package com.onanon.app.classes;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+
 /**
  * Created by ATerbo on 10/5/16.
  */
@@ -27,9 +31,9 @@ public class Response {
     private long dateResponseSubmitted;
     private long typeOfResponse;
 
-    private static long TEXT_RESPONSE = 0;
-    private static long AUDIO_RESPONSE = 1;
-    private static long VIDEO_RESPONSE = 2;
+    public static long TEXT_RESPONSE = 0;
+    public static long AUDIO_RESPONSE = 1;
+    public static long VIDEO_RESPONSE = 2;
 
     public String getOriginalTellerUserName() {
         return originalTellerUserName;
@@ -85,5 +89,20 @@ public class Response {
 
     public void setTypeOfResponse(long typeOfResponse) {
         this.typeOfResponse = typeOfResponse;
+    }
+
+    //Mapper
+    @Exclude
+    public HashMap<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("originalTellerUserName", originalTellerUserName);
+        result.put("responderUserName", responderUserName);
+        result.put("response", response);
+        result.put("originalConversationPushId", originalConversationPushId);
+        result.put("promptRespondingTo", promptRespondingTo);
+        result.put("dateResponseSubmitted", dateResponseSubmitted);
+        result.put("typeOfResponse", typeOfResponse);
+
+        return result;
     }
 }

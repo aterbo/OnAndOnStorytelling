@@ -24,6 +24,8 @@ public class Constants {
     public static final String FB_LOCATION_UID_MAPPINGS = "uidMappings";
     public static final String FB_LOCATION_FCM_TOKENS = "fcmTokens";
     public static final String FB_LOCATION_USER_NAME_KEY_LIST = "userNamesKeyList";
+    public static final String FB_LOCATION_RESPONSES = "responses";
+
     public static final String FB_COUNTER_RECORDING = "totalNumberOfRecordings";
     public static final String FB_COUNTER_CONVERSATIONS_STARTED = "totalNumberOfConversationsStarted";
     public static final String FB_COUNTER_RECORDINGS_HEARD = "totalNumberOfRecordingsHeard";
