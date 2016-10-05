@@ -41,6 +41,8 @@ import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.VisualizerView;
+import com.onanon.app.dialogs.StoryFinishedDialog;
+import com.onanon.app.dialogs.WaitingForPromptsDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -327,23 +329,12 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void askIfUserWantsToListenAgain() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setTitle("Listen again?");
-        builder.setPositiveButton("No, I'm done!", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                finishListeningToStory();
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("Yes, please!", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                resetPlayer();
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        //builder.setPositiveButton("No, I'm done!", new DialogInterface.OnClickListener() {
+        //        finishListeningToStory();
+        //builder.setNegativeButton("Yes, please!", new DialogInterface.OnClickListener() {
+        //        resetPlayer();
+        StoryFinishedDialog storyFinishedDialog = new StoryFinishedDialog();
+        storyFinishedDialog.show(getSupportFragmentManager(), "StoryFinishedDialog");
     }
 
     private void resetPlayer(){

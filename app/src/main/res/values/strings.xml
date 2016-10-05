@@ -59,5 +59,11 @@
 
     <string name="user_name_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</string>
     <string name="andy_onanon_email">andy@onanonapp.com</string>
+    <string name="after_story_title">And that\'s the story...</string>
+    <string name="response_text_hint">Enter your thoughts for the group...</string>
+    <string name="send_text_response">Send Response</string>
+    <string name="continue_without_response">Continue Without Response</string>
+    <string name="listen_again">Listen Again</string>
+    <string name="response_dialog_text">That was the story! What do you think?</string>
 
 </resources>
