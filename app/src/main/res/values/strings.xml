@@ -67,5 +67,6 @@
     <string name="continue_without_response">Continue Without Response</string>
     <string name="listen_again">Listen Again</string>
     <string name="response_dialog_text">What do you think?</string>
+    <string name="no_responses">You have no responses at the moment.</string>
 
 </resources>
