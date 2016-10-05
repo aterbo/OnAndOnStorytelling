@@ -1,8 +1,6 @@
 package com.onanon.app.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -42,7 +40,6 @@ import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.VisualizerView;
 import com.onanon.app.dialogs.StoryFinishedDialog;
-import com.onanon.app.dialogs.WaitingForPromptsDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +51,8 @@ import java.util.concurrent.TimeUnit;
 //http://examples.javacodegeeks.com/android/android-mediaplayer-example/
 //Visualizer: http://android-er.blogspot.com/2015/02/create-audio-visualizer-for-mediaplayer.html
 
-public class ListenToStoryActivity extends AppCompatActivity {
+public class ListenToStoryActivity extends AppCompatActivity
+        implements StoryFinishedDialog.StoryFinishedListener {
 
     private String currentUserName;
     private MediaPlayer mPlayer;
@@ -66,11 +64,12 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private SeekBar seekbar;
     private ToggleButton playPauseButton;
     private Uri speechUri;
-    private String selectedConvoPushId;
+    private String conversationPushId;
     private String localTempFilePath;
     private ProgressDialog progressDialog;
     private StorageReference audioFileStorageRef;
     private DatabaseReference baseRef;
+    private HashMap<String, Object> convoInfoToUpdate;
 
     private VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
@@ -98,7 +97,7 @@ public class ListenToStoryActivity extends AppCompatActivity {
     private void getConversation(){
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
-        selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
+        conversationPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
     }
 
     private void setFirebaseDetails(){
@@ -328,14 +327,32 @@ public class ListenToStoryActivity extends AppCompatActivity {
     }
 
     private void askIfUserWantsToListenAgain() {
-        //builder.setPositiveButton("No, I'm done!", new DialogInterface.OnClickListener() {
-        //        finishListeningToStory();
-        //builder.setNegativeButton("Yes, please!", new DialogInterface.OnClickListener() {
-        //        resetPlayer();
-        resetPlayer();
-        StoryFinishedDialog storyFinishedDialog = StoryFinishedDialog.newInstance(
-                conversation, selectedConvoPushId, localTempFilePath);
+        StoryFinishedDialog storyFinishedDialog = new StoryFinishedDialog();
         storyFinishedDialog.show(getSupportFragmentManager(), "StoryFinishedDialog");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void continueWithResponseClick(String responseText) {
+        // User touched the dialog's positive button
+        Toast.makeText(ListenToStoryActivity.this, "Positive " + responseText, Toast.LENGTH_SHORT).show();
+        uploadResponseToFB(responseText);
+    }
+
+    @Override
+    public void continueWithoutResponseClick() {
+        // User touched the dialog's negative button
+        Toast.makeText(ListenToStoryActivity.this, "Negative", Toast.LENGTH_SHORT).show();
+        finishListeningToStory();
+    }
+
+    @Override
+    public void listenAgainClick() {
+        // User touched the dialog's neutral button
+        Toast.makeText(ListenToStoryActivity.this, "Neutral", Toast.LENGTH_SHORT).show();
+        resetPlayer();
     }
 
     private void resetPlayer(){
@@ -351,4 +368,151 @@ public class ListenToStoryActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
     }
+
+
+    private void uploadResponseToFB(String response) {
+        //TODO: Upload response to FB.
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
+    private void finishListeningToStory() {
+        deleteLocalStoryAudioFile();
+        convoInfoToUpdate = new HashMap<String, Object>();
+
+        conversation.markUserAsHasHeardStory(currentUserName);
+        if (conversation.haveAllUsersHeardStory()){
+            deleteFBStorageStoryAudioFile();
+        } else {
+            updateConversationAfterListening();
+        }
+    }
+
+    private void deleteLocalStoryAudioFile(){
+        File file = new File(localTempFilePath);
+        boolean isDeleteSuccessful = file.delete();
+
+        if (isDeleteSuccessful) {
+            Log.i("Recording deleted", "Temporary recoding file deleted.");
+        } else {
+            Log.i("Recording NOT Deleted", "Error deleting temporary recording file.");
+        }
+    }
+
+    private void deleteFBStorageStoryAudioFile(){
+        String FBStorageFilePath = conversation.getFbStorageFilePathToRecording();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference sRef = storage.getReferenceFromUrl("gs://firebase-tell-me.appspot.com");
+        StorageReference audioFileStorageRef = sRef.child(FBStorageFilePath);
+
+        audioFileStorageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.i("Recording deleted", "FB Storage recoding file deleted.");
+
+
+                deleteConversationReferencesToFileinHashMap();
+                updateConversationAfterListening();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.i("Recording deleted", "ERROR - FB Storage recoding file NOT deleted.");
+
+                deleteConversationReferencesToFileinHashMap();
+                updateConversationAfterListening();
+            }
+        });
+    }
+
+    private void deleteConversationReferencesToFileinHashMap(){
+        conversation.setFbStorageFilePathToRecording("none");
+        conversation.setCurrentPrompt(new Prompt("null", "null"));
+        conversation.setStoryRecordingDuration(0);
+
+
+        HashMap<String, Object> nullPromptToAddToHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(
+                        new Prompt("null", "null"), Map.class);
+
+        for (String userName : conversation.getUserNamesInConversation()) {
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/fbStorageFilePathToRecording",
+                    "none");
+
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/currentPrompt",
+                    nullPromptToAddToHashMap);
+
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/storyRecordingDuration",
+                    0);
+        }
+    }
+
+    private void updateConversationAfterListening(){
+
+        for (String userName : conversation.getUserNamesInConversation()) {
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/userNamesHaveHeardStory",
+                    conversation.getUserNamesHaveHeardStory());
+
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/userNamesHaveNotHeardStory",
+                    conversation.getUserNamesHaveNotHeardStory());
+
+            //Update time last action occurred
+            convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
+                            + userName + "/" + conversationPushId + "/dateLastActionOccurred",
+                    Utils.getSystemTimeAsLong());
+        }
+
+        baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateCONVO", "Error updating convo to Firebase");
+                }
+                Log.i("FIREBASEUpdateCONVO", "Convo updatedto Firebase successfully");
+                increaseHeardCounter();
+            }
+        });
+    }
+
+    private void increaseHeardCounter() {
+
+        DatabaseReference counterRef = baseRef.child(Constants.FB_LOCATION_STATISTICS)
+                .child(Constants.FB_COUNTER_RECORDINGS_HEARD);
+        counterRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Integer currentValue = mutableData.getValue(Integer.class);
+                if (currentValue == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue(currentValue + 1);
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                System.out.println("Transaction completed");
+                goBackToMainScreen();
+            }
+        });
+    }
+
+    private void goBackToMainScreen(){
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        startActivity(intent);
+    }
+
 }
