@@ -61,7 +61,7 @@ public class Utils {
 
     public static String converSystemTimeToDateAsString(long milliSeconds)
     {
-        String dateFormat = "HH:mm, MMM d";
+        String dateFormat = "MMM d, HH:mm";
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
 

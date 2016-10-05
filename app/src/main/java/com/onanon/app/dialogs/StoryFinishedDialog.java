@@ -29,6 +29,7 @@ public class StoryFinishedDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.dialog_after_story, null))
+                .setTitle(R.string.after_story_title)
                 .setPositiveButton(R.string.send_text_response, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

@@ -2,30 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <ImageView
-        android:src="@drawable/word_treatment_144_24"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:layout_margin="5dp"
-        android:scaleType="center"
-        android:layout_gravity="center"
-        android:contentDescription="@string/app_name" />
-    <TextView
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:text="@string/response_dialog_text"
-        android:textSize="18sp"/>
     <EditText
         android:inputType="textMultiLine|textCapSentences"
-        android:lines="8"
-        android:minLines="6"
+        android:minLines="5"
         android:gravity="top|start"
-        android:maxLines="10"
+        android:maxLines="8"
         android:layout_margin="10dp"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:scrollbars="vertical"
         android:id="@+id/entered_response"
         android:hint="@string/response_text_hint"

@@ -73,6 +73,8 @@ public class ReactionsActivity extends AppCompatActivity {
     private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_reactions);
 
+        mListView.setEmptyView(findViewById(android.R.id.empty));
+
         mListAdapter = Utils.getResponseListAdaptor(this, currentUserName);
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
