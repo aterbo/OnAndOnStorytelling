@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,9 +27,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.onanon.app.Utils.NetworkUtil;
@@ -74,8 +77,9 @@ public class ConversationListActivity extends AppCompatActivity {
     private void getUserName(){
         if (!prefManager.isUserNameInSharedPreferencesEmpty()) {
             currentUserName = prefManager.getUserNameFromSharedPreferences();
-            setFirebaseListToUserName();
             showUserNameInTextView();
+            setFirebaseListToUserName();
+            setConversationResponses();
         } else {
             logOutFromFirebase();
         }
@@ -442,6 +446,34 @@ public class ConversationListActivity extends AppCompatActivity {
         WaitingForPromptsDialog waitingForPromptsDialog = WaitingForPromptsDialog.newInstance(
                 conversation, selectedConvoPushId);
         waitingForPromptsDialog.show(getSupportFragmentManager(), "WaitingForPromptsDialog");
+    }
+
+    private void setConversationResponses() {
+        DatabaseReference responsesForUserRef = baseRef.child(Constants.FB_LOCATION_RESPONSES)
+                .child(currentUserName);
+
+        responsesForUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Button responseButton = (Button)findViewById(R.id.reactions_button);
+                    responseButton.setVisibility(View.VISIBLE);
+
+                    View responseButtonSeparator = findViewById(R.id.line_under_reactions_button);
+                    responseButtonSeparator.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void reactionsButtonClick(View view) {
+        Intent intent = new Intent(this, ReactionsActivity.class);
+        startActivity(intent);
     }
 
     private void logOutFromFirebase(){

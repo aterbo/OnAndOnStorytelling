@@ -30,6 +30,7 @@
         android:id="@+id/reactions_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Story responses"
         android:onClick="reactionsButtonClick"
         android:visibility="gone"/>
 

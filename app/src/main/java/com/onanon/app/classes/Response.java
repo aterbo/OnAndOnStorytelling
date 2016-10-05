@@ -11,11 +11,12 @@ public class Response {
 
     public Response() { }
 
-    public Response(String originalTellerUserName, String responderUserName, String response,
+    public Response(String originalTellerUserName, String responderUserName, String responderProfilePicUrl, String response,
                     String originalConversationPushId, Prompt promptRespondingTo,
                     long dateResponseSubmitted, long typeOfResponse) {
         this.originalTellerUserName = originalTellerUserName;
         this.responderUserName = responderUserName;
+        this.responderProfilePicUrl = responderProfilePicUrl;
         this.response = response;
         this.originalConversationPushId = originalConversationPushId;
         this.promptRespondingTo = promptRespondingTo;
@@ -25,6 +26,7 @@ public class Response {
 
     private String originalTellerUserName;
     private String responderUserName;
+    private String responderProfilePicUrl;
     private String response;
     private String originalConversationPushId;
     private Prompt promptRespondingTo;
@@ -49,6 +51,14 @@ public class Response {
 
     public void setResponderUserName(String responderUserName) {
         this.responderUserName = responderUserName;
+    }
+
+    public String getResponderProfilePicUrl() {
+        return responderProfilePicUrl;
+    }
+
+    public void setResponderProfilePicUrl(String responderProfilePicUrl) {
+        this.responderProfilePicUrl = responderProfilePicUrl;
     }
 
     public String getResponse() {
@@ -97,6 +107,7 @@ public class Response {
         HashMap<String, Object> result = new HashMap<>();
         result.put("originalTellerUserName", originalTellerUserName);
         result.put("responderUserName", responderUserName);
+        result.put("responderProfilePicUrl", responderProfilePicUrl);
         result.put("response", response);
         result.put("originalConversationPushId", originalConversationPushId);
         result.put("promptRespondingTo", promptRespondingTo);

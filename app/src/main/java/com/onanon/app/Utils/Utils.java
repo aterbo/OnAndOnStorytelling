@@ -16,6 +16,7 @@ import com.google.firebase.auth.api.model.StringList;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.onanon.app.R;
+import com.onanon.app.classes.Response;
 import com.onanon.app.classes.User;
 
 import java.sql.Time;
@@ -137,6 +138,61 @@ public class Utils {
         };
 
         return userListAdaptor;
+    }
+
+    public static FirebaseListAdapter<Response> getResponseListAdaptor(final Activity activity
+            , final String currentUserName){
+
+        DatabaseReference baseRef, mResponseRef, mUsersResponsesRef;
+        baseRef = FirebaseDatabase.getInstance().getReference();
+        mResponseRef = baseRef.child(Constants.FB_LOCATION_RESPONSES);
+        mUsersResponsesRef = mResponseRef.child(currentUserName);
+
+        FirebaseListAdapter responseListAdaptor = new FirebaseListAdapter<Response>(activity, Response.class,
+                R.layout.layout_reactions_list_item, mUsersResponsesRef) {
+            @Override
+            protected void populateView(View v, Response model, int position) {
+                ((TextView) v.findViewById(R.id.response_title))
+                        .setText("RE: " + model.getPromptRespondingTo().getText());
+
+                String from, to, fromToString;
+                if (model.getResponderUserName()==currentUserName) {
+                    from = "you";
+                } else {
+                    from = model.getResponderUserName();
+                }
+                if (model.getOriginalTellerUserName()==currentUserName) {
+                    to = "you";
+                } else {
+                    to = model.getOriginalTellerUserName();
+                }
+
+                fromToString = "From " + from + " to " + to;
+
+                ((TextView) v.findViewById(R.id.response_from_to)).setText(fromToString);
+
+                ((TextView) v.findViewById(R.id.response_date))
+                        .setText(converSystemTimeToDateAsString(model.getDateResponseSubmitted()));
+
+                String profilePicUrl = model.getResponderProfilePicUrl();
+
+                ImageView profilePic = ((ImageView) v.findViewById(R.id.response_sender_profile_image));
+
+                if (profilePicUrl != null && !profilePicUrl.isEmpty() && !profilePicUrl.contains(Constants.NO_PHOTO_KEY)) {
+                    //Profile has picture
+
+                    if (Character.toString(profilePicUrl.charAt(0)).equals("\"")) {
+                        profilePicUrl = profilePicUrl.substring(1, profilePicUrl.length()-1);
+                    }
+                } else {
+                    //profile does not have picture
+                    profilePicUrl = "";
+                }
+                Glide.with(activity).load(profilePicUrl).placeholder(R.drawable.alberticon)
+                        .fallback(R.drawable.alberticon).into(profilePic);
+            }
+        };
+        return responseListAdaptor;
     }
 
     public static void composeMmsMessage(String message, Context context) {

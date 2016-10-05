@@ -337,7 +337,7 @@ public class ListenToStoryActivity extends AppCompatActivity
     public void continueWithResponseClick(String responseText) {
         // User touched the dialog's positive button
         progressDialog = Utils.getSpinnerDialog(this);
-        uploadResponseToFB(responseText);
+        getUserProfilePicUrl(responseText);
     }
 
     @Override
@@ -367,11 +367,27 @@ public class ListenToStoryActivity extends AppCompatActivity
         }
     }
 
+    private void getUserProfilePicUrl(final String responseString) {
+        DatabaseReference profilePicUrlRef = baseRef.child(Constants.FB_LOCATION_USERS)
+                .child(currentUserName).child("profilePhotoUrl");
+        profilePicUrlRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String profilePicUrl = dataSnapshot.getValue().toString();
+                uploadResponseToFB(responseString, profilePicUrl);
+            }
 
-    private void uploadResponseToFB(String responseString) {
-        //TODO: Upload response to FB.
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void uploadResponseToFB(String responseString, String profilePicUrl) {
+
         Response response = new Response(
-                conversation.getLastUserNameToTell(), currentUserName, responseString,
+                conversation.getLastUserNameToTell(), currentUserName, profilePicUrl, responseString,
                 conversationPushId, conversation.getCurrentPrompt(), Utils.getSystemTimeAsLong(),
                 Response.TEXT_RESPONSE);
 
