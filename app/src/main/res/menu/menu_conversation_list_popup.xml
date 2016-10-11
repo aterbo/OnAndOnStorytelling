@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_someone"
+        android:title="Add someone to conversation"/>
+
+    <item
+        android:id="@+id/view_history"
+        android:title="View Conversation History"/>
+
+    <item
+        android:id="@+id/leave_convo"
+        android:title="Leave conversation"/>
+</menu>

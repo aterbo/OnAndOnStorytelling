@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:padding="5dp"
     android:layout_height="100dp"
-    android:id="@+id/item_layout">
+    android:id="@+id/item_layout"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:id="@+id/conversation_profile_image"
@@ -24,6 +25,7 @@
         android:maxLines="3"
         android:ellipsize="end"
         android:layout_toRightOf="@id/conversation_profile_image"
+        android:layout_toLeftOf="@+id/pop_up_button"
         android:layout_alignParentTop="true"
         android:text="Title"
         />
@@ -47,4 +49,15 @@
         android:layout_alignParentBottom="true"
         android:text="Time Since"
         />
+
+    <ImageButton
+        android:id="@id/pop_up_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:background="?android:selectableItemBackground" />
 </RelativeLayout>

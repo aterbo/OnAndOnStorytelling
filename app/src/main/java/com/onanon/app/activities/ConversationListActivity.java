@@ -15,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -169,8 +171,48 @@ public class ConversationListActivity extends AppCompatActivity {
                 baseRef.child(Constants.FB_LOCATION_USER_CONVOS).child(currentUserName)) {
 
             @Override
-            protected void populateView(View v, Conversation conversation, int position) {
+            protected void populateView(View v, final Conversation conversation, int position) {
                 setViewsBasedOnConversationStatus(conversation, v);
+                final int clickedPosition = position;
+
+                final ImageButton popUpBtn = (ImageButton)v.findViewById(R.id.pop_up_button);
+                popUpBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (conversation != null) {
+                            selectedConvoPushId = mListAdapter.getRef(clickedPosition).getKey();
+                        }
+
+                        final PopupMenu popup = new PopupMenu(ConversationListActivity.this, popUpBtn);
+                        popup.getMenuInflater().inflate(R.menu.menu_conversation_list_popup, popup.getMenu());
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            public boolean onMenuItemClick(MenuItem item) {
+                                int i = item.getItemId();
+                                if (i == R.id.add_someone) {
+                                    if (conversation.getUserNamesInConversation().size() >=
+                                            Constants.MAX_CONVO_PARTICIPANTS) {
+                                        Toast.makeText(getApplicationContext(),
+                                                "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        startNextActivity(conversation, AddUserToConversationActivity.class);
+                                    }
+                                    return true;
+                                }
+                                else if (i == R.id.view_history) {
+                                    return true;
+                                }
+                                else if (i == R.id.leave_convo) {
+                                    confirmLeaveConversation(conversation);
+                                    return true;
+                                }
+                                else {
+                                    return onMenuItemClick(item);
+                                }
+                            }
+                        });
+                        popup.show();
+                    }
+                });
             }
         };
 
@@ -183,18 +225,6 @@ public class ConversationListActivity extends AppCompatActivity {
                     selectedConvoPushId = mListAdapter.getRef(position).getKey();
                     determineActivityToStart(selectedConvo);
                 }
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final Conversation selectedConvo = mListAdapter.getItem(position);
-                if (selectedConvo != null) {
-                    selectedConvoPushId = mListAdapter.getRef(position).getKey();
-                    showLongClickMenu(selectedConvo);
-                }
-                return true;
             }
         });
     }
@@ -301,41 +331,6 @@ public class ConversationListActivity extends AppCompatActivity {
                 Log.i("PickedAConvo!", "Default selected");
                 break;
         }
-    }
-
-    private void showLongClickMenu(final Conversation selectedLongClickConvo) {
-        CharSequence photoOptions[] = new CharSequence[]{
-                "Add someone to the conversation.",
-                "Leave this conversation.",
-                getResources().getString(R.string.cancel)
-        };
-
-        android.app.AlertDialog.Builder builder =
-                new android.app.AlertDialog.Builder(ConversationListActivity.this);
-        builder.setTitle("Change group");
-        builder.setIcon(R.mipmap.ic_launcher);
-        builder.setItems(photoOptions, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        if (selectedLongClickConvo.getUserNamesInConversation().size() >=
-                                Constants.MAX_CONVO_PARTICIPANTS) {
-                            Toast.makeText(getApplicationContext(),
-                                    "This conversation is already crowded!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            startNextActivity(selectedLongClickConvo, AddUserToConversationActivity.class);
-                        }
-                        break;
-                    case 1:
-                        confirmLeaveConversation(selectedLongClickConvo);
-                        break;
-                    case 2:
-                        break;
-                }
-            }
-        });
-        builder.show();
     }
 
     private void confirmLeaveConversation(final Conversation conversation){
