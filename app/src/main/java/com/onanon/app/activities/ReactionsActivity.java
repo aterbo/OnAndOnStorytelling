@@ -127,7 +127,7 @@ public class ReactionsActivity extends AppCompatActivity implements ViewResponse
                 if (firebaseError != null) {
                     Log.i("FIREBASEUpdateResponse", "Error deleting response from Firebase");
                 }
-                Log.i("FIREBASEUpdateResponse", "Response deleted from Firebase successfully");
+                Log.i("FIREBASEUpdateResponses", "Response deleted successfully");
             }
         });
     }
