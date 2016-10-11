@@ -1,18 +1,14 @@
 package com.onanon.app.dialogs;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.onanon.app.R;
@@ -40,75 +36,72 @@ public class ViewResponseDialog  extends DialogFragment {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        super.onCreateDialog(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         response = getArguments().getParcelable("response");
-        currentUserName = getArguments().getParcelable("currentUserName");
+        currentUserName = getArguments().getString("currentUserName");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View v = inflater.inflate(R.layout.dialog_view_response, container, false);
 
-        builder.setView(inflater.inflate(R.layout.dialog_view_response, null))
-                .setTitle(R.string.viewing_response_title)
-                .setPositiveButton(R.string.delete_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.deleteResponseClick();
-                    }
-                })
-                .setNegativeButton(R.string.save_responses, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.saveResponseClick();
-                    }
-                });
-        return builder.create();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        AlertDialog alertDialog = (AlertDialog) getDialog();
-        if(alertDialog != null)
-        {
-            String from, to, fromToString;
-            if (response.getResponderUserName()==currentUserName) {
-                from = "you";
-            } else {
-                from = response.getResponderUserName();
+        // Watch for button clicks.
+        Button save_button = (Button)v.findViewById(R.id.save_response);
+        save_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // When button is clicked, call up to owning activity.
+                ViewResponseDialog.this.dismiss();
+                mListener.saveResponseClick();
             }
-            if (response.getOriginalTellerUserName()==currentUserName) {
-                to = "you";
-            } else {
-                to = response.getOriginalTellerUserName();
+        });
+
+        // Watch for button clicks.
+        Button delete_button = (Button)v.findViewById(R.id.delete_response);
+        delete_button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // When button is clicked, call up to owning activity.
+                ViewResponseDialog.this.dismiss();
+                mListener.deleteResponseClick();
             }
+        });
 
-            fromToString = "From " + from + " to " + to;
-
-            ((TextView) alertDialog.findViewById(R.id.response_from_to)).setText(
-                    fromToString);
-            ((TextView) alertDialog.findViewById(R.id.response_date)).setText(
-                    Utils.calcTimeFromMillisToNow(response.getDateResponseSubmitted()));
-            ((TextView) alertDialog.findViewById(R.id.response_title)).setText(
-                    "RE: " + response.getPromptRespondingTo().getText());
-            ((TextView)alertDialog.findViewById(R.id.response)).setText(response.getResponse());
-
-            String profilePicUrl = response.getResponderProfilePicUrl();
-
-            ImageView profilePic = ((ImageView) alertDialog.findViewById(R.id.response_sender_profile_image));
-
-            if (profilePicUrl != null && !profilePicUrl.isEmpty() && !profilePicUrl.contains(Constants.NO_PHOTO_KEY)) {
-                //Profile has picture
-
-                if (Character.toString(profilePicUrl.charAt(0)).equals("\"")) {
-                    profilePicUrl = profilePicUrl.substring(1, profilePicUrl.length()-1);
-                }
-            } else {
-                //profile does not have picture
-                profilePicUrl = "";
-            }
-            Glide.with(getActivity()).load(profilePicUrl).placeholder(R.drawable.alberticon)
-                    .fallback(R.drawable.alberticon).into(profilePic);
+        String from, to, fromToString;
+        if (response.getResponderUserName()==currentUserName) {
+            from = "you";
+        } else {
+            from = response.getResponderUserName();
         }
+        if (response.getOriginalTellerUserName()==currentUserName) {
+            to = "you";
+        } else {
+            to = response.getOriginalTellerUserName();
+        }
+
+        fromToString = "From " + from + " to " + to;
+
+        ((TextView) v.findViewById(R.id.response_from_to)).setText(
+                fromToString);
+        ((TextView) v.findViewById(R.id.response_date)).setText(
+                Utils.calcTimeFromMillisToNow(response.getDateResponseSubmitted()));
+        ((TextView) v.findViewById(R.id.response_title)).setText(
+                "RE: " + response.getPromptRespondingTo().getText());
+        ((TextView)v.findViewById(R.id.response)).setText(response.getResponse());
+
+        String profilePicUrl = response.getResponderProfilePicUrl();
+
+        ImageView profilePic = ((ImageView) v.findViewById(R.id.response_sender_profile_image));
+
+        if (profilePicUrl != null && !profilePicUrl.isEmpty() && !profilePicUrl.contains(Constants.NO_PHOTO_KEY)) {
+            //Profile has picture
+
+            if (Character.toString(profilePicUrl.charAt(0)).equals("\"")) {
+                profilePicUrl = profilePicUrl.substring(1, profilePicUrl.length()-1);
+            }
+        } else {
+            //profile does not have picture
+            profilePicUrl = "";
+        }
+        Glide.with(getActivity()).load(profilePicUrl).placeholder(R.drawable.alberticon)
+                .fallback(R.drawable.alberticon).into(profilePic);
+
+        return v;
     }
 
     /* The activity that creates an instance of this dialog fragment must

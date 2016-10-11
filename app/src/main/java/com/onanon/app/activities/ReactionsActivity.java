@@ -93,12 +93,13 @@ public class ReactionsActivity extends AppCompatActivity implements ViewResponse
     }
 
     @Override
+    public void saveResponseClick() {
+        Log.i("Selected Response", "Save " + selectedResponse.getResponse());
+    }
+
+    @Override
     public void deleteResponseClick() {
         Log.i("Selected Response", "Delete " + selectedResponse.getResponse());
     }
 
-    @Override
-    public void saveResponseClick() {
-        Log.i("Selected Response", "Save " + selectedResponse.getResponse());
-    }
 }
