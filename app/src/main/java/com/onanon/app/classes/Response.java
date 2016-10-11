@@ -1,5 +1,8 @@
 package com.onanon.app.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -7,7 +10,7 @@ import java.util.HashMap;
 /**
  * Created by ATerbo on 10/5/16.
  */
-public class Response {
+public class Response implements Parcelable {
 
     public Response() { }
 
@@ -116,4 +119,45 @@ public class Response {
 
         return result;
     }
+
+    protected Response(Parcel in) {
+        originalTellerUserName = in.readString();
+        responderUserName = in.readString();
+        responderProfilePicUrl = in.readString();
+        response = in.readString();
+        originalConversationPushId = in.readString();
+        promptRespondingTo = (Prompt) in.readValue(Prompt.class.getClassLoader());
+        dateResponseSubmitted = in.readLong();
+        typeOfResponse = in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(originalTellerUserName);
+        dest.writeString(responderUserName);
+        dest.writeString(responderProfilePicUrl);
+        dest.writeString(response);
+        dest.writeString(originalConversationPushId);
+        dest.writeValue(promptRespondingTo);
+        dest.writeLong(dateResponseSubmitted);
+        dest.writeLong(typeOfResponse);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Response> CREATOR = new Parcelable.Creator<Response>() {
+        @Override
+        public Response createFromParcel(Parcel in) {
+            return new Response(in);
+        }
+
+        @Override
+        public Response[] newArray(int size) {
+            return new Response[size];
+        }
+    };
 }

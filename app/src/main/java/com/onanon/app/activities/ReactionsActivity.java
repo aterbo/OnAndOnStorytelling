@@ -22,14 +22,17 @@ import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Prompt;
 import com.onanon.app.classes.Response;
 import com.onanon.app.classes.User;
+import com.onanon.app.dialogs.StoryFinishedDialog;
+import com.onanon.app.dialogs.ViewResponseDialog;
 
 import java.util.ArrayList;
 
-public class ReactionsActivity extends AppCompatActivity {
+public class ReactionsActivity extends AppCompatActivity implements ViewResponseDialog.ViewResponseListener {
 
     private FirebaseListAdapter<Response> mListAdapter;
     private ListView mListView;
     private String currentUserName;
+    private Response selectedResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +76,29 @@ public class ReactionsActivity extends AppCompatActivity {
     private void initializeScreen() {
         mListView = (ListView) findViewById(R.id.list_reactions);
 
-        mListView.setEmptyView(findViewById(android.R.id.empty));
+        mListView.setEmptyView(findViewById(R.id.responses_empty));
 
         mListAdapter = Utils.getResponseListAdaptor(this, currentUserName);
         mListView.setAdapter(mListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Response selectedReaction = mListAdapter.getItem(position);
-                Log.i("SELECTED USER", selectedReaction.getResponse());
+                selectedResponse = mListAdapter.getItem(position);
+                Log.i("Selected Response", selectedResponse.getResponse());
+                ViewResponseDialog viewResponseDialog = ViewResponseDialog
+                        .newInstance(selectedResponse, currentUserName);
+                viewResponseDialog.show(getSupportFragmentManager(), "ViewResponseDialog");
             }
         });
+    }
+
+    @Override
+    public void deleteResponseClick() {
+        Log.i("Selected Response", "Delete " + selectedResponse.getResponse());
+    }
+
+    @Override
+    public void saveResponseClick() {
+        Log.i("Selected Response", "Save " + selectedResponse.getResponse());
     }
 }

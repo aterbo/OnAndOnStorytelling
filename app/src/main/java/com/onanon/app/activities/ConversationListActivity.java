@@ -458,9 +458,6 @@ public class ConversationListActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     Button responseButton = (Button)findViewById(R.id.reactions_button);
                     responseButton.setVisibility(View.VISIBLE);
-
-                    View responseButtonSeparator = findViewById(R.id.line_under_reactions_button);
-                    responseButtonSeparator.setVisibility(View.VISIBLE);
                 }
             }
 

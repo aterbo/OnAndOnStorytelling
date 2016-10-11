@@ -68,5 +68,8 @@
     <string name="listen_again">Again</string>
     <string name="response_dialog_text">What do you think?</string>
     <string name="no_responses">You have no responses at the moment.</string>
+    <string name="save_responses">Save Response</string>
+    <string name="viewing_response_title">Response</string>
+    <string name="delete_response">Delete</string>
 
 </resources>

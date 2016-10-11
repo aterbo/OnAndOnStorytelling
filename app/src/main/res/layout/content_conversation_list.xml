@@ -9,6 +9,14 @@
     tools:context="com.onanon.app.activities.ConversationListActivity"
     tools:showIn="@layout/activity_conversation_list">
 
+    <Button
+        android:id="@+id/reactions_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View story responses"
+        android:onClick="reactionsButtonClick"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/current_user_indicator"
         android:layout_width="match_parent"
@@ -23,34 +31,15 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/blackTint"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
-
-    <Button
-        android:id="@+id/reactions_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Story responses"
-        android:onClick="reactionsButtonClick"
-        android:visibility="gone"/>
-
-    <View
-        android:id="@+id/line_under_reactions_button"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/blackTint"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:visibility="gone"/>
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
     <ListView
         android:id="@+id/conversation_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
 
     <LinearLayout android:id="@android:id/empty"
         android:layout_width="match_parent" android:layout_height="match_parent"
