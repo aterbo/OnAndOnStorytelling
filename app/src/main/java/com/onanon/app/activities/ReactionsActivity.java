@@ -12,11 +12,17 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
+import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Prompt;
@@ -26,6 +32,8 @@ import com.onanon.app.dialogs.StoryFinishedDialog;
 import com.onanon.app.dialogs.ViewResponseDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReactionsActivity extends AppCompatActivity implements ViewResponseDialog.ViewResponseListener {
 
@@ -33,6 +41,7 @@ public class ReactionsActivity extends AppCompatActivity implements ViewResponse
     private ListView mListView;
     private String currentUserName;
     private Response selectedResponse;
+    private String selectedResponsePushId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +93,8 @@ public class ReactionsActivity extends AppCompatActivity implements ViewResponse
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedResponse = mListAdapter.getItem(position);
+                selectedResponsePushId = mListAdapter.getRef(position).getKey();
+
                 Log.i("Selected Response", selectedResponse.getResponse());
                 ViewResponseDialog viewResponseDialog = ViewResponseDialog
                         .newInstance(selectedResponse, currentUserName);
@@ -100,6 +111,24 @@ public class ReactionsActivity extends AppCompatActivity implements ViewResponse
     @Override
     public void deleteResponseClick() {
         Log.i("Selected Response", "Delete " + selectedResponse.getResponse());
+        deleteResponseFromFB();
     }
 
+    private void deleteResponseFromFB() {
+        DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference selectedReactionsRef = baseRef
+                .child(Constants.FB_LOCATION_RESPONSES)
+                .child(currentUserName)
+                .child(selectedResponsePushId);
+
+        selectedReactionsRef.setValue(null, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError firebaseError, DatabaseReference firebase) {
+                if (firebaseError != null) {
+                    Log.i("FIREBASEUpdateResponse", "Error deleting response from Firebase");
+                }
+                Log.i("FIREBASEUpdateResponse", "Response deleted from Firebase successfully");
+            }
+        });
+    }
 }
