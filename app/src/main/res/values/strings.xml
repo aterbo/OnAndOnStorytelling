@@ -71,5 +71,6 @@
     <string name="save_responses">Save Response</string>
     <string name="viewing_response_title">Response</string>
     <string name="delete_response">Delete</string>
+    <string name="no_history">There is no history for this conversation. Tell some more stories!</string>
 
 </resources>

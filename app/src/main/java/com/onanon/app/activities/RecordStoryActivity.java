@@ -465,9 +465,13 @@ public class RecordStoryActivity extends AppCompatActivity {
                     + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
 
+        DatabaseReference newHistoryEntryRef = baseRef.child(Constants.FB_LOCATION_HISTORY)
+                .child(selectedConvoPushId).push();
+        final String newHistoryPushId = newHistoryEntryRef.getKey();
         HashMap<String, Object> historyToAddHashMap =
                 (HashMap<String, Object>) new ObjectMapper().convertValue(historyEntry, Map.class);
-        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_HISTORY + "/" + selectedConvoPushId,
+        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_HISTORY + "/" + selectedConvoPushId +
+                "/" + newHistoryPushId,
                 historyToAddHashMap);
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {

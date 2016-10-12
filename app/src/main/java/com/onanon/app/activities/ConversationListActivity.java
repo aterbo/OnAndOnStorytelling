@@ -43,6 +43,7 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.dialogs.EditProfileDialogFragment;
+import com.onanon.app.dialogs.ViewHistoryDialog;
 import com.onanon.app.dialogs.WaitingForPromptsDialog;
 
 import java.util.ArrayList;
@@ -199,6 +200,9 @@ public class ConversationListActivity extends AppCompatActivity {
                                     return true;
                                 }
                                 else if (i == R.id.view_history) {
+                                    ViewHistoryDialog viewHistoryDialog =
+                                            ViewHistoryDialog.newInstance(selectedConvoPushId);
+                                    viewHistoryDialog.show(getSupportFragmentManager(), "ViewHistoryDialog");
                                     return true;
                                 }
                                 else if (i == R.id.leave_convo) {
