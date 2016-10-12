@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/activity_horizontal_margin">
 
     <TextView
@@ -24,69 +24,71 @@
         android:scaleType="fitCenter"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginBottom="6dp"
         android:src="@drawable/alberticon"
         android:layout_below="@id/response_title"
         android:layout_alignParentLeft="true"
         />
 
-    <LinearLayout
+     <TextView
+        android:id="@+id/response_from_to"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/response_sender_profile_image"
+        android:layout_alignTop="@id/response_sender_profile_image"
+        android:text="Bob to you"
+        />
+
+    <TextView
+        android:id="@+id/response_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_toRightOf="@id/response_sender_profile_image"
-        android:layout_below="@id/response_title">
-
-        <TextView
-            android:id="@+id/response_from_to"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Bob to you"
-            />
-
-        <TextView
-            android:id="@+id/response_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="Date"
-            />
-    </LinearLayout>
+        android:layout_alignBottom="@id/response_sender_profile_image"
+        android:text="Date"
+        />
 
     <ScrollView
-        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:scrollbars="vertical"
         android:layout_below="@id/response_sender_profile_image"
-        android:layout_above="@+id/save_response">
+        >
 
-        <TextView
-            android:id="@+id/response"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Here are my thoughts..."
-            />
+            android:orientation="vertical">
+
+             <TextView
+                android:id="@+id/response"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:minLines="3"
+                android:layout_margin="10dp"
+                android:text="Here are my thoughts..."
+                />
+
+            <LinearLayout
+                android:id="@+id/button_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/save_response"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:layout_marginRight="6dp"/>
+
+                <Button
+                    android:id="@+id/delete_response"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:layout_marginLeft="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
-
-    <Button
-        android:id="@id/save_response"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_above="@+id/delete_response"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
-
-    <Button
-        android:id="@id/delete_response"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"/>
 </RelativeLayout>

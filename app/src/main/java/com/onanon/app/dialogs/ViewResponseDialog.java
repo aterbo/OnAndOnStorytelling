@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,7 @@ public class ViewResponseDialog  extends DialogFragment {
         ((TextView) v.findViewById(R.id.response_from_to)).setText(
                 fromToString);
         ((TextView) v.findViewById(R.id.response_date)).setText(
-                Utils.calcTimeFromMillisToNow(response.getDateResponseSubmitted()));
+                Utils.converSystemTimeToDateAsString(response.getDateResponseSubmitted()));
         ((TextView) v.findViewById(R.id.response_title)).setText(
                 "RE: " + response.getPromptRespondingTo().getText());
         ((TextView)v.findViewById(R.id.response)).setText(response.getResponse());
