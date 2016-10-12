@@ -40,6 +40,7 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
+import com.onanon.app.classes.HistoryEntry;
 
 import java.io.File;
 import java.io.IOException;
@@ -444,6 +445,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void updateConversationAfterRecording(){
+        HistoryEntry historyEntry = new HistoryEntry(
+                conversation.getNextUserNameToTell(), conversation.getCurrentPrompt());
+
         conversation.changeNextPlayer();
         conversation.changeAllUsersAsHaveNotListenedButLastToTell();
         conversation.changeDateLastActionOccuredToNow();
@@ -460,6 +464,11 @@ public class RecordStoryActivity extends AppCompatActivity {
             convoInfoToUpdate.put("/" + Constants.FB_LOCATION_USER_CONVOS + "/"
                     + userName + "/" + selectedConvoPushId, conversationToAddHashMap);
         }
+
+        HashMap<String, Object> historyToAddHashMap =
+                (HashMap<String, Object>) new ObjectMapper().convertValue(historyEntry, Map.class);
+        convoInfoToUpdate.put("/" + Constants.FB_LOCATION_HISTORY + "/" + selectedConvoPushId,
+                historyToAddHashMap);
 
         baseRef.updateChildren(convoInfoToUpdate, new DatabaseReference.CompletionListener() {
             @Override
