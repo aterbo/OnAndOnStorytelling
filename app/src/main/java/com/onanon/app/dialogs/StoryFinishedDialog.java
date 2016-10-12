@@ -5,11 +5,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.onanon.app.R;
@@ -19,69 +24,67 @@ import com.onanon.app.R;
  */
 public class StoryFinishedDialog extends DialogFragment {
 
-    private AlertDialog alertDialog;
     private String responseText;
 
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.dialog_after_story, container,
+                true);
+        final EditText responseEditText = (EditText) v.findViewById(R.id.entered_response);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        // Watch for button clicks.
+        Button listenAgainButton = (Button)v.findViewById(R.id.listen_again_button);
+        listenAgainButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // When button is clicked, call up to owning activity.
+                StoryFinishedDialog.this.dismiss();
+                mListener.listenAgainClick();
+            }
+        });
 
-        builder.setView(inflater.inflate(R.layout.dialog_after_story, null))
-                .setTitle(R.string.after_story_title)
-                .setPositiveButton(R.string.send_text_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // This will be overridden for data validations
-                    }
-                })
-                .setNegativeButton(R.string.continue_without_response, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        // Watch for button clicks.
+        final Button responseButton = (Button)v.findViewById(R.id.response_button);
+        responseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                    if (responseButton.getText()==getString(R.string.continue_without_response)) {
+                        StoryFinishedDialog.this.dismiss();
                         mListener.continueWithoutResponseClick();
-                    }
-                })
-                .setNeutralButton(R.string.listen_again, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.listenAgainClick();
-                    }
-                });
-        return builder.create();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        alertDialog = (AlertDialog)getDialog();
-        if(alertDialog != null)
-        {
-            Button positiveButton = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
-            final EditText responseEditText = (EditText) alertDialog.findViewById(R.id.entered_response);
-
-            positiveButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Boolean wantToCloseDialog = false;
-                    responseText = responseEditText.getText().toString();
-
-                    if (responseText.length()>1) {
-                        wantToCloseDialog = true;
-                    }
-
-                    if (wantToCloseDialog) {
-                        //uploadResponseToFB(enteredData);
-                        alertDialog.dismiss();
-                        mListener.continueWithResponseClick(responseText);
+                    } else if (responseButton.getText()==getString(R.string.send_text_response)) {
+                        StoryFinishedDialog.this.dismiss();
+                        mListener.continueWithResponseClick(responseEditText.getText().toString());
                     } else {
-                        Toast.makeText(getContext(), "You didn't enter a response!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Oops! Something went wrong", Toast.LENGTH_LONG);
                     }
                 }
             });
-        }
+
+        responseEditText.addTextChangedListener(new TextWatcher() {
+            private void handleText() {
+                // Grab the button
+                if(responseEditText.getText().length() == 0) {
+                    responseButton.setText(R.string.continue_without_response);
+                } else {
+                    responseButton.setText(R.string.send_text_response);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                handleText();
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Nothing to do
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Nothing to do
+            }
+        });
+
+        responseButton.setText(R.string.continue_without_response);
+
+        return v;
     }
 
     /* The activity that creates an instance of this dialog fragment must

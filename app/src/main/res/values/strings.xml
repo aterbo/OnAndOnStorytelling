@@ -61,15 +61,14 @@
 
     <string name="user_name_characters">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</string>
     <string name="andy_onanon_email">andy@onanonapp.com</string>
-    <string name="after_story_title">And that\'s the story...</string>
+    <string name="after_story_title">And that\'s the story!</string>
     <string name="response_text_hint">Enter a response for the group...</string>
-    <string name="send_text_response">Send</string>
+    <string name="send_text_response">Send Response</string>
     <string name="continue_without_response">No Response</string>
-    <string name="listen_again">Again</string>
+    <string name="listen_again">Listen Again</string>
     <string name="response_dialog_text">What do you think?</string>
     <string name="no_responses">You have no responses at the moment.</string>
     <string name="save_responses">Save Response</string>
-    <string name="viewing_response_title">Response</string>
     <string name="delete_response">Delete</string>
     <string name="no_history">There is no history for this conversation. Tell some more stories!</string>
 
