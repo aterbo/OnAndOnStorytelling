@@ -10,9 +10,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -166,6 +168,14 @@ public class ConversationListActivity extends AppCompatActivity {
         final ListView listView = (ListView) this.findViewById(R.id.conversation_list);
 
         listView.setEmptyView(findViewById(android.R.id.empty));
+
+        //Get footer height at the current screen density.
+        final int footerHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                48, getResources().getDisplayMetrics());
+
+        View footer = new View(this);
+        footer.setLayoutParams(new AbsListView.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT, footerHeight));
+        listView.addFooterView(footer, null, false);
 
         mListAdapter = new FirebaseListAdapter<Conversation>(this, Conversation.class,
                 R.layout.layout_conversation_list_item,
