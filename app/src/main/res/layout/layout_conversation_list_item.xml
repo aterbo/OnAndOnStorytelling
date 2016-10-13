@@ -30,6 +30,7 @@
         android:layout_toLeftOf="@+id/pop_up_button"
         android:layout_alignParentTop="true"
         android:text="Title"
+        android:textColor="@android:color/white"
         />
 
     <TextView
@@ -41,6 +42,7 @@
         android:ellipsize="end"
         android:layout_above="@+id/conversation_time_since_action"
         android:text="Participants"
+        android:textColor="@android:color/white"
         />
 
     <TextView
@@ -50,6 +52,7 @@
         android:layout_toRightOf="@id/conversation_profile_image"
         android:layout_alignParentBottom="true"
         android:text="Time Since"
+        android:textColor="@android:color/white"
         />
 
     <ImageButton
@@ -60,6 +63,6 @@
         android:scaleType="fitCenter"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_more_vert_black_24dp"
+        android:src="@drawable/ic_more_vert_white_24dp"
         android:background="?android:selectableItemBackground" />
 </RelativeLayout>

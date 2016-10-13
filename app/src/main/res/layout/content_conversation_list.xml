@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:text="View story responses"
         android:onClick="reactionsButtonClick"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:theme="@style/PrimaryButton"/>
 
     <TextView
         android:id="@+id/current_user_indicator"
@@ -25,6 +26,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="5dp"
+        android:textColor="@android:color/white"
         android:text="Hello, "/>
 
     <View
@@ -47,8 +49,8 @@
 
         <TextView android:text="@string/no_messages"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/blackTint"
+            android:textSize="@dimen/material_text_title"
+            android:textColor="@android:color/white"
             android:textAlignment="center">
         </TextView>
 
