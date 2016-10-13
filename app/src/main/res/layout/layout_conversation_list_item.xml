@@ -8,14 +8,16 @@
 
     <ImageView
         android:id="@+id/conversation_profile_image"
-        android:layout_width="70dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:scaleType="fitCenter"
         android:layout_marginRight="10dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical|center_horizontal"
         android:src="@drawable/status_none_144_70"
+        android:background="@drawable/rounded_rectangle_border_gray_tint"
         />
 
     <TextView

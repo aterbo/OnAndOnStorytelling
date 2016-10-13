@@ -10,7 +10,7 @@
     <color name="colorButtonTransparent">#99428136</color>
 
     <color name="colorAccentTint">#99ff5722</color>
-    <color name="grayTint">#10000000</color>
+    <color name="grayTransparent">#10ffffff</color>
     <color name="blackTint">#30000000</color>
     <color name="whiteTint">#aaffffff</color>
 
