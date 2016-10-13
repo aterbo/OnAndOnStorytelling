@@ -44,7 +44,6 @@ import com.onanon.app.dialogs.StoryFinishedDialog;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -193,7 +192,7 @@ public class ListenToStoryActivity extends AppCompatActivity
     }
 
     private void showConversationDetails(){
-        TextView senderText = (TextView)findViewById(R.id.sender_text);
+        TextView senderText = (TextView)findViewById(R.id.sender_user_name);
         senderText.setText(conversation.getLastUserNameToTell() + " answered");
         duration.setText(conversation.recordingDurationAsFormattedString());
         ((TextView) findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());

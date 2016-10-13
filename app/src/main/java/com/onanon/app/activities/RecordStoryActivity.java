@@ -190,7 +190,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void showConversationDetails(){
-        TextView senderText = (TextView)findViewById(R.id.sender_text);
+        TextView senderText = (TextView)findViewById(R.id.sender_user_name);
         senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " asks");
 
         ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());

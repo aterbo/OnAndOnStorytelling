@@ -1,18 +1,19 @@
 package com.onanon.app.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -22,12 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
-import com.onanon.app.Utils.PrefManager;
-import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.classes.Prompt;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class PickTopicToRecordActivity extends AppCompatActivity {
 
@@ -39,6 +40,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     private View topOr;
     private View bottomOr;
     private String selectedConvoPushId;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         topOr = findViewById(R.id.top_or);
         bottomOr = findViewById(R.id.bottom_or);
         final int added_height_for_radius = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-        18, getResources().getDisplayMetrics());
+        15, getResources().getDisplayMetrics());
 
         buttonContainer.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -92,8 +94,8 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     }
 
     private void showConversationDetails(){
-        TextView senderText = (TextView)findViewById(R.id.sender_text);
-        senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " wants to hear a story! Pick a topic.");
+        TextView senderText = (TextView)findViewById(R.id.sender_user_name);
+        senderText.setText(conversation.getLastUserNameToTell());
     }
 
     private void initializeViews() {
@@ -109,6 +111,7 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
                 .child(conversation.getLastUserNameToTell()).child("profilePhotoUrl");
+        context = this;
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -126,8 +129,13 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(PickTopicToRecordActivity.this).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
-                        .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePic);
+                Glide.with(PickTopicToRecordActivity.this)
+                        .load(convoIconUrl)
+                        .bitmapTransform(new CropCircleTransformation(context))
+                        .placeholder(R.drawable.word_treatment_512_84)
+                        .fallback(R.drawable.word_treatment_512_84)
+                        .dontAnimate()
+                        .into(profilePic);
             }
 
             @Override
