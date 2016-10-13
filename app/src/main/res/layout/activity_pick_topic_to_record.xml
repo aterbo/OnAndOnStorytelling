@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -10,6 +12,7 @@
     android:background="@drawable/background">
 
     <LinearLayout
+        android:id="@+id/conversation_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -32,56 +35,74 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_below="@id/conversation_icon">
+    <FrameLayout
+        android:id="@+id/root_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/record_topic_option_1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/conversation_icon"
-            android:text=""
-            android:onClick="topic1"
-            android:layout_weight="3" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/buttons_container">
+
+            <Button
+                android:id="@+id/record_topic_option_1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="1"
+                android:onClick="topic1"
+                android:theme="@style/PrimaryButton"/>
+
+            <Button
+                android:id="@+id/record_topic_option_2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:text="2"
+                android:onClick="topic2"
+                android:theme="@style/PrimaryButton" />
+
+            <Button
+                android:id="@+id/record_topic_option_3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="3"
+                android:onClick="topic3"
+                android:theme="@style/PrimaryButton" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_gravity="center"
-            android:text=" - OR - "
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <Button
-            android:id="@+id/record_topic_option_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:onClick="topic2"
-            android:layout_weight="3" />
+            android:id="@+id/top_or"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:textAlignment="center"
+            android:text="OR"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_below="@id/record_topic_option_1"
+            android:textSize="@dimen/material_text_caption"
+            android:textColor="@android:color/white"
+            android:background="@drawable/or_circle_background"
+            />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:layout_gravity="center"
-            android:text=" - OR - "
-            android:layout_weight="1"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:id="@+id/bottom_or"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="OR"
+            android:textSize="@dimen/material_text_caption"
+            android:textColor="@android:color/white"
+            android:layout_above="@id/record_topic_option_1"
+            android:background="@drawable/or_circle_background" />
 
-        <Button
-            android:id="@+id/record_topic_option_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:onClick="topic3"
-            android:layout_weight="3" />
-
-    </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

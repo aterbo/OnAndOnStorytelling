@@ -2,4 +2,5 @@
 <resources>
     <color name="background_material_light">#ebeeee</color>
     <color name="background_linen_white">#e5e6e5</color>
+    <color name="primary_text_default_material_light">#deffffff</color>
 </resources>

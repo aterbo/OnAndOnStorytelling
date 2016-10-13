@@ -1,11 +1,17 @@
 package com.onanon.app.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +36,8 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
     private Button topicOption1;
     private Button topicOption2;
     private Button topicOption3;
+    private View topOr;
+    private View bottomOr;
     private String selectedConvoPushId;
 
     @Override
@@ -42,6 +50,39 @@ public class PickTopicToRecordActivity extends AppCompatActivity {
         initializeViews();
         getPrompts();
         setPromptsToButtons();
+
+        final View buttonContainer = findViewById(R.id.buttons_container);
+        topOr = findViewById(R.id.top_or);
+        bottomOr = findViewById(R.id.bottom_or);
+        final int added_height_for_radius = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        18, getResources().getDisplayMetrics());
+
+        buttonContainer.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressLint("NewApi")
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                //now we can retrieve the width and height
+                int width = buttonContainer.getWidth();
+                int height = buttonContainer.getHeight();
+
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)topOr.getLayoutParams();
+                params.setMargins(0, (height/3)-added_height_for_radius, 0, 0);
+                topOr.setLayoutParams(params);
+
+                FrameLayout.LayoutParams params2 = (FrameLayout.LayoutParams)bottomOr.getLayoutParams();
+                params2.setMargins(0, (2*height/3)-added_height_for_radius, 0, 0);
+                bottomOr.setLayoutParams(params2);
+
+
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                    buttonContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                else
+                    buttonContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
+
     }
 
     private void getConversation(){

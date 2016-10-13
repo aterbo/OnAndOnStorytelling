@@ -20,4 +20,10 @@
 
     <style name="BlueOrangeTheme" parent="@style/AppTheme" />
 
+    <style name="PrimaryButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/material_text_body1</item>
+    </style>
 </resources>
