@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.onanon.app.activities.ListenToStoryActivity">
+    tools:context="com.onanon.app.activities.ListenToStoryActivity"
+    android:background="@drawable/background">
 
     <RelativeLayout
         android:id="@+id/conversation_details"
