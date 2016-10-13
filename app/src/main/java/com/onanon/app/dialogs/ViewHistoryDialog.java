@@ -24,13 +24,15 @@ import com.onanon.app.classes.HistoryEntry;
 public class ViewHistoryDialog extends DialogFragment {
     ListView mListView;
     String conversationPushId;
+    String otherConvoParticipants;
     FirebaseListAdapter<HistoryEntry> mListAdapter;
 
 
-    public static ViewHistoryDialog newInstance(String conversationPushId) {
+    public static ViewHistoryDialog newInstance(String conversationPushId, String otherConvoParticipants) {
         ViewHistoryDialog dialog = new ViewHistoryDialog();
         Bundle args = new Bundle();
         args.putString("conversationPushId", conversationPushId);
+        args.putString("otherConvoParticipants", otherConvoParticipants);
         dialog.setArguments(args);
         return dialog;
     }
@@ -40,10 +42,20 @@ public class ViewHistoryDialog extends DialogFragment {
                              Bundle savedInstanceState) {
 
         conversationPushId = getArguments().getString("conversationPushId");
+        otherConvoParticipants = getArguments().getString("otherConvoParticipants");
+        int locationOfLastComma = otherConvoParticipants.lastIndexOf(",");
+        String formattedParticipants = otherConvoParticipants;
+        if (locationOfLastComma>0) {
+            formattedParticipants = formattedParticipants.substring(0, locationOfLastComma) +
+                    " &" +
+                    formattedParticipants.substring(locationOfLastComma+1, formattedParticipants.length());
+        }
 
         View v = inflater.inflate(R.layout.dialog_view_history, container,
                 true);
 
+        ((TextView)v.findViewById(R.id.history_title)).setText("Story History with "
+                + formattedParticipants);
         mListView = (ListView)v.findViewById(R.id.list_history);
         mListView.setEmptyView(v.findViewById(R.id.history_empty));
         setFirebaseListAdaptor();

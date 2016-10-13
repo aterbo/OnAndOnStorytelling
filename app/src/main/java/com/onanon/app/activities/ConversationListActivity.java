@@ -211,7 +211,8 @@ public class ConversationListActivity extends AppCompatActivity {
                                 }
                                 else if (i == R.id.view_history) {
                                     ViewHistoryDialog viewHistoryDialog =
-                                            ViewHistoryDialog.newInstance(selectedConvoPushId);
+                                            ViewHistoryDialog.newInstance(selectedConvoPushId,
+                                                    conversation.otherConversationParticipants(currentUserName));
                                     viewHistoryDialog.show(getSupportFragmentManager(), "ViewHistoryDialog");
                                     return true;
                                 }

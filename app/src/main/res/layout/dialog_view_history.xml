@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    android:background="@drawable/background">
 
     <TextView
+        android:id="@+id/history_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Story History"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="@dimen/material_text_title"
+        android:textColor="@android:color/white"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/blackTint"
+        android:background="@color/whiteTint"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
     <ListView
         android:id="@+id/list_history"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:divider="@color/whiteTint"
+        android:dividerHeight="1dp"
+        />
 
     <TextView
         android:id="@+id/history_empty"
         android:text="@string/no_history"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:gravity="center"
         android:textSize="20sp"
-        android:textColor="@color/blackTint"
+        android:textColor="@color/whiteTint"
         android:textAlignment="center" />
 </LinearLayout>
