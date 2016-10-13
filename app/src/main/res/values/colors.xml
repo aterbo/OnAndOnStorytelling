@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#193901</color>
     <color name="colorPrimaryTransparent">#bb2f6806</color>
     <color name="colorPrimaryDarkTransparent">#bb193901</color>
+    <color name="colorPrimaryDarkBarelyTransparent">#f7193901</color>
     <color name="colorAccent">#6f9fcd</color>
     <color name="colorButton">#428136</color>
     <color name="colorButtonTransparent">#99428136</color>
