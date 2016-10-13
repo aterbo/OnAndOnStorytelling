@@ -31,6 +31,7 @@
         android:layout_alignParentTop="true"
         android:text="Title"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/material_text_subhead"
         />
 
     <TextView
@@ -43,6 +44,7 @@
         android:layout_above="@+id/conversation_time_since_action"
         android:text="Participants"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/material_text_body1"
         />
 
     <TextView
@@ -53,6 +55,7 @@
         android:layout_alignParentBottom="true"
         android:text="Time Since"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/material_text_body1"
         />
 
     <ImageButton
