@@ -1,8 +1,8 @@
 package com.onanon.app.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,6 +51,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 public class RecordStoryActivity extends AppCompatActivity {
 
     private AudioRecorder myRecorder;
@@ -69,6 +71,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private long recordingEndTime;
     private long cumulativeRecordingTime;
     private ProgressDialog progressDialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +123,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
                 .child(otherParticipantsArray.get(0)).child("profilePhotoUrl");
+        context = this;
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -137,8 +141,13 @@ public class RecordStoryActivity extends AppCompatActivity {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(RecordStoryActivity.this).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
-                        .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePic);
+                Glide.with(RecordStoryActivity.this)
+                        .load(convoIconUrl)
+                        .bitmapTransform(new CropCircleTransformation(context))
+                        .placeholder(R.drawable.word_treatment_512_84)
+                        .fallback(R.drawable.word_treatment_512_84)
+                        .dontAnimate()
+                        .into(profilePic);
             }
 
             @Override
@@ -195,9 +204,10 @@ public class RecordStoryActivity extends AppCompatActivity {
 
     private void showConversationDetails(){
         TextView senderText = (TextView)findViewById(R.id.sender_user_name);
-        senderText.setText(conversation.getLastUserNameToTell().replace(",",".") + " asks");
+        senderText.setText(conversation.getLastUserNameToTell().replace(",","."));
 
-        ((TextView)findViewById(R.id.prompt_text)).setText(conversation.getCurrentPrompt().getText());
+        ((TextView)findViewById(R.id.prompt_text)).setText("says " +
+                conversation.getCurrentPrompt().getText());
     }
 
     private void setRecordingButtonListener(){
