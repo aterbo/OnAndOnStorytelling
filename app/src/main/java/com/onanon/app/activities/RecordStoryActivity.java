@@ -95,6 +95,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         playbackButton = (ToggleButton) findViewById(R.id.playback_control_button);
         resetControlButton = (ImageButton)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
+        finishAndSendButton.setVisibility(View.INVISIBLE);
         playbackButton.setEnabled(false);
         resetControlButton.setEnabled(false);
     }
@@ -316,6 +317,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDuration.setText("Story Length: " +
                 recordingDurationAsFormattedString(cumulativeRecordingTime));
         playbackButton.setEnabled(true);
+        finishAndSendButton.setVisibility(View.VISIBLE);
         finishAndSendButton.setEnabled(true);
     }
 
@@ -350,6 +352,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         playbackButton.setEnabled(false);
         resetControlButton.setEnabled(false);
         finishAndSendButton.setEnabled(false);
+        finishAndSendButton.setVisibility(View.INVISIBLE);
     }
 
     private void startPlayback() {
