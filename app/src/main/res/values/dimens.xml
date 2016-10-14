@@ -1,7 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">8dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="dots_height">30dp</dimen>
@@ -24,6 +24,10 @@
     <dimen name="material_text_display2">45sp</dimen>
     <dimen name="material_text_display3">56sp</dimen>
     <dimen name="material_text_display4">112sp</dimen>
+
+    <dimen name="username_and_prompt_gap">-1dp</dimen>
+    <dimen name="profile_pic_diameter_in_convo">120dp</dimen>
+    <dimen name="profile_pic_padding_in_convo">2dp</dimen>
     <dimen name="small_playback_button_diameter">48dp</dimen>
     <dimen name="small_playback_button_ring_thickness">4dp</dimen>
 </resources>

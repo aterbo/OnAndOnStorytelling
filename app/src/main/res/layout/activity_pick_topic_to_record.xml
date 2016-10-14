@@ -22,8 +22,10 @@
 
         <ImageView
             android:id="@+id/conversation_icon"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/profile_pic_diameter_in_convo"
+            android:layout_height="@dimen/profile_pic_diameter_in_convo"
+            android:padding="@dimen/profile_pic_padding_in_convo"
+            android:background="@drawable/circle_profile_photo_background"
             android:layout_gravity="center"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -38,7 +40,7 @@
             android:gravity="bottom"
             android:text="User Name"
             android:textAlignment="center"
-            android:textSize="@dimen/material_text_title"
+            android:textSize="@dimen/material_text_subhead"
             android:textColor="@android:color/white"
             android:layout_above="@+id/wants_to_hear_story_text"/>
 
@@ -46,9 +48,9 @@
             android:id="@id/wants_to_hear_story_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/username_and_prompt_gap"
             android:gravity="bottom"
-            android:text="wants to hear a story! Pick a topic."
+            android:text="wants to hear a story!\nPick a topic."
             android:textAlignment="center"
             android:textSize="@dimen/material_text_body2"
             android:textColor="@android:color/white"

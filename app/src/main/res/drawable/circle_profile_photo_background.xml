@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
     <solid
-        android:color="@color/background_linen_white"/>
+        android:color="@color/colorButtonTransparent"/>
     <size
         android:width="@dimen/small_playback_button_diameter"
         android:height="@dimen/small_playback_button_diameter"
