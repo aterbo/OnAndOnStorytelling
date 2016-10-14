@@ -2,18 +2,21 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="75dp">
+    android:layout_height="79dp"
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/response_sender_profile_image"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         android:layout_marginRight="10dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:src="@drawable/alberticon"
+        android:gravity="center"
+        android:src="@drawable/word_treatment_144_24"
+        android:background="@drawable/circle_profile_photo_background"
         />
 
     <TextView
@@ -25,6 +28,7 @@
         android:layout_toRightOf="@id/response_sender_profile_image"
         android:layout_alignParentTop="true"
         android:text="What is your favorite color..."
+        android:textColor="@android:color/white"
         />
 
     <TextView
@@ -36,6 +40,7 @@
         android:ellipsize="end"
         android:layout_above="@+id/response_date"
         android:text="Bob to you"
+        android:textColor="@android:color/white"
         />
 
     <TextView
@@ -45,6 +50,7 @@
         android:layout_toRightOf="@id/response_sender_profile_image"
         android:layout_alignParentBottom="true"
         android:text="Date"
+        android:textColor="@android:color/white"
         />
 
 </RelativeLayout>

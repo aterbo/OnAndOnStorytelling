@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 /**
  * Created by ATerbo on 3/13/16.
  */
@@ -188,8 +190,13 @@ public class Utils {
                     //profile does not have picture
                     profilePicUrl = "";
                 }
-                Glide.with(activity).load(profilePicUrl).placeholder(R.drawable.alberticon)
-                        .fallback(R.drawable.alberticon).into(profilePic);
+                Glide.with(activity)
+                        .load(profilePicUrl)
+                        .placeholder(R.drawable.word_treatment_144_24)
+                        .fallback(R.drawable.alberticon)
+                        .bitmapTransform(new CropCircleTransformation(activity))
+                        .dontAnimate()
+                        .into(profilePic);
             }
         };
         return responseListAdaptor;
