@@ -324,8 +324,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         resetControlButton.setEnabled(true);
         recordingDurationCounter.setVisibility(View.GONE);
         recordingDuration.setVisibility(View.VISIBLE);
-        recordingDuration.setText("Story Length: " +
-                recordingDurationAsFormattedString(cumulativeRecordingTime));
+        recordingDuration.setText(recordingDurationAsFormattedString(cumulativeRecordingTime));
         playbackButton.setEnabled(true);
         finishAndSendButton.setVisibility(View.VISIBLE);
         finishAndSendButton.setEnabled(true);
@@ -340,11 +339,16 @@ public class RecordStoryActivity extends AppCompatActivity {
             int seconds = totalSeconds % SECONDS_IN_A_MINUTE;
             int totalMinutes = totalSeconds / SECONDS_IN_A_MINUTE;
             int minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+            String minutesString = minutes + "";
 
-            if (seconds < 10){
-                return minutes + ":0" + seconds;
+            if (minutes < 10){
+                minutesString = "0" + minutesString;
             }
-            return minutes + ":" + seconds;
+            if (seconds < 10){
+                return minutesString + ":0" + seconds;
+            }
+
+            return minutesString + ":" + seconds;
 
         } else {
             return "";
