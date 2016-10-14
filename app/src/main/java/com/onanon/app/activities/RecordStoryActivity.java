@@ -237,7 +237,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     private void startRecording(){
-
+        stopPlayback();
         recordingDuration.setVisibility(View.GONE);
         recordingStatus.setVisibility(View.INVISIBLE);
 
@@ -326,6 +326,7 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDuration.setVisibility(View.VISIBLE);
         recordingDuration.setText(recordingDurationAsFormattedString(cumulativeRecordingTime));
         playbackButton.setEnabled(true);
+        playbackButton.setChecked(false);
         finishAndSendButton.setVisibility(View.VISIBLE);
         finishAndSendButton.setEnabled(true);
     }
@@ -356,7 +357,9 @@ public class RecordStoryActivity extends AppCompatActivity {
     }
 
     public void resetRecording(View view){
-        //myRecorder.cancel();
+        if(myPlayer!=null && myPlayer.isPlaying()) {
+            stopPlayback();
+        }
         cumulativeRecordingTime = 0;
         deleteRecordingFile();
         createRecordingFile();
@@ -410,10 +413,14 @@ public class RecordStoryActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void sendRecordingClick(View view){
         progressDialog = Utils.getSpinnerDialog(this);
+        if(myPlayer!=null && myPlayer.isPlaying()) {
+            stopPlayback();
+        }
         setRecordingTime();
         saveRecordingToFirebaseStorage();
     }
