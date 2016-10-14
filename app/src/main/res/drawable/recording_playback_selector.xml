@@ -2,14 +2,14 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/play_arrow_disabled"/>
+        android:drawable="@drawable/ic_play_circle_green_transp_48dp"/>
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/play_arrow_pressed"/>
+        android:drawable="@drawable/ic_play_circle_green_transp_48dp"/>
     <item
         android:state_checked="true"
-        android:drawable="@drawable/pause_bars_checked" />
+        android:drawable="@drawable/ic_pause_circle_active_48dp" />
     <item
         android:state_checked="false"
-        android:drawable="@drawable/play_arrow_normal" />
+        android:drawable="@drawable/ic_play_circle_active_48dp" />
 </selector>

@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/reset_disabled"/>
+        android:drawable="@drawable/ic_undo_circle_green_transp_48dp"/>
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/reset_pressed"/>
+        android:drawable="@drawable/ic_undo_circle_active_48dp"/>
     <item
         android:state_checked="false"
-        android:drawable="@drawable/reset_normal" />
+        android:drawable="@drawable/ic_undo_circle_active_48dp" />
 </selector>

@@ -99,18 +99,15 @@
         android:gravity="center"
         android:layout_above="@+id/finish_and_send_button">
 
-        <Button
+        <ImageButton
             android:id="@+id/reset_control_button"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="5dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/small_playback_button_diameter"
+            android:layout_height="@dimen/small_playback_button_diameter"
             android:enabled="false"
-            android:text="Reset Recording"
-            android:textSize="1sp"
-            android:textColor="#00ffffff"
+
             android:onClick="resetRecording"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
             android:background="@drawable/reset_selector"/>
 
         <ToggleButton
@@ -121,19 +118,19 @@
             android:textOn=""
             android:textOff=""
             android:text=""
-            android:layout_gravity="top"/>
+            android:layout_gravity="center"/>
 
         <ToggleButton
             android:id="@+id/playback_control_button"
             android:layout_marginLeft="30dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/small_playback_button_diameter"
+            android:layout_height="@dimen/small_playback_button_diameter"
             android:background="@drawable/recording_playback_selector"
             android:textOn=""
             android:textOff=""
             android:text=""
             android:enabled="false"
-            android:layout_gravity="bottom" />
+            android:layout_gravity="center" />
 
 
     </LinearLayout>

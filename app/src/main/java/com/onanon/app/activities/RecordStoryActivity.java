@@ -2,6 +2,7 @@ package com.onanon.app.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +60,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private String outputFile = null;
     private ToggleButton playbackButton;
     private ToggleButton recordButton;
-    private Button resetControlButton;
+    private ImageButton resetControlButton;
     private Button finishAndSendButton;
     private TextView recordingStatus;
     private TextView recordingDuration;
@@ -91,9 +93,10 @@ public class RecordStoryActivity extends AppCompatActivity {
         recordingDurationCounter = (Chronometer) findViewById(R.id.recording_time_counter);
         recordButton = (ToggleButton)findViewById(R.id.record_button);
         playbackButton = (ToggleButton) findViewById(R.id.playback_control_button);
-        resetControlButton = (Button)findViewById(R.id.reset_control_button);
+        resetControlButton = (ImageButton)findViewById(R.id.reset_control_button);
         finishAndSendButton = (Button)findViewById(R.id.finish_and_send_button);
         playbackButton.setEnabled(false);
+        resetControlButton.setEnabled(false);
     }
 
     private void getConversation(){

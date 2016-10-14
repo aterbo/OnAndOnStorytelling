@@ -24,4 +24,6 @@
     <dimen name="material_text_display2">45sp</dimen>
     <dimen name="material_text_display3">56sp</dimen>
     <dimen name="material_text_display4">112sp</dimen>
+    <dimen name="small_playback_button_diameter">48dp</dimen>
+    <dimen name="small_playback_button_ring_thickness">4dp</dimen>
 </resources>

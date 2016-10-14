@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval" >
+    <stroke
+        android:color="@color/colorButtonTransparent"
+        android:width="@dimen/small_playback_button_ring_thickness"/>
+    <size
+        android:width="@dimen/small_playback_button_diameter"
+        android:height="@dimen/small_playback_button_diameter"
+        />
+</shape>
