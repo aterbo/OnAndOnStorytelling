@@ -175,6 +175,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 .setLogo(R.drawable.logo_144_70)
                 .setProviders(AuthUI.EMAIL_PROVIDER,
                         AuthUI.GOOGLE_PROVIDER)
+                .setTheme(R.style.FirebaseUIAuthScreenStyle)
                 .build();
         startActivityForResult(intent, RC_SIGN_IN);
     }

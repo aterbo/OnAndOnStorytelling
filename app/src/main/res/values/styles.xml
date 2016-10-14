@@ -15,6 +15,10 @@
         <item name="android:textAppearanceSmallPopupMenu">@style/myPopupMenuTextAppearanceSmall</item>
     </style>
 
+    <style name="FirebaseUIAuthScreenStyle" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/background</item>
+    </style>
+
     <style name="myPopupMenuTextAppearanceSmall" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
         <item name="android:textColor">@android:color/white</item>
     </style>
