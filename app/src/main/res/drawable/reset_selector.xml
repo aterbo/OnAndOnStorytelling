@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/ic_undo_circle_inactive_48dp"/>
+        android:drawable="@drawable/ic_x_inactive_circle_96dp"/>
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/ic_undo_circle_pressed_48dp"/>
+        android:drawable="@drawable/ic_x_pressed_circle_96dp"/>
     <item
         android:state_checked="false"
-        android:drawable="@drawable/ic_undo_circle_active_48dp" />
+        android:drawable="@drawable/ic_x_active_circle_96dp" />
 </selector>
