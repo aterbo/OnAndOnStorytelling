@@ -1,5 +1,6 @@
 package com.onanon.app.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private Button sendTopicOption1;
@@ -42,6 +45,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
     private int numberOfPromptsToGet;
     private final static int TOTAL_ROUNDS_OF_PROMPTS_TO_PRESENT = 3;
     private final static int NUMBER_OF_PROMPTS_PRESENTED_PER_ROUND = 2;
+    private Context context;
 
     private DatabaseReference mNumberOfPromptsRef;
     private ValueEventListener mNumberOfPromptsRefListener;
@@ -76,7 +80,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         selectedPromptsList = new ArrayList<>();
 
         ((TextView) findViewById(R.id.next_storyteller_prompt)).setText(
-                conversation.getNextUserNameToTell() + " is next to tell a story");
+                conversation.getNextUserNameToTell() + " is next!");
         setProfilePicture();
     }
 
@@ -85,6 +89,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
         DatabaseReference baseRef = FirebaseDatabase.getInstance().getReference();
         DatabaseReference userIconRef = baseRef.child(Constants.FB_LOCATION_USERS)
                 .child(conversation.getNextUserNameToTell()).child("profilePhotoUrl");
+        context = this;
 
         userIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -102,8 +107,13 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
                     //profile does not have picture
                     convoIconUrl = "";
                 }
-                Glide.with(ChooseTopicsToSendActivity.this).load(convoIconUrl).placeholder(R.drawable.word_treatment_512_84)
-                        .fallback(R.drawable.word_treatment_512_84).dontAnimate().into(profilePic);
+                Glide.with(ChooseTopicsToSendActivity.this)
+                        .load(convoIconUrl)
+                        .bitmapTransform(new CropCircleTransformation(context))
+                        .placeholder(R.drawable.word_treatment_512_84)
+                        .fallback(R.drawable.word_treatment_512_84)
+                        .dontAnimate()
+                        .into(profilePic);
             }
 
             @Override
@@ -184,7 +194,7 @@ public class ChooseTopicsToSendActivity extends AppCompatActivity {
 
     private void proceed(){
         findViewById(R.id.send_topic_option_1).setVisibility(View.VISIBLE);
-        findViewById(R.id.or_section).setVisibility(View.VISIBLE);
+        findViewById(R.id.or_view).setVisibility(View.VISIBLE);
         findViewById(R.id.send_topic_option_2).setVisibility(View.VISIBLE);
         askForRoundOfPrompts();
     }
