@@ -63,23 +63,21 @@
         android:orientation="vertical"
         android:layout_weight="4">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/recording_details"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:layout_marginBottom="16dp"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/recording_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/recording_status_indicator"
-                android:layout_centerHorizontal="true"
                 android:text=""
-                android:visibility="visible"
+                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/material_text_title" />
 
@@ -87,25 +85,22 @@
                 android:id="@+id/recording_time_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/recording_status_indicator"
                 android:format="%s"
                 android:visibility="visible"
                 android:textColor="@android:color/white"
-                android:layout_centerHorizontal="true"
                 android:textSize="@dimen/material_text_title"/>
 
             <TextView
-                android:id="@id/recording_status_indicator"
+                android:id="@+id/recording_status_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:text=""
+                android:visibility="invisible"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/material_text_subhead" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@id/control_panel"

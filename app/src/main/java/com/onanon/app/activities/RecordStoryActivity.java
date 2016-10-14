@@ -239,7 +239,7 @@ public class RecordStoryActivity extends AppCompatActivity {
     private void startRecording(){
 
         recordingDuration.setVisibility(View.GONE);
-        recordingStatus.setVisibility(View.GONE);
+        recordingStatus.setVisibility(View.INVISIBLE);
 
         myRecorder = AudioRecorderBuilder.with(this)
                 .fileName(outputFile)
