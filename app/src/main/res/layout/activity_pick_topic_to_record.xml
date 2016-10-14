@@ -6,67 +6,62 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.onanon.app.activities.PickTopicToRecordActivity"
     android:background="@drawable/background"
-    android:weightSum="3">
+    android:weightSum="6">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/conversation_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:orientation="vertical"
         android:layout_marginBottom="16dp"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <ImageView
             android:id="@+id/conversation_icon"
-            android:layout_width="160dp"
-            android:layout_height="0dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
-            android:layout_weight="3"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:src="@drawable/word_treatment_512_84"
             android:layout_marginTop="8dp"
             android:scaleType="fitCenter"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/sender_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
-            android:orientation="vertical">
+            android:text="User Name"
+            android:textAlignment="center"
+            android:textSize="@dimen/material_text_title"
+            android:textColor="@android:color/white"
+            android:layout_above="@+id/wants_to_hear_story_text"/>
 
-            <TextView
-                android:id="@+id/sender_user_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="bottom"
-                android:text="User Name"
-                android:textAlignment="center"
-                android:textSize="@dimen/material_text_title"
-                android:textColor="@android:color/white"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="bottom"
-                android:text="wants to hear a story! Pick a topic."
-                android:textAlignment="center"
-                android:textSize="@dimen/material_text_body2"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@id/wants_to_hear_story_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="bottom"
+            android:text="wants to hear a story! Pick a topic."
+            android:textAlignment="center"
+            android:textSize="@dimen/material_text_body2"
+            android:textColor="@android:color/white"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/root_view"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:layout_weight="2">
+        android:layout_weight="4">
 
         <LinearLayout
             android:layout_width="match_parent"
