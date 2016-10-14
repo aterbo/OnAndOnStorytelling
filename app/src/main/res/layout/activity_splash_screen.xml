@@ -4,8 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context=".activities.SplashScreenActivity"
@@ -22,8 +20,6 @@
             android:layout_width="144dp"
             android:layout_height="80dp"
             android:scaleType="fitCenter"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@+id/centering_bar"
             android:src="@drawable/logo_512_250"/>
 
         <ImageView
@@ -31,9 +27,7 @@
             android:layout_width="144dp"
             android:layout_height="42dp"
             android:layout_marginTop="5dp"
-            android:layout_centerHorizontal="true"
             android:scaleType="fitCenter"
-            android:layout_below="@id/icon_logo"
             android:src="@drawable/word_treatment_512_84"/>
     </LinearLayout>
 
@@ -44,11 +38,14 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textAlignment="center"
         android:text="Welcome to ONanON!\n Please enter a user name."
         android:textSize="20sp"
         android:visibility="gone"
         tools:visibility="visible"
+        android:textColor="@android:color/white"
         />
 
     <android.support.design.widget.TextInputLayout
@@ -56,6 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_gravity="center"
         android:layout_below="@id/add_user_name_text"
         android:visibility="gone"
@@ -67,6 +66,7 @@
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
             android:inputType="textCapWords"
+            android:textColor="@android:color/white"
             android:digits="@string/user_name_characters"/>
 
     </android.support.design.widget.TextInputLayout>
@@ -76,28 +76,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:visibility="gone"
         android:clickable="false"
         android:onClick="logInButtonPressed"
         android:text="Start"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        android:theme="@style/PrimaryButton"/>
 
     <Button
         android:id="@+id/create_user_name_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
         android:layout_below="@id/text_input_layout"
         android:layout_gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
         android:clickable="false"
-        android:text="Ok!"/>
+        android:text="Ok!"
+        android:theme="@style/PrimaryButton"/>
 
 </RelativeLayout>
