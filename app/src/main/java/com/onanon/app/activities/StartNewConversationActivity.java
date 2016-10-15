@@ -279,4 +279,12 @@ public class StartNewConversationActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
 }

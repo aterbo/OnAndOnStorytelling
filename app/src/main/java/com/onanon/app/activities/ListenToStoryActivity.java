@@ -545,6 +545,14 @@ public class ListenToStoryActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
     private void goBackToMainScreen(){
         if (progressDialog.isShowing()){
             progressDialog.dismiss();
@@ -553,5 +561,6 @@ public class ListenToStoryActivity extends AppCompatActivity
         startActivity(intent);
         finish();
     }
+
 
 }

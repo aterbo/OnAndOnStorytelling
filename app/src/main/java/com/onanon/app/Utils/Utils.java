@@ -42,8 +42,7 @@ public class Utils {
 
     public static ProgressDialog getSpinnerDialog(Context context) {
         ProgressDialog progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("");
-        progressDialog.setTitle("Processing");
+        progressDialog.setMessage("Telling a tale");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setCancelable(false);
         progressDialog.show();

@@ -562,4 +562,12 @@ public class RecordStoryActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
 }
