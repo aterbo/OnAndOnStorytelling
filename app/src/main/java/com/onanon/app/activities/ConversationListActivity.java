@@ -2,7 +2,6 @@ package com.onanon.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +23,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,10 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.onanon.app.Utils.NetworkUtil;
-import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.R;
 import com.onanon.app.Utils.Constants;
+import com.onanon.app.Utils.NetworkUtil;
+import com.onanon.app.Utils.PrefManager;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Conversation;
 import com.onanon.app.dialogs.EditProfileDialogFragment;
@@ -50,7 +48,6 @@ import com.onanon.app.dialogs.WaitingForPromptsDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class ConversationListActivity extends AppCompatActivity {
