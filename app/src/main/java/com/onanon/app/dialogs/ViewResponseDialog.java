@@ -19,6 +19,8 @@ import com.onanon.app.Utils.Constants;
 import com.onanon.app.Utils.Utils;
 import com.onanon.app.classes.Response;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 /**
  * Created by ATerbo on 10/5/16.
  */
@@ -101,8 +103,12 @@ public class ViewResponseDialog  extends DialogFragment {
             //profile does not have picture
             profilePicUrl = "";
         }
-        Glide.with(getActivity()).load(profilePicUrl).placeholder(R.drawable.alberticon)
-                .fallback(R.drawable.alberticon).into(profilePic);
+        Glide.with(getActivity())
+                .load(profilePicUrl)
+                .placeholder(R.drawable.alberticon)
+                .fallback(R.drawable.alberticon)
+                .bitmapTransform(new CropCircleTransformation(getContext()))
+                .into(profilePic);
 
         return v;
     }

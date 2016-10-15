@@ -30,4 +30,5 @@
     <dimen name="profile_pic_padding_in_convo">2dp</dimen>
     <dimen name="small_playback_button_diameter">48dp</dimen>
     <dimen name="small_playback_button_ring_thickness">4dp</dimen>
+    <dimen name="profile_pic_diameter_in_dialog">75dp</dimen>
 </resources>

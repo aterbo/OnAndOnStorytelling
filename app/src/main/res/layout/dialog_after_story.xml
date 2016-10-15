@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:background="@color/dialogBackground"
     >
 
     <TextView
@@ -14,7 +15,8 @@
         android:textSize="20sp"
         android:layout_marginTop="8dp"
         android:textAlignment="center"
-        android:text="@string/after_story_title"/>
+        android:text="@string/after_story_title"
+        android:textColor="@android:color/white"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -35,7 +37,8 @@
                 android:layout_width="match_parent"
                 android:id="@+id/entered_response"
                 android:hint="@string/response_text_hint"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="@android:color/white"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +52,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="4dp"
-                    android:text="Listen Again"/>
+                    android:text="Listen Again"
+                    android:theme="@style/PrimaryButton"/>
 
                 <Button
                     android:id="@+id/response_button"
@@ -57,7 +61,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="4dp"
-                    android:text="Send Response"/>
+                    android:text="Send Response"
+                    android:theme="@style/PrimaryButton"/>
 
             </LinearLayout>
         </LinearLayout>

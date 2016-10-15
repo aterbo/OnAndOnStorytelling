@@ -9,6 +9,7 @@
     <color name="colorAccent">#6f9fcd</color>
     <color name="colorButton">#428136</color>
     <color name="colorButtonTransparent">#bb428136</color>
+    <color name="dialogBackground">@color/colorPrimaryDarkBarelyTransparent</color>
 
     <color name="colorAccentTint">#99ff5722</color>
     <color name="grayTransparent">#10ffffff</color>
