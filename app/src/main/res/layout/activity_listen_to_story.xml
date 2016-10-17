@@ -86,55 +86,53 @@
         android:layout_marginBottom="15dp"
         android:gravity="center"
         android:orientation="horizontal"
+        android:weightSum="7"
         android:layout_alignParentBottom="true">
 
-        <ImageButton
+        <com.onanon.app.classes.SquareButton
             android:id="@+id/media_long_rew"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_marginRight="2dp"
+            android:layout_weight="1"
             android:onClick="longRewind"
-            android:src="@android:drawable/ic_media_previous" />
+            android:background="@drawable/selector_rewind_long_button" />
 
-        <ImageButton
+        <com.onanon.app.classes.SquareButton
             android:id="@+id/media_short_rew"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/gap_between_playback_buttons"
             android:onClick="shortRewind"
-            android:src="@android:drawable/ic_media_rew" />
+            android:background="@drawable/selector_rewind_button" />
 
-        <ToggleButton
+        <com.onanon.app.classes.SquareToggleButton
             android:id="@+id/media_play"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.7"
+            android:layout_marginLeft="@dimen/gap_between_playback_buttons"
+            android:layout_marginRight="@dimen/gap_between_playback_buttons"
             android:background="@drawable/selector_recording_playback"
             android:textOff=""
             android:textOn="" />
 
-        <ImageButton
+        <com.onanon.app.classes.SquareButton
             android:id="@+id/media_short_ff"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/gap_between_playback_buttons"
             android:onClick="shortForward"
-            android:src="@android:drawable/ic_media_ff" />
+            android:background="@drawable/selector_ff_button" />
 
-        <ImageButton
+        <com.onanon.app.classes.SquareButton
             android:id="@+id/media_long_ff"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
             android:onClick="longForward"
-            android:src="@android:drawable/ic_media_next" />
+            android:background="@drawable/selector_ff_long_button" />
     </LinearLayout>
 
 </RelativeLayout>
