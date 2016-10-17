@@ -1,6 +1,7 @@
 package com.onanon.app.dialogs;
 
 import android.app.Dialog;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -53,6 +54,12 @@ public class ViewHistoryDialog extends DialogFragment {
 
         View v = inflater.inflate(R.layout.dialog_view_history, container,
                 true);
+
+        // retrieve display dimensions
+        Rect displayRectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        v.setMinimumWidth((int)(displayRectangle.width() * 0.95f));
 
         ((TextView)v.findViewById(R.id.history_title)).setText("Story History with "
                 + formattedParticipants);

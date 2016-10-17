@@ -2,6 +2,7 @@ package com.onanon.app.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -30,6 +31,11 @@ public class StoryFinishedDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_after_story, container,
                 true);
         final EditText responseEditText = (EditText) v.findViewById(R.id.entered_response);
+        // retrieve display dimensions
+        Rect displayRectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        v.setMinimumWidth((int)(displayRectangle.width() * 0.95f));
 
         // Watch for button clicks.
         Button listenAgainButton = (Button)v.findViewById(R.id.listen_again_button);

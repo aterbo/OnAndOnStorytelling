@@ -2,6 +2,7 @@ package com.onanon.app.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -45,6 +46,11 @@ public class ViewResponseDialog  extends DialogFragment {
         currentUserName = getArguments().getString("currentUserName");
 
         View v = inflater.inflate(R.layout.dialog_view_response, container, false);
+        // retrieve display dimensions
+        Rect displayRectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        v.setMinimumWidth((int)(displayRectangle.width() * 0.95f));
 
         // Watch for button clicks.
         Button save_button = (Button)v.findViewById(R.id.save_response);

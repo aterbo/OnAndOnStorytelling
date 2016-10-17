@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -50,6 +52,12 @@ public class EditProfileDialogFragment extends android.support.v4.app.DialogFrag
         currentUserName = prefManager.getUserNameFromSharedPreferences();
 
         View view = inflater.inflate(R.layout.dialog_edit_profile, container);
+        // retrieve display dimensions
+        Rect displayRectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        view.setMinimumWidth((int)(displayRectangle.width() * 0.95f));
+
         getDialog().setTitle("Hello, " + currentUserName);
         profilePicView = (ImageView) view.findViewById(R.id.profile_photo);
         setProfileImageFromFirebase();
