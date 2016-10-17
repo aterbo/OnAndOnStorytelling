@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -71,6 +72,10 @@ public class ListenToStoryActivity extends AppCompatActivity
     private StorageReference audioFileStorageRef;
     private DatabaseReference baseRef;
     private HashMap<String, Object> convoInfoToUpdate;
+    private Button long_rewind_button;
+    private Button rewind_button;
+    private Button ff_button;
+    private Button long_ff_button;
 
     private VisualizerView mVisualizerView;
     private Visualizer mVisualizer;
@@ -189,6 +194,18 @@ public class ListenToStoryActivity extends AppCompatActivity
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setClickable(false);
         mVisualizerView = (VisualizerView) findViewById(R.id.visualizer);
+        long_rewind_button = (Button) findViewById(R.id.media_long_rew);
+        rewind_button = (Button) findViewById(R.id.media_short_rew);
+        ff_button = (Button) findViewById(R.id.media_short_ff);
+        long_ff_button = (Button) findViewById(R.id.media_long_ff);
+        setControlButtonsEnabledAs(false);
+    }
+
+    private void setControlButtonsEnabledAs(Boolean enabledAs) {
+        long_rewind_button.setEnabled(enabledAs);
+        rewind_button.setEnabled(enabledAs);
+        ff_button.setEnabled(enabledAs);
+        long_ff_button.setEnabled(enabledAs);
     }
 
     private void showConversationDetails(){
@@ -255,6 +272,7 @@ public class ListenToStoryActivity extends AppCompatActivity
             timeElapsed = mPlayer.getCurrentPosition();
             seekbar.setProgress((int) timeElapsed);
             durationHandler.postDelayed(updateSeekBarTime, 100);
+            setControlButtonsEnabledAs(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -283,6 +301,7 @@ public class ListenToStoryActivity extends AppCompatActivity
 
     private void pause() {
         mPlayer.pause();
+        setControlButtonsEnabledAs(false);
     }
 
     public void shortForward(View view){
@@ -316,6 +335,7 @@ public class ListenToStoryActivity extends AppCompatActivity
     }
 
     private void stopPlayback() {
+        setControlButtonsEnabledAs(false);
         try {
             if (mPlayer != null) {
                 mPlayer.stop();

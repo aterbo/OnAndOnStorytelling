@@ -1,56 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.onanon.app.activities.ListenToStoryActivity"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:weightSum="6">
 
     <RelativeLayout
-        android:id="@+id/conversation_details"
+        android:id="@+id/conversation_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp" >
+        android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="2">
 
         <ImageView
             android:id="@+id/conversation_icon"
-            android:layout_width="@dimen/profile_pic_in_convos"
-            android:layout_height="@dimen/profile_pic_in_convos"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/word_treatment_512_84"
-            android:scaleType="fitCenter" />
+            android:layout_width="@dimen/profile_pic_diameter_in_convo"
+            android:layout_height="@dimen/profile_pic_diameter_in_convo"
+            android:padding="@dimen/profile_pic_padding_in_convo"
+            android:background="@drawable/circle_profile_photo_background"
+            android:layout_gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/word_treatment_144_24"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:id="@+id/sender_user_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/conversation_icon"
-            android:layout_alignTop="@id/conversation_icon"
+            android:gravity="bottom"
             android:text="Albert answered"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAlignment="center"
+            android:textSize="@dimen/material_text_subhead"
+            android:textColor="@android:color/white"
+            android:layout_above="@+id/prompt_text"/>
 
         <TextView
-            android:id="@+id/prompt_text"
+            android:id="@id/prompt_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sender_user_name"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/conversation_icon"
-            android:text="Do you have a life plan?"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_marginTop="@dimen/username_and_prompt_gap"
+            android:gravity="bottom"
+            android:text="Tell me a story that ends in a joke."
+            android:minLines="2"
+            android:textAlignment="center"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/material_text_body1"
+            android:textColor="@android:color/white"
+            android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_above="@+id/control_panel"
-        android:layout_below="@id/conversation_details">
+        android:layout_weight="3">
 
         <com.onanon.app.classes.VisualizerView
             android:id="@+id/visualizer"
@@ -78,16 +89,15 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@id/control_panel"
+        android:id="@+id/control_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:weightSum="7"
-        android:layout_alignParentBottom="true">
+        android:weightSum="7">
 
         <com.onanon.app.classes.SquareButton
             android:id="@+id/media_long_rew"
@@ -113,7 +123,7 @@
             android:layout_weight="1.7"
             android:layout_marginLeft="@dimen/gap_between_playback_buttons"
             android:layout_marginRight="@dimen/gap_between_playback_buttons"
-            android:background="@drawable/selector_recording_playback"
+            android:background="@drawable/selector_main_play_button"
             android:textOff=""
             android:textOn="" />
 
@@ -135,4 +145,4 @@
             android:background="@drawable/selector_ff_long_button" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
