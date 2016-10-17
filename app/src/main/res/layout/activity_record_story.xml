@@ -119,7 +119,7 @@
                 android:enabled="false"
                 android:onClick="resetRecording"
                 android:layout_gravity="center"
-                android:background="@drawable/reset_selector"/>
+                android:background="@drawable/selector_reset"/>
 
             <ToggleButton
                 android:id="@+id/record_button"
@@ -136,7 +136,7 @@
                 android:layout_width="@dimen/small_playback_button_diameter"
                 android:layout_height="@dimen/small_playback_button_diameter"
                 android:layout_marginLeft="20dp"
-                android:background="@drawable/recording_playback_selector"
+                android:background="@drawable/selector_recording_playback"
                 android:textOn=""
                 android:textOff=""
                 android:text=""

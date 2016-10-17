@@ -113,7 +113,7 @@
             android:layout_height="75dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:background="@drawable/recording_playback_selector"
+            android:background="@drawable/selector_recording_playback"
             android:textOff=""
             android:textOn="" />
 

@@ -9,27 +9,15 @@
     tools:context=".activities.SplashScreenActivity"
     android:background="@drawable/background">
 
-    <LinearLayout
-        android:id="@+id/icon_graphics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
-        <ImageView
-            android:id="@+id/icon_logo"
-            android:layout_width="144dp"
-            android:layout_height="80dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logo_512_250"/>
-
-        <ImageView
-            android:id="@+id/text_logo"
-            android:layout_width="144dp"
-            android:layout_height="42dp"
-            android:layout_marginTop="5dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/word_treatment_512_84"/>
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/text_logo"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/word_treatment_512_84"
+        android:layout_centerInParent="true"
+        android:background="@drawable/circle_background_white_tint"/>
 
     <TextView
         android:id="@+id/add_user_name_text"
