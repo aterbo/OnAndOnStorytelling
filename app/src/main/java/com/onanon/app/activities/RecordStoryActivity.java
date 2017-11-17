@@ -85,7 +85,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         getConversation();
         createRecordingFile();
         showConversationDetails();
-        buildRecorder();
         setProfilePicture();
 
     }
@@ -107,10 +106,6 @@ public class RecordStoryActivity extends AppCompatActivity {
         Intent intent  = getIntent();
         conversation = intent.getParcelableExtra(Constants.CONVERSATION_INTENT_KEY);
         selectedConvoPushId = intent.getStringExtra(Constants.CONVERSATION_PUSH_ID_INTENT_KEY);
-    }
-
-    private void buildRecorder() {
-
     }
 
     private void setProfilePicture(){
